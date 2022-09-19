@@ -1,36 +1,39 @@
 package cx.rain.mc.nbtedit.data.provider.language;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.utility.translation.TranslateKeys;
+import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.data.DataGenerator;
-import cx.rain.mc.nbtedit.data.provider.base.LanguageProviderBase;
+import net.minecraftforge.common.data.LanguageProvider;
 
-public class LanguageProviderENUS extends LanguageProviderBase {
+public class LanguageProviderENUS extends LanguageProvider {
     public LanguageProviderENUS(DataGenerator gen) {
         super(gen, NBTEdit.MODID, "en_us");
     }
 
     @Override
     protected void addTranslations() {
-        addKey(TranslateKeys.KEY_CATEGORY, "In-game NBTEdit (Reborn)");
-        addKey(TranslateKeys.KEY_NBTEDIT_SHORTCUT, "NBTEdit shortcut");
+        add(Constants.KEY_CATEGORY, "In-game NBTEdit (Reborn)");
+        add(Constants.KEY_NBTEDIT_SHORTCUT, "Modify target Entity or BlockEntity NBT");
 
-        addKey(TranslateKeys.MESSAGE_NOT_PLAYER, "Only players can use this command.");
-        addKey(TranslateKeys.MESSAGE_NO_PERMISSION, "You have no permission to use NBTEdit.");
-        addKey(TranslateKeys.MESSAGE_NO_ANY_TARGET, "There is no any target for editing.");
-        addKey(TranslateKeys.MESSAGE_NO_TARGET_TILE, "There is no Tile Entity to edit.");
-        addKey(TranslateKeys.MESSAGE_SAVED, "Saved successfully.");
-        addKey(TranslateKeys.MESSAGE_SAVE_FAILED_INVALID_NBT, "Save failed, invalid NBT.");
-        addKey(TranslateKeys.MESSAGE_SAVE_FAILED_NO_LONGER_HAS_TILE, "Save failed, the Tile Entity is no longer exists.");
-        addKey(TranslateKeys.MESSAGE_CANNOT_EDIT_OTHER_PLAYER, "Sorry, but you cannot edit other player.");
-        addKey(TranslateKeys.MESSAGE_UNKNOWN_ENTITY_ID, "Unknown Entity ID.");
-        addKey(TranslateKeys.MESSAGE_SAVE_FAILED_ENTITY_NOT_EXISTS, "Save failed, the Entity is not exists.");
+        add(Constants.MESSAGE_NOT_PLAYER, "Only players can use this command.");
+        add(Constants.MESSAGE_NO_PERMISSION, "You have no permission to use NBTEdit.");
+        add(Constants.MESSAGE_NOTHING_TO_EDIT, "There is no any target for editing.");
+        add(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY, "There is no BlockEntity to edit.");
+        add(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER, "Sorry, but you cannot edit other player.");
+        add(Constants.MESSAGE_UNKNOWN_ENTITY_ID, "Unknown Entity ID.");
 
-        addKey(TranslateKeys.TITLE_NBTEDIT_ENTITY_GUI, "Editing Entity with id {0}");
-        addKey(TranslateKeys.TITLE_NBTEDIT_TILE_GUI, "Editing Tile Entity in {0} {1} {2}");
+        add(Constants.MESSAGE_EDITING_ENTITY, "Editing Entity {0}.");
+        add(Constants.MESSAGE_EDITING_BLOCK_ENTITY, "Editing BlockEntity at {0} {1} {2}");
 
-        addKey(TranslateKeys.BUTTON_SAVE, "Save");
-        addKey(TranslateKeys.BUTTON_QUIT, "Quit");
-        addKey(TranslateKeys.BUTTON_LOAD, "Load");
+        add(Constants.MESSAGE_SAVING_SUCCESSFUL, "Saved successfully!");
+        add(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT, "Save failed. Invalid NBT.");
+        add(Constants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS, "Save failed. the BlockEntity is no longer exists.");
+        add(Constants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS, "Save failed. the Entity is no longer exists.");
+
+        add(Constants.GUI_TITLE_NBTEDIT_ENTITY, "Editing Entity {0}");
+        add(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY, "Editing BlockEntity in {0} {1} {2}");
+        add(Constants.GUI_BUTTON_SAVE, "Save");
+        add(Constants.GUI_BUTTON_QUIT, "Quit");
+        add(Constants.GUI_BUTTON_LOAD, "Load");
     }
 }

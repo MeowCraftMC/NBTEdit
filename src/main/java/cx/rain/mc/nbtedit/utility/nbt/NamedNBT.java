@@ -34,5 +34,4 @@ public class NamedNBT {
 	public NamedNBT copy() {
 		return new NamedNBT(name, tag.copy());
 	}
-
 }

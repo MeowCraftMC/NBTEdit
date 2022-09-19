@@ -20,14 +20,12 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-
 
 public class NBTEditGui extends Gui {
     private final int START_X = 10;

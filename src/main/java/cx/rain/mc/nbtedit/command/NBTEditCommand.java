@@ -1,137 +1,107 @@
 package cx.rain.mc.nbtedit.command;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.networking.NBTEditNetworking;
-import cx.rain.mc.nbtedit.networking.packet.S2CRayTracePacket;
-import cx.rain.mc.nbtedit.utility.EntityHelper;
-import cx.rain.mc.nbtedit.utility.PermissionHelper;
+import cx.rain.mc.nbtedit.utility.Constants;
 import com.mojang.brigadier.context.CommandContext;
-import cx.rain.mc.nbtedit.utility.translation.TranslatableLanguage;
-import cx.rain.mc.nbtedit.utility.translation.TranslateKeys;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.UuidArgument;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fml.common.Mod;
 
-import java.util.UUID;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
+@Mod.EventBusSubscriber(modid = NBTEdit.MODID)
 public class NBTEditCommand {
+
+    public static final LiteralArgumentBuilder<CommandSourceStack> NBTEDIT = literal("nbtedit")
+            .requires(NBTEditPermissions::hasPermission)
+            .executes(NBTEditCommand::onUse)
+            .then(argument("entity", EntityArgument.entity())
+                    .executes(NBTEditCommand::onEntity))
+            .then(argument("block", BlockPosArgument.blockPos())
+                    .executes(NBTEditCommand::onBlockEntity))
+            .then(literal("me")
+                    .executes(NBTEditCommand::onEntityMe));
+
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
+        NBTEdit.getInstance().getLogger().info("Register commands.");
+
         var dispatcher = event.getDispatcher();
-
-        var command = dispatcher.register(
-                Commands.literal(NBTEdit.MODID)
-                        .requires(PermissionHelper::checkPermission)
-                        .executes(NBTEditCommand::onNBTEdit)
-                        .then(Commands.argument("entity_id", UuidArgument.uuid())
-                                .requires(PermissionHelper::checkPermission)
-                                .executes(NBTEditCommand::onNBTEditEntity))
-                        .then(Commands.argument("block_pos", BlockPosArgument.blockPos())
-                                .requires(PermissionHelper::checkPermission)
-                                .executes(NBTEditCommand::onNBTEditTileEntity))
-                        .then(Commands.literal("me")
-                                .requires(PermissionHelper::checkPermission)
-                                .executes(NBTEditCommand::onNBTEditMe))
-        );
-
-        NBTEdit.getInstance().getLog().info("Registered command /nbtedit.");
+        dispatcher.register(NBTEDIT);
     }
 
-    public static int onNBTEdit(final CommandContext<CommandSourceStack> context) {
-        if (!checkTwice(context)) {
+
+    private static int onUse(final CommandContext<CommandSourceStack> context) {
+        if (!ensurePlayer(context)) {
             return 0;
         }
 
-        assert context.getSource().getEntity() instanceof ServerPlayer;
+        var player = context.getSource().getPlayer();
+        NBTEdit.getInstance().getNetworkManager().serverRayTraceRequest(player);
 
-        var player = (ServerPlayer) context.getSource().getEntity();
-
-        NBTEditNetworking.getInstance().getChannel().sendTo(new S2CRayTracePacket(),
-                player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
-
-        NBTEdit.getInstance().getLog().info("Player " + player.getName().getString()
-                + " issued command /nbtedit.");
-
+        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " issued command /nbtedit.");
         return 1;
     }
 
-    public static int onNBTEditEntity(final CommandContext<CommandSourceStack> context) {
-        if (!checkTwice(context)) {
+    private static int onEntity(final CommandContext<CommandSourceStack> context) {
+        if (!ensurePlayer(context)) {
             return 0;
         }
 
-        assert context.getSource().getEntity() instanceof ServerPlayer;
+        var player = context.getSource().getPlayer();
+        var entity = context.getArgument("entity", Entity.class);
 
-        var player = (ServerPlayer) context.getSource().getEntity();
-        var uuid = context.getArgument("entity_id", UUID.class);
-        NBTEditNetworking.getInstance().openEntityEditGUIResponse(player, uuid,
-                EntityHelper.getEntityByUuid(player.getServer(), uuid).getId(), false);
-
-        NBTEdit.getInstance().getInternalLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit " + uuid + ".");
-
+        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+                " issued command /nbtedit with an entity.");
+        NBTEdit.getInstance().getNetworkManager().serverOpenClientGui(player, entity);
         return 1;
     }
 
-
-    public static int onNBTEditMe(final CommandContext<CommandSourceStack> context) {
-        if (!checkTwice(context)) {
+    private static int onBlockEntity(final CommandContext<CommandSourceStack> context) {
+        if (!ensurePlayer(context)) {
             return 0;
         }
 
-        assert context.getSource().getEntity() instanceof ServerPlayer;
+        var player = context.getSource().getPlayer();
+        var pos = context.getArgument("block", BlockPos.class);
 
-        var player = (ServerPlayer) context.getSource().getEntity();
-        NBTEditNetworking.getInstance().openEntityEditGUIResponse(player, player.getUUID(),
-                player.getId(), true);
-
-        NBTEdit.getInstance().getInternalLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit with themselves.");
-
+        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+                " issued command /nbtedit with an block at XYZ: " +
+                pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
+        NBTEdit.getInstance().getNetworkManager().serverOpenClientGui(player, pos);
         return 1;
     }
 
-    public static int onNBTEditTileEntity(final CommandContext<CommandSourceStack> context) {
-        if (!checkTwice(context)) {
+    private static int onEntityMe(final CommandContext<CommandSourceStack> context) {
+        if (!ensurePlayer(context)) {
             return 0;
         }
 
-        assert context.getSource().getEntity() instanceof ServerPlayer;
+        var player = context.getSource().getPlayer();
 
-        var player = (ServerPlayer) context.getSource().getEntity();
-        var pos = context.getArgument("block_pos", BlockPos.class);
-        NBTEditNetworking.getInstance().openTileEditGUIResponse(player, pos);
-
-        NBTEdit.getInstance().getInternalLogger().info("Player " + player.getName().getString() +
-                " issued command /nbtedit " + pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
-
+        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+                " issued command /nbtedit to edit itself.");
+        NBTEdit.getInstance().getNetworkManager().serverOpenClientGui(player);
         return 1;
     }
 
-    private static boolean checkTwice(CommandContext<CommandSourceStack> context) {
+    private static boolean ensurePlayer(final CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
-        if (!(source.getEntity() instanceof ServerPlayer player)) {
-            source.sendFailure(new TextComponent(TranslatableLanguage.get()
-                    .getOrDefault(TranslateKeys.MESSAGE_NOT_PLAYER.getKey())).withStyle(ChatFormatting.RED));
+        if (source.getEntity() instanceof ServerPlayer) {
+            return true;
+        } else {
+            source.sendFailure(Component.translatable(Constants.MESSAGE_NOT_PLAYER).withStyle(ChatFormatting.RED));
             return false;
         }
-
-        if (!PermissionHelper.checkPermission(source)) {
-            source.sendFailure(new TextComponent(TranslatableLanguage.get()
-                    .getOrDefault(TranslateKeys.MESSAGE_NO_PERMISSION.getKey())).withStyle(ChatFormatting.RED));
-            NBTEdit.getInstance().getInternalLogger().info(
-                    "Player " + player.getName().getString() + " tried use NBTEdit with no permission.");
-            return false;
-        }
-
-        return true;
     }
 }

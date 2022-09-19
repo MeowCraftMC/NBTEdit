@@ -1,166 +1,182 @@
 package cx.rain.mc.nbtedit.networking;
 
 import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.command.NBTEditPermissions;
 import cx.rain.mc.nbtedit.config.NBTEditConfigs;
 import cx.rain.mc.nbtedit.networking.packet.*;
-import cx.rain.mc.nbtedit.utility.EntityHelper;
-import cx.rain.mc.nbtedit.utility.PermissionHelper;
-import cx.rain.mc.nbtedit.utility.PlayerMessageHelper;
-import cx.rain.mc.nbtedit.utility.translation.TranslateKeys;
+import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
-
-import java.util.UUID;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
  * Created by Jay113355 on 6/28/2016.
+ * Edited by qyl27 on 2022.9.19.
  */
 public class NBTEditNetworking {
-	private static NBTEditNetworking INSTANCE;
 	private static SimpleChannel CHANNEL;
 
-	public static final ResourceLocation CHANNEL_ID = new ResourceLocation(NBTEdit.MODID, NBTEdit.MODID);
+	public static final ResourceLocation CHANNEL_RL = new ResourceLocation(NBTEdit.MODID, "editing");
 
 	private static int ID = 0;
 
 	public NBTEditNetworking() {
-		INSTANCE = this;
+		CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_RL,
+				() -> NBTEdit.VERSION,
+				(version) -> version.equals(NBTEdit.VERSION),
+				(version) -> version.equals(NBTEdit.VERSION)
+		);
+
 		registerMessages();
 	}
 
-	private static int nextId() {
+	private static synchronized int nextId() {
 		return ID++;
-	}
-
-	public static NBTEditNetworking getInstance() {
-		return INSTANCE;
 	}
 
 	public SimpleChannel getChannel() {
 		return CHANNEL;
 	}
 
-	public void registerMessages() {
-		CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_ID,
-				() -> NBTEdit.VERSION,
-				(version) -> version.equals(NBTEdit.VERSION),
-				(version) -> version.equals(NBTEdit.VERSION)
-		);
+	private void registerMessages() {
+		NBTEdit.getInstance().getLogger().info("Register networking.");
 
 		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId())
 				.encoder(S2CRayTracePacket::toBytes)
 				.decoder(S2CRayTracePacket::new)
-				.consumer(S2CRayTracePacket::handler)
+				.consumerMainThread(S2CRayTracePacket::clientHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(C2STileRequestPacket.class, nextId())
-				.encoder(C2STileRequestPacket::toBytes)
-				.decoder(C2STileRequestPacket::new)
-				.consumer(C2STileRequestPacket::handler)
+		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId())
+				.encoder(C2SEntityEditingRequestPacket::toBytes)
+				.decoder(C2SEntityEditingRequestPacket::new)
+				.consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(C2STileNBTSavePacket.class, nextId())
-				.encoder(C2STileNBTSavePacket::toBytes)
-				.decoder(C2STileNBTSavePacket::new)
-				.consumer(C2STileNBTSavePacket::handler)
+		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId())
+				.encoder(C2SBlockEntityEditingRequestPacket::toBytes)
+				.decoder(C2SBlockEntityEditingRequestPacket::new)
+				.consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(S2COpenTileEditGUIPacket.class, nextId())
-				.encoder(S2COpenTileEditGUIPacket::toBytes)
-				.decoder(S2COpenTileEditGUIPacket::new)
-				.consumer(S2COpenTileEditGUIPacket::handler)
+		CHANNEL.messageBuilder(C2SNothingToEditPacket.class, nextId())
+				.encoder(C2SNothingToEditPacket::toBytes)
+				.decoder(C2SNothingToEditPacket::new)
+				.consumerMainThread(C2SNothingToEditPacket::serverHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(C2SEntityRequestPacket.class, nextId())
-				.encoder(C2SEntityRequestPacket::toBytes)
-				.decoder(C2SEntityRequestPacket::new)
-				.consumer(C2SEntityRequestPacket::handler)
+		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId())
+				.encoder(S2COpenEntityEditingGuiPacket::toBytes)
+				.decoder(S2COpenEntityEditingGuiPacket::new)
+				.consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(C2SEntityNBTSavePacket.class, nextId())
-				.encoder(C2SEntityNBTSavePacket::toBytes)
-				.decoder(C2SEntityNBTSavePacket::new)
-				.consumer(C2SEntityNBTSavePacket::handler)
+		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId())
+				.encoder(S2COpenBlockEntityEditingGuiPacket::toBytes)
+				.decoder(S2COpenBlockEntityEditingGuiPacket::new)
+				.consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(S2COpenEntityEditGUIPacket.class, nextId())
-				.encoder(S2COpenEntityEditGUIPacket::toBytes)
-				.decoder(S2COpenEntityEditGUIPacket::new)
-				.consumer(S2COpenEntityEditGUIPacket::handler)
+		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId())
+				.encoder(C2SEntitySavingPacket::toBytes)
+				.decoder(C2SEntitySavingPacket::new)
+				.consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain)
 				.add();
 
-		NBTEdit.getInstance().getLog().info("Networking registered.");
+		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId())
+				.encoder(C2SBlockEntitySavingPacket::toBytes)
+				.decoder(C2SBlockEntitySavingPacket::new)
+				.consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain)
+				.add();
 	}
 
-	/**
-	 * Sends a TileEntity's nbt data to the player for editing.
-	 *
-	 * @param player The player to send the TileEntity to.
-	 * @param pos    The block containing the TileEntity.
-	 */
-	public void openTileEditGUIResponse(final ServerPlayer player, final BlockPos pos) {
-		if (PermissionHelper.checkPermission(player)) {
+	public void serverRayTraceRequest(ServerPlayer player) {
+		CHANNEL.sendTo(new S2CRayTracePacket(), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+	}
+
+	public void clientOpenGuiRequest(Entity entity, boolean self) {
+		CHANNEL.sendToServer(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
+	}
+
+	public void clientOpenGuiRequest(BlockPos pos) {
+		CHANNEL.sendToServer(new C2SBlockEntityEditingRequestPacket(pos));
+	}
+
+	public void clientOpenGuiRequest() {
+		CHANNEL.sendToServer(new C2SNothingToEditPacket());
+	}
+
+	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
+		if (NBTEditPermissions.hasPermission(player)) {
+			if (entity instanceof Player && !NBTEditConfigs.CAN_EDIT_OTHER_PLAYERS.get()) {
+				NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+						" tried to use /nbtedit on a player. But config is not allow that.");
+				player.createCommandSourceStack().sendFailure(Component
+						.translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+						.withStyle(ChatFormatting.RED));
+				return;
+			}
+
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+					" is editing entity " + entity.getUUID() + ".");
 			player.getServer().execute(() -> {
-				BlockEntity tile = player.getCommandSenderWorld().getBlockEntity(pos);
-				if (tile != null) {
-					CompoundTag tag = tile.save(new CompoundTag());
-					CHANNEL.sendTo(new S2COpenTileEditGUIPacket(pos, tag),
-							player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
-				} else {
-					PlayerMessageHelper.sendMessageToCurrent(ChatFormatting.RED,
-							TranslateKeys.MESSAGE_NO_TARGET_TILE, pos.getX(), pos.getY(), pos.getZ());
-					// Todo: AS: Add below to I18n.
-					// "Error! There is no TileEntity at " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + "."
-				}
+				var tag = entity.serializeNBT();
+				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
+						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			});
+		} else {
+			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+					.withStyle(ChatFormatting.RED));
 		}
 	}
 
-	/**
-	 * Sends a Entity's nbt data to the player for editing.
-	 *
-	 * @param player   The player to send the Entity data to.
-	 * @param uuid The UUID of the Entity.
-	 */
-	public void openEntityEditGUIResponse(final ServerPlayer player, final UUID uuid, final int id, final boolean isMe) {
-		if (PermissionHelper.checkPermission(player)) {
-			player.getServer().execute(() -> {
-				Entity entity;
-				if (isMe) {
-					entity = player;
-				} else {
-					entity = EntityHelper.getEntityByUuid(player.getServer(), uuid);
-				}
-				if (entity instanceof Player && entity != player && !NBTEditConfigs.CAN_EDIT_OTHER_PLAYERS.get()) {
-					PlayerMessageHelper.sendMessage(player, ChatFormatting.RED,
-							TranslateKeys.MESSAGE_CANNOT_EDIT_OTHER_PLAYER);
-					// Todo: AS: I18n below.
-					// "Error - You may not use NBTEdit on other Players"
-					NBTEdit.getInstance().getInternalLogger().info("Player " + player.getName().getString() +
-							" tried to use NBTEdit on another player: " + entity.getName().getString() + " .");
-					return;
-				}
-
-				if (entity != null) {
-					CompoundTag tag = entity.saveWithoutId(new CompoundTag());
-					CHANNEL.sendTo(new S2COpenEntityEditGUIPacket(uuid, id, tag, isMe),
-							player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
-				} else {
-					PlayerMessageHelper.sendMessage(player, ChatFormatting.RED,
-							TranslateKeys.MESSAGE_UNKNOWN_ENTITY_ID);
-					// Todo: AS: I18n below.
-					// "Error - Unknown EntityID #" + entityId,"
-				}
-			});
+	public void serverOpenClientGui(ServerPlayer player, BlockPos pos) {
+		if (NBTEditPermissions.hasPermission(player)) {
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+					"is editing block at XYZ " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + ".");
+			var blockEntity = player.getLevel().getBlockEntity(pos);
+			if (blockEntity != null) {
+				var tag = blockEntity.serializeNBT();
+				// Todo: qyl27: 2022.9.19.
+				CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
+						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			} else {
+				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
+						.withStyle(ChatFormatting.RED));
+			}
+		} else {
+			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+					.withStyle(ChatFormatting.RED));
 		}
+	}
+
+	public void serverOpenClientGui(ServerPlayer player) {
+		if (NBTEditPermissions.hasPermission(player)) {
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + "is editing itself.");
+			player.getServer().execute(() -> {
+				var tag = player.serializeNBT();
+				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
+						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			});
+		} else {
+			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+					.withStyle(ChatFormatting.RED));
+		}
+	}
+
+	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
+		CHANNEL.sendToServer(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
+	}
+
+	public void saveEditing(BlockPos pos, CompoundTag tag) {
+		CHANNEL.sendToServer(new C2SBlockEntitySavingPacket(pos, tag));
 	}
 }

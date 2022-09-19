@@ -2,20 +2,19 @@ package cx.rain.mc.nbtedit.gui.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.networking.NBTEditNetworking;
-import cx.rain.mc.nbtedit.networking.packet.C2SEntityNBTSavePacket;
-import cx.rain.mc.nbtedit.networking.packet.C2STileNBTSavePacket;
-import cx.rain.mc.nbtedit.utility.EntityHelper;
+import cx.rain.mc.nbtedit.networking.packet.C2SEntitySavingPacket;
+import cx.rain.mc.nbtedit.networking.packet.C2SBlockEntitySavingPacket;
+import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.nbt.NBTTree;
-import cx.rain.mc.nbtedit.utility.translation.TranslateKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
@@ -24,33 +23,33 @@ import java.util.UUID;
 public class NBTEditScreen extends Screen {
     protected final boolean isEntity;
 
-    protected UUID uuid;
-    protected int id;
-    protected boolean isMe;
+    protected UUID entityUuid;
+    protected int entityId;
+    protected boolean isSelf;
 
-    protected BlockPos pos;
+    protected BlockPos blockPos;
 
     protected NBTEditGui gui;
 
-    public NBTEditScreen(UUID uuidIn, int idIn, CompoundTag tag, boolean isMeIn) {
-        super(new TranslatableComponent(TranslateKeys.TITLE_NBTEDIT_ENTITY_GUI.getKey(), uuidIn));
+    public NBTEditScreen(UUID uuid, int id, CompoundTag tag, boolean self) {
+        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_ENTITY, uuid));
         minecraft = Minecraft.getInstance();
 
         isEntity = true;
-        uuid = uuidIn;
-        id = idIn;
-        isMe = isMeIn;
+        entityUuid = uuid;
+        entityId = id;
+        isSelf = self;
 
         gui = new NBTEditGui(new NBTTree(tag));
     }
 
-    public NBTEditScreen(BlockPos posIn, CompoundTag tag) {
-        super(new TranslatableComponent(TranslateKeys.TITLE_NBTEDIT_TILE_GUI.getKey(),
-                posIn.getX(), posIn.getY(), posIn.getZ()));
+    public NBTEditScreen(BlockPos pos, CompoundTag tag) {
+        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY,
+                pos.getX(), pos.getY(), pos.getZ()));
         minecraft = Minecraft.getInstance();
 
         isEntity = false;
-        pos	= posIn;
+        blockPos = pos;
 
         gui = new NBTEditGui(new NBTTree(tag));
     }
@@ -59,20 +58,24 @@ public class NBTEditScreen extends Screen {
         return isEntity;
     }
 
+    public boolean isBlockEntity() {
+        return !isEntity;
+    }
+
     public Entity getEntity() {
-        if (!isEntity) {
-            throw new UnsupportedOperationException("Cannot get Entity by an TileEntity!");
+        if (!isEntity()) {
+            throw new UnsupportedOperationException("Cannot get Entity by an BlockEntity!");
         }
 
-        return EntityHelper.getEntityByUuidClient(id);
+        return getMinecraft().level.getEntity(entityId);
     }
 
     public BlockPos getBlockPos() {
-        if (isEntity) {
+        if (!isBlockEntity()) {
             throw new UnsupportedOperationException("Cannot get block position of an Entity!");
         }
 
-        return pos;
+        return blockPos;
     }
 
     @Override
@@ -84,8 +87,8 @@ public class NBTEditScreen extends Screen {
 
         gui.init(width, height, height - 35);
 
-        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, new TextComponent("Save"), this::onSaveClicked));
-        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, new TextComponent("Quit"), this::onQuitClicked));
+        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
+        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
     }
 
     private void onSaveClicked(Button button) {
@@ -99,9 +102,9 @@ public class NBTEditScreen extends Screen {
 
     private void doSave() {
         if (isEntity) {
-            NBTEditNetworking.getInstance().getChannel().sendToServer(new C2SEntityNBTSavePacket(getEntity().getUUID(), getEntity().getId(), gui.getTree().toCompound(), false));
+            NBTEdit.getInstance().getNetworkManager().saveEditing(getEntity(), gui.getTree().toCompound(), isSelf);
         } else {
-            NBTEditNetworking.getInstance().getChannel().sendToServer(new C2STileNBTSavePacket(pos, gui.getTree().toCompound()));
+            NBTEdit.getInstance().getNetworkManager().saveEditing(getBlockPos(), gui.getTree().toCompound());
         }
     }
 
@@ -148,7 +151,7 @@ public class NBTEditScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         super.mouseScrolled(mouseX, mouseY, delta);
 
-        int ofs = (int) delta;
+        var ofs = (int) delta;
         if (ofs != 0) {
             gui.shiftY((ofs >= 1) ? 6 : -6);
         }
@@ -158,10 +161,8 @@ public class NBTEditScreen extends Screen {
     @Override
     public void tick() {
         if (!getMinecraft().player.isAlive()) {
-            doSave();
             doClose();
-        }
-        else {
+        } else {
             gui.update();
         }
     }
