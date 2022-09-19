@@ -19,6 +19,14 @@ public class NBTHelper {
 		String name = namedNBT.getName();
 		Tag tag = namedNBT.getTag();
 
+		if (tag instanceof CompoundTag) {
+			return (Strings.isNullOrEmpty(name) ? "(CompoundTag)" : name) + " : ";
+		}
+
+		if (tag instanceof ListTag) {
+			return (Strings.isNullOrEmpty(name) ? "(ListTag)" : name) + " : ";
+		}
+
 		String s = tag.getAsString();
 		return Strings.isNullOrEmpty(name) ? "" + s : name + ": " + s + SECTION_SIGN + 'r';
 	}
