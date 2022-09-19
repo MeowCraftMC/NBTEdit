@@ -14,7 +14,7 @@ public class OnNBTEditShortcut {
     @SubscribeEvent
     public static void onKeyboardInput(InputEvent.Key event) {
         if (NBTEditKeyBindings.NBTEDIT_SHORTCUT.consumeClick()) {
-            RayTraceHelper.RayTraceBlockOrEntity();
+            RayTraceHelper.doRayTrace();
         }
     }
 }

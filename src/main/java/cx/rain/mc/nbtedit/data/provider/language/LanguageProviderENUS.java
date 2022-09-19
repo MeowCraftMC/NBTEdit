@@ -33,7 +33,8 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(Constants.GUI_TITLE_NBTEDIT_ENTITY, "Editing Entity {0}");
         add(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY, "Editing BlockEntity in {0} {1} {2}");
         add(Constants.GUI_BUTTON_SAVE, "Save");
-        add(Constants.GUI_BUTTON_QUIT, "Quit");
         add(Constants.GUI_BUTTON_LOAD, "Load");
+        add(Constants.GUI_BUTTON_QUIT, "Quit");
+        add(Constants.GUI_BUTTON_CANCEL, "Cancel");
     }
 }

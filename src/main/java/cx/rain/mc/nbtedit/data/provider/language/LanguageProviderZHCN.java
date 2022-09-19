@@ -33,7 +33,8 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(Constants.GUI_TITLE_NBTEDIT_ENTITY, "正在编辑实体 ID： {0}");
         add(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY, "正在编辑位于 {0} {1} {2} 的方块实体");
         add(Constants.GUI_BUTTON_SAVE, "保存");
-        add(Constants.GUI_BUTTON_QUIT, "退出");
         add(Constants.GUI_BUTTON_LOAD, "加载");
+        add(Constants.GUI_BUTTON_QUIT, "退出");
+        add(Constants.GUI_BUTTON_CANCEL, "取消");
     }
 }

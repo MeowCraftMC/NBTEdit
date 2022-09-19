@@ -23,6 +23,7 @@ public class Constants {
     public static final String GUI_TITLE_NBTEDIT_ENTITY = "gui.title.nbtedit_entity";
     public static final String GUI_TITLE_NBTEDIT_BLOCK_ENTITY = "gui.title.nbtedit_block_entity";
     public static final String GUI_BUTTON_SAVE = "gui.button.save";
-    public static final String GUI_BUTTON_QUIT = "gui.button.quit";
     public static final String GUI_BUTTON_LOAD = "gui.button.load";
+    public static final String GUI_BUTTON_QUIT = "gui.button.quit";
+    public static final String GUI_BUTTON_CANCEL = "gui.button.cancel";
 }

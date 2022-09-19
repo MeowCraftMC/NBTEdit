@@ -2,18 +2,15 @@ package cx.rain.mc.nbtedit.gui.component.button;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.nbt.ClipboardStates;
-import cx.rain.mc.nbtedit.utility.translation.TranslatableLanguage;
-import cx.rain.mc.nbtedit.utility.translation.TranslateKeys;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
-public class SaveSlotButton extends Button {
+public class SaveLoadSlotButton extends Button {
     private static final int HEIGHT = 20;
     private static final int MAX_WIDTH = 150;
     private static final int MIN_WIDTH = 82;
@@ -25,17 +22,15 @@ public class SaveSlotButton extends Button {
 
     private int tickCount = -1;
 
-    public SaveSlotButton(ClipboardStates.Clipboard saveIn, int xRight, int y, int id, OnPress onPressed) {
-        super(0, y, 0, HEIGHT, new TextComponent("Save #" + id), onPressed);
+    public SaveLoadSlotButton(ClipboardStates.Clipboard saveIn, int xRight, int y, int id, OnPress onPressed) {
+        super(0, y, 0, HEIGHT, Component.literal("Save #" + id), onPressed);
 
         save = saveIn;
         rightX = xRight;
+        updateText();
 //        text = (save.tag.isEmpty()
-//                ? TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_SAVE.getKey())
-//                : TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_LOAD.getKey())) + save.name;
-        text = (save.tag.isEmpty()
-                ? "Save"
-                : "Load") + save.name;
+//                ? "Save"
+//                : "Load") + save.name;
         isVisible = !save.tag.isEmpty();
 
         updatePosition();
@@ -114,21 +109,23 @@ public class SaveSlotButton extends Button {
 
         if (Character.isDigit(character) || Character.isLetter(character)) {
             save.name += character;
-            text = (save.tag.isEmpty()
-                    ? TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_SAVE.getKey())
-                    : TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_LOAD.getKey())) + save.name;
+            updateText();
             updatePosition();
         }
 
         return true;
     }
 
+    private void updateText() {
+        text = (save.tag.isEmpty()
+                ? Component.translatable(Constants.GUI_BUTTON_SAVE)
+                : Component.translatable(Constants.GUI_BUTTON_LOAD)) + save.name;
+    }
+
     public void backSpace() {
         if (save.name.length() > 0) {
             save.name = save.name.substring(0, save.name.length() - 1);
-            text = (save.tag.isEmpty()
-                    ? TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_SAVE.getKey())
-                    : TranslatableLanguage.get().getOrDefault(TranslateKeys.BUTTON_LOAD.getKey())) + save.name;
+            updateText();
             updatePosition();
         }
     }

@@ -46,18 +46,18 @@ public class ClipboardStates {
 	public void save() {
 		try {
 			write();
-			NBTEdit.getInstance().getInternalLogger().info("NBTEdit saved successfully.");
+			NBTEdit.getInstance().getLogger().info("NBTEdit saved successfully.");
 		} catch (IOException ex) {
-			NBTEdit.getInstance().getInternalLogger().error(new RuntimeException("Unable to save NBTEdit save.", ex));
+			NBTEdit.getInstance().getLogger().error(new RuntimeException("Unable to save NBTEdit save.", ex).toString());
 		}
 	}
 
 	public void load() {
 		try {
 			read();
-			NBTEdit.getInstance().getInternalLogger().info("NBTEdit save loaded successfully.");
+			NBTEdit.getInstance().getLogger().info("NBTEdit save loaded successfully.");
 		} catch (IOException ex) {
-			NBTEdit.getInstance().getInternalLogger().error(new RuntimeException("Unable to load NBTEdit save.", ex));
+			NBTEdit.getInstance().getLogger().error(new RuntimeException("Unable to load NBTEdit save.", ex).toString());
 		}
 	}
 

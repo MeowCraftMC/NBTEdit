@@ -8,7 +8,7 @@ import cx.rain.mc.nbtedit.utility.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class NBTOperatorButton extends Button {
@@ -21,11 +21,11 @@ public class NBTOperatorButton extends Button {
 
     private NBTEditGui gui;
 
-    public NBTOperatorButton(int id, int x, int y, NBTEditGui nbtedit, OnPress onPressed) {
-        super(x, y, 9, 9, new TextComponent(NBTHelper.getButtonName((byte) id)), onPressed);
+    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed) {
+        super(x, y, 9, 9, Component.literal(NBTHelper.getButtonName((byte) id)), onPressed);
 
         buttonId = id;
-        gui = nbtedit;
+        gui = parent;
     }
 
     protected Minecraft getMinecraft() {
@@ -44,8 +44,8 @@ public class NBTOperatorButton extends Button {
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
         RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
 
-        if (isMouseInside(mouseX, mouseY)) {    //checks if the mouse is over the button
-            Gui.fill(stack, x, y, x + width, y + height, 0x80ffffff);   //draw a grayish background
+        if (isMouseInside(mouseX, mouseY)) {    // checks if the mouse is over the button
+            Gui.fill(stack, x, y, x + width, y + height, 0x80ffffff);   // draw a grayish background
             if (hoverTime == -1)
                 hoverTime = System.currentTimeMillis();
         } else {
@@ -53,7 +53,7 @@ public class NBTOperatorButton extends Button {
         }
 
         if (isActive()) {
-            // AS: A very hacky way to draw button's texture.
+            // qyl27: A very hacky way to draw button's texture.
             blit(stack, x, y, (buttonId - 1) * 9, 18, width, height); //Draw the texture
         }
 

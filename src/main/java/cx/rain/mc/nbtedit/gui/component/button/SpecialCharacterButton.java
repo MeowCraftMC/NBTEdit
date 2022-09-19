@@ -7,7 +7,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class SpecialCharacterButton extends Button {
@@ -17,7 +17,7 @@ public class SpecialCharacterButton extends Button {
     protected int buttonId;
 
     public SpecialCharacterButton(int id, int x, int y, OnPress p_93726_) {
-        super(x, y, 14, 14, new TextComponent(""), p_93726_);
+        super(x, y, 14, 14, Component.empty(), p_93726_);
 
         buttonId = id;
     }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.gui.component.button.SpecialCharacterButton;
+import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.NBTHelper;
 import cx.rain.mc.nbtedit.utility.nbt.NBTNode;
 import cx.rain.mc.nbtedit.utility.nbt.NamedNBT;
@@ -16,7 +17,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class EditSubWindowComponent extends AbstractWidget {
@@ -45,7 +46,7 @@ public class EditSubWindowComponent extends AbstractWidget {
 
     public EditSubWindowComponent(NBTEditGui parent, NBTNode<NamedNBT> nodeIn,
                                   boolean canEditNameIn, boolean canEditValueIn) {
-        super(0, 0, 178, 93, new TextComponent("NBTEdit sub-window"));
+        super(0, 0, 178, 93, Component.literal("NBTEdit sub-window"));
 
         gui = parent;
         node = nodeIn;
@@ -64,8 +65,8 @@ public class EditSubWindowComponent extends AbstractWidget {
         String name = (nameField == null) ? node.get().getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
-        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, new TextComponent("Name"));
-        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, new TextComponent("Value"));
+        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
+        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
 
         nameField.setValue(name);
         nameField.setEditable(canEditName);
@@ -89,10 +90,10 @@ public class EditSubWindowComponent extends AbstractWidget {
         newLineButton.active = valueField.isFocused();
 
         saveButton = new Button(x + 9, y + 62, 75, 20,
-                new TextComponent("Save"), (button) -> {});	// Todo: AS: I18n here.
+                Component.translatable(Constants.GUI_BUTTON_SAVE), (button) -> {});	// Todo: AS: I18n here.
 
         cancelButton = new Button(x + 93, y + 62, 75, 20,
-                new TextComponent("Cancel"), (button) -> {});	// Todo: AS: I18n here.
+                Component.translatable(Constants.GUI_BUTTON_CANCEL), (button) -> {});	// Todo: AS: I18n here.
     }
 
     protected void onSaveButtonClicked(Button button) {

@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit;
 
+import cx.rain.mc.nbtedit.client.NBTEditClient;
 import cx.rain.mc.nbtedit.command.NBTEditCommand;
 import cx.rain.mc.nbtedit.config.NBTEditConfigs;
 import cx.rain.mc.nbtedit.networking.NBTEditNetworking;
@@ -19,16 +20,12 @@ public class NBTEdit {
 	public static final String NAME = "In-game NBTEdit Reborn";
 	public static final String VERSION = "@version@";
 
-//	public static NamedNBT CLIPBOARD = null;
-
 	private static NBTEdit INSTANCE;
 
 	private NBTEditNetworking networkManager;
+	private NBTEditClient clientManager;
 
 	private final Logger logger = LoggerFactory.getLogger(NAME);
-//	private final Logger internalLog = LoggerFactory.getLogger("NBTEditInternal");
-
-//	private ClipboardStates clipboardSaves;
 
 	public NBTEdit() {
 		INSTANCE = this;
@@ -42,10 +39,6 @@ public class NBTEdit {
 		MinecraftForge.EVENT_BUS.addListener(NBTEditCommand::onRegisterCommands);
 	}
 
-//	public Logger getInternalLogger() {
-//		return internalLog;
-//	}
-
 	private void setup(FMLCommonSetupEvent event) {
 		logger.info("NBTEdit initializing.");
 
@@ -56,19 +49,9 @@ public class NBTEdit {
 
 	private void setupClient(FMLClientSetupEvent event) {
 		logger.info("Initializing client.");
-
-//		clipboardSaves = new ClipboardStates(new File(new File("."), "NBTEdit.dat"));
-
-//		ClipboardStates clipboard = getClipboardSaves();
-//		clipboard.load();
-//		clipboard.save();
-
+		clientManager = new NBTEditClient();
 		logger.info("Client initialized.");
 	}
-
-//	public static ClipboardStates getClipboardSaves() {
-//		return INSTANCE.clipboardSaves;
-//	}
 
 	public static NBTEdit getInstance() {
 		return INSTANCE;
@@ -80,5 +63,9 @@ public class NBTEdit {
 
 	public NBTEditNetworking getNetworkManager() {
 		return networkManager;
+	}
+
+	public NBTEditClient getClientManager() {
+		return clientManager;
 	}
 }
