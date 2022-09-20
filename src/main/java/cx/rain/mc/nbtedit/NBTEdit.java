@@ -30,6 +30,8 @@ public class NBTEdit {
 	public NBTEdit() {
 		INSTANCE = this;
 
+		logger.info("Loading NBTEdit ver:" + VERSION);
+
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NBTEditConfigs.CONFIG, "nbtedit.toml");
 
 		final var bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -40,8 +42,6 @@ public class NBTEdit {
 	}
 
 	private void setup(FMLCommonSetupEvent event) {
-		logger.info("NBTEdit initializing.");
-
 		networkManager = new NBTEditNetworking();
 
 		logger.info("NBTEdit loaded!");

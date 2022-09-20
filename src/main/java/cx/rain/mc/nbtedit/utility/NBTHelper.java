@@ -20,11 +20,11 @@ public class NBTHelper {
 		Tag tag = namedNBT.getTag();
 
 		if (tag instanceof CompoundTag) {
-			return (Strings.isNullOrEmpty(name) ? "(CompoundTag)" : name) + " : ";
+			return (Strings.isNullOrEmpty(name) ? "(CompoundTag)" : name) + ": ";
 		}
 
 		if (tag instanceof ListTag) {
-			return (Strings.isNullOrEmpty(name) ? "(ListTag)" : name) + " : ";
+			return (Strings.isNullOrEmpty(name) ? "(ListTag)" : name) + ": ";
 		}
 
 		String s = tag.getAsString();
