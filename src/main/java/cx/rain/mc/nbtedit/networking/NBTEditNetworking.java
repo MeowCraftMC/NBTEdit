@@ -24,7 +24,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class NBTEditNetworking {
 	private static SimpleChannel CHANNEL;
 
-	public static final ResourceLocation CHANNEL_RL = new ResourceLocation(NBTEdit.MODID, "editing");
+	private static final ResourceLocation CHANNEL_RL = new ResourceLocation(NBTEdit.MODID, "editing");
 
 	private static int ID = 0;
 

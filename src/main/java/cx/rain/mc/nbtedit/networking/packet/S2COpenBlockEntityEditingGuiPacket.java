@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
+import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -35,6 +36,6 @@ public class S2COpenBlockEntityEditingGuiPacket {
     public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
         NBTEdit.getInstance().getLogger().info("Editing BlockEntity at XYZ " +
                 blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + ".");
-        Minecraft.getInstance().setScreen(new NBTEditScreen(blockPos, compoundTag));
+        ScreenHelper.showNBTEditScreen(blockPos, compoundTag);
     }
 }

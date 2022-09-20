@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
+import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +43,6 @@ public class S2COpenEntityEditingGuiPacket {
 
     public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
         NBTEdit.getInstance().getLogger().info("Editing entity with UUID " + entityUuid + ".");
-        Minecraft.getInstance().setScreen(new NBTEditScreen(entityUuid, entityId, compoundTag, isSelf));
+        ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
     }
 }

@@ -34,7 +34,7 @@ public class NBTEditCommand {
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
-        NBTEdit.getInstance().getLogger().info("Register commands.");
+//        NBTEdit.getInstance().getLogger().info("Register commands.");
 
         var dispatcher = event.getDispatcher();
         dispatcher.register(NBTEDIT);
