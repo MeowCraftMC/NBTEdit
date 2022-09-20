@@ -34,7 +34,7 @@ public class C2SBlockEntityEditingRequestPacket {
 
 	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
 		ServerPlayer player = context.get().getSender();
-		NBTEdit.getInstance().getLogger().info("Player " + player.getName() + " requested TileEntity at " +
+		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
 				pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
 
 		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_BLOCK_ENTITY,

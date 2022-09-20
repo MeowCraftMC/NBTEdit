@@ -108,7 +108,6 @@ public class EditSubWindowComponent extends AbstractWidget {
         gui.closeSubWindow();
     }
 
-
     protected void onNewLineButtonClicked(Button button) {
         valueField.insertText("\n");
         isValidInput();

@@ -141,11 +141,10 @@ public class NBTEditNetworking {
 	public void serverOpenClientGui(ServerPlayer player, BlockPos pos) {
 		if (NBTEditPermissions.hasPermission(player)) {
 			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-					"is editing block at XYZ " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + ".");
+					" is editing block at XYZ " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + ".");
 			var blockEntity = player.getLevel().getBlockEntity(pos);
 			if (blockEntity != null) {
 				var tag = blockEntity.serializeNBT();
-				// Todo: qyl27: 2022.9.19.
 				CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
 						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			} else {
@@ -160,7 +159,7 @@ public class NBTEditNetworking {
 
 	public void serverOpenClientGui(ServerPlayer player) {
 		if (NBTEditPermissions.hasPermission(player)) {
-			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + "is editing itself.");
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " is editing itself.");
 			player.getServer().execute(() -> {
 				var tag = player.serializeNBT();
 				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
