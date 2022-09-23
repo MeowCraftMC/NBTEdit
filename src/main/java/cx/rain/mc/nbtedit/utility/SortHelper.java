@@ -1,31 +1,31 @@
-package cx.rain.mc.nbtedit.utility.nbt;
+package cx.rain.mc.nbtedit.utility;
 
+import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import java.util.Comparator;
 
-public class NBTSortHelper implements Comparator<NBTNode<NamedNBT>> {
-	private static NBTSortHelper INSTANCE;
+public class SortHelper implements Comparator<NBTTree.Node<?>> {
+	private static SortHelper INSTANCE;
 
-	public static NBTSortHelper get() {
+	public static SortHelper get() {
 		if (INSTANCE == null) {
-			return new NBTSortHelper();
+			return new SortHelper();
 		}
 		return INSTANCE;
 	}
 
-	public NBTSortHelper() {
+	public SortHelper() {
 		INSTANCE = this;
 	}
 
 	@Override
-	public int compare(NBTNode<NamedNBT> a, NBTNode<NamedNBT> b) {
-		Tag tag1 = a.get().getTag();
-		Tag tag2 = b.get().getTag();
-		String name1 = a.get().getName();
-		String name2 = b.get().getName();
+	public int compare(NBTTree.Node<?> a, NBTTree.Node<?> b) {
+		var name1 = a.getName();
+		var name2 = b.getName();
+		var tag1 = a.getTag();
+		var tag2 = b.getTag();
 		if (tag1 instanceof CompoundTag || tag1 instanceof ListTag) {
 			if (tag2 instanceof CompoundTag || tag2 instanceof ListTag) {
 				int difference = tag1.getId() - tag2.getId();

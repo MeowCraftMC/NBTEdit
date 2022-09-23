@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.utility;
+package cx.rain.mc.nbtedit.nbt;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class NBTIOHelper {
+public class IoHelper {
 	public static CompoundTag read(DataInputStream in) throws IOException {
 		return NbtIo.read(in);
 	}

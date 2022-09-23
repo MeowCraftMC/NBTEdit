@@ -1,12 +1,12 @@
 package cx.rain.mc.nbtedit.client;
 
+import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.nbt.ClipboardStates;
-import cx.rain.mc.nbtedit.utility.nbt.NamedNBT;
 
 import java.nio.file.Paths;
 
 public class NBTEditClient {
-	private NamedNBT clipboard = null;
+	private NBTTree.Node<?> clipboard = null;
 	private ClipboardStates clipboardSaves;
 
     public NBTEditClient() {
@@ -21,11 +21,11 @@ public class NBTEditClient {
 		return clipboardSaves;
 	}
 
-    public NamedNBT getClipboard() {
+    public NBTTree.Node<?> getClipboard() {
         return clipboard;
     }
 
-    public void setClipboard(NamedNBT clipboard) {
+    public void setClipboard(NBTTree.Node<?> clipboard) {
         this.clipboard = clipboard;
     }
 }

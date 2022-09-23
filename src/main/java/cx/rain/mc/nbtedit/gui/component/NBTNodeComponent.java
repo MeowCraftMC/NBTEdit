@@ -4,9 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
-import cx.rain.mc.nbtedit.utility.NBTHelper;
-import cx.rain.mc.nbtedit.utility.nbt.NBTNode;
-import cx.rain.mc.nbtedit.utility.nbt.NamedNBT;
+import cx.rain.mc.nbtedit.nbt.NBTTree;
+import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -20,12 +19,12 @@ public class NBTNodeComponent extends AbstractWidget {
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     protected String text;
-    protected NBTNode<NamedNBT> node;
+    protected NBTTree.Node<?> node;
     protected NBTEditGui gui;
 
     private final Minecraft minecraft = Minecraft.getInstance();
 
-    public NBTNodeComponent(int x, int y, Component textIn, NBTEditGui guiIn, NBTNode<NamedNBT> nodeIn) {
+    public NBTNodeComponent(int x, int y, Component textIn, NBTEditGui guiIn, NBTTree.Node<?> nodeIn) {
         super(x, y, 0, Minecraft.getInstance().font.lineHeight, textIn);
 
         text = textIn.getString();
@@ -40,12 +39,12 @@ public class NBTNodeComponent extends AbstractWidget {
         return minecraft;
     }
 
-    public NBTNode<NamedNBT> getNode() {
+    public NBTTree.Node<?> getNode() {
         return node;
     }
 
     protected void update() {
-        text = NBTHelper.getNBTNameSpecial(node.get());
+        text = NBTHelper.getNBTNameSpecial(node);
         width = minecraft.font.width(text) + 12;
     }
 
@@ -70,7 +69,7 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public boolean spoilerClicked(int mouseX, int mouseY) {
-        if (node.hasChildren() && isMouseInsideSpoiler(mouseX, mouseY)) {
+        if (node.hasChild() && isMouseInsideSpoiler(mouseX, mouseY)) {
             node.setShowChildren(!node.shouldShowChildren());
             return true;
         }
@@ -103,11 +102,11 @@ public class NBTNodeComponent extends AbstractWidget {
             Gui.fill(stack, x + 11, y, x + width, y + height, Integer.MIN_VALUE);
         }
 
-        if (node.hasChildren()) {
+        if (node.hasChild()) {
             blit(stack, x - 9, y, (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
         }
 
-        blit(stack, x + 1, y, (node.get().getTag().getId() - 1) * 9, 18, 9, 9);
+        blit(stack, x + 1, y, (node.getTag().getId() - 1) * 9, 18, 9, 9);
         drawString(stack, getMinecraft().font, text, x + 11, y + (this.height - 8) / 2, color);
     }
 }

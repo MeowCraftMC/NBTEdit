@@ -1,14 +1,13 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.component.window;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.gui.component.button.SpecialCharacterButton;
+import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
-import cx.rain.mc.nbtedit.utility.NBTHelper;
-import cx.rain.mc.nbtedit.utility.nbt.NBTNode;
-import cx.rain.mc.nbtedit.utility.nbt.NamedNBT;
+import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.nbt.ParseHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -20,7 +19,10 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class EditSubWindowComponent extends AbstractWidget {
+import java.util.ArrayList;
+import java.util.List;
+
+public class EditValueSubWindow extends SubWindowComponent {
     public static final ResourceLocation WINDOW_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/window.png");
     public static final int WIDTH = 178;
@@ -28,9 +30,11 @@ public class EditSubWindowComponent extends AbstractWidget {
 
     protected Tag nbt;
     protected NBTEditGui gui;
-    protected NBTNode<NamedNBT> node;
+    protected NBTTree.Node<?> node;
     protected boolean canEditName;
     protected boolean canEditValue;
+
+    protected List<AbstractWidget> widgets = new ArrayList<>();
 
     protected EditBox nameField;
     protected EditBox valueField;
@@ -44,13 +48,13 @@ public class EditSubWindowComponent extends AbstractWidget {
     protected String nameError;
     protected String valueError;
 
-    public EditSubWindowComponent(NBTEditGui parent, NBTNode<NamedNBT> nodeIn,
-                                  boolean canEditNameIn, boolean canEditValueIn) {
-        super(0, 0, 178, 93, Component.literal("NBTEdit sub-window"));
+    public EditValueSubWindow(NBTEditGui parent, NBTTree.Node<?> nodeIn,
+                              boolean canEditNameIn, boolean canEditValueIn) {
+        super(0, 0, 178, 93, Component.literal("NBTEdit sub-window"), parent);
 
         gui = parent;
         node = nodeIn;
-        nbt = nodeIn.get().getTag();
+        nbt = nodeIn.getTag();
         canEditName = canEditNameIn;
         canEditValue = canEditValueIn;
     }
@@ -59,14 +63,17 @@ public class EditSubWindowComponent extends AbstractWidget {
         x = xLoc;
         y = yLoc;
 
-        colorButton = new SpecialCharacterButton((byte) 0, x + width - 1, y + 34, this::onColorButtonClicked);
-        newLineButton = new SpecialCharacterButton((byte) 1, x + width - 1, y + 50, this::onNewLineButtonClicked);
+//        colorButton = new SpecialCharacterButton((byte) 0, x + width - 1, y + 34, this::onColorButtonClicked);
+//        newLineButton = new SpecialCharacterButton((byte) 1, x + width - 1, y + 50, this::onNewLineButtonClicked);
 
-        String name = (nameField == null) ? node.get().getName() : nameField.getValue();
+        String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
         nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
+        widgets.add(nameField);
+
         valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
+        widgets.add(valueField);
 
         nameField.setValue(name);
         nameField.setEditable(canEditName);
@@ -90,22 +97,25 @@ public class EditSubWindowComponent extends AbstractWidget {
         newLineButton.active = valueField.isFocused();
 
         saveButton = new Button(x + 9, y + 62, 75, 20,
-                Component.translatable(Constants.GUI_BUTTON_SAVE), (button) -> {});	// Todo: AS: I18n here.
+                Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
+        widgets.add(saveButton);
 
         cancelButton = new Button(x + 93, y + 62, 75, 20,
-                Component.translatable(Constants.GUI_BUTTON_CANCEL), (button) -> {});	// Todo: AS: I18n here.
+                Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
+        widgets.add(cancelButton);
     }
 
     protected void onSaveButtonClicked(Button button) {
         nameField.mouseClicked(button.x, button.y, 0);
         valueField.mouseClicked(button.x, button.y, 0);
-        saveAndQuit();
+        save();
+        quit();
     }
 
     protected void onCancelButtonClicked(Button button) {
         nameField.mouseClicked(button.x, button.y, 0);
         valueField.mouseClicked(button.x, button.y, 0);
-        gui.closeSubWindow();
+        quit();
     }
 
     protected void onNewLineButtonClicked(Button button) {
@@ -118,13 +128,16 @@ public class EditSubWindowComponent extends AbstractWidget {
         isValidInput();
     }
 
-    private void saveAndQuit() {
+    private void save() {
         if (canEditName) {
-            node.get().setName(nameField.getValue());
+            node.setName(nameField.getValue());
         }
-        setValidValue(node, valueField.getValue());
-        gui.updateNode(node);
-        gui.closeSubWindow();
+        setValidValue(((NBTTree.Node<Tag>) node), valueField.getValue());
+        gui.update(node);
+    }
+
+    private void quit() {
+        gui.closeWindow(this);
     }
 
     protected Minecraft getMinecraft() {
@@ -160,49 +173,34 @@ public class EditSubWindowComponent extends AbstractWidget {
         newLineButton.render(stack, mouseX, mouseY, partialTicks);
     }
 
-    public void update() {
-        nameField.tick();
-        valueField.tick();
-    }
+//    public void update() {
+//        nameField.tick();
+//        valueField.tick();
+//    }
+//
+//    public void setWindowTop(int xIn, int yIn) {
+//        x = xIn;
+//        y = yIn;
+//    }
 
-    public void setWindowTop(int xIn, int yIn) {
-        x = xIn;
-        y = yIn;
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (nameField.isFocused()) {
+            return nameField.keyPressed(keyCode, scanCode, modifiers);
+        } else {
+            return valueField.keyPressed(keyCode, scanCode, modifiers);
+        }
     }
 
     @Override
-    public boolean charTyped(char character, int keyId) {
-        if (nameField.isFocused()) {
-            nameField.charTyped(character, keyId);
-        } else {
-            valueField.charTyped(character, keyId);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // Todo: qyl27: remove new line button and color button.
+        for (var widget : widgets) {
+            if (widget.isMouseOver(mouseX, mouseY)) {
+                return widget.mouseClicked(mouseX, mouseY, button);
+            }
         }
-        return true;
-    }
-
-    @Override
-    public boolean keyPressed(int mouseX, int mouseY, int delta) {
-        if (nameField.isFocused()) {
-            nameField.keyPressed(mouseX, mouseY, delta);
-        } else {
-            valueField.keyPressed(mouseX, mouseY, delta);
-        }
-        return true;
-    }
-
-    public void onMouseClicked(int mouseX, int mouseY, int partialTick) {
-        if (newLineButton.isMouseInside(mouseX, mouseY) && valueField.isFocused()) {
-            onNewLineButtonClicked(newLineButton);
-        } else if (colorButton.isMouseInside(mouseX, mouseY) && valueField.isFocused()) {
-            onColorButtonClicked(colorButton);
-        } else if (saveButton.isMouseOver(mouseX, mouseY)) {
-            onSaveButtonClicked(saveButton);
-        } else if (cancelButton.isMouseOver(mouseX, mouseY)) {
-            onCancelButtonClicked(cancelButton);
-        } else {
-            nameField.mouseClicked(mouseX, mouseY, partialTick);
-            valueField.mouseClicked(mouseX, mouseY, partialTick);
-        }
+        return false;
     }
 
     @Override
@@ -216,7 +214,7 @@ public class EditSubWindowComponent extends AbstractWidget {
         valueError = null;
         if (canEditName && !isNameValid()) {
             isValid = false;
-            nameError = "Duplicate Tag Name";
+            nameError = "Duplicated Tag Name."; // Todo: qyl: i18n here.
         }
         try {
             isValueValid(valueField.getValue(), nbt.getId());
@@ -229,8 +227,8 @@ public class EditSubWindowComponent extends AbstractWidget {
 
     private boolean isNameValid() {
         for (var n : node.getParent().getChildren()) {
-            Tag base = n.get().getTag();
-            if (base != nbt && n.get().getName().equals(nameField.getValue())) {
+            Tag base = n.getTag();
+            if (base != nbt && n.getName().equals(nameField.getValue())) {
                 return false;
             }
         }
@@ -273,36 +271,40 @@ public class EditSubWindowComponent extends AbstractWidget {
         }
     }
 
-    protected static void setValidValue(NBTNode<NamedNBT> node, String value) {
-        NamedNBT named = node.get();
-        Tag tag = named.getTag();
+    protected static void setValidValue(NBTTree.Node<Tag> node, String value) {
+        Tag tag = node.getTag();
 
         if (tag instanceof ByteTag) {
-            named.setTag(ByteTag.valueOf(ParseHelper.parseByte(value)));
+            node.setTag(ByteTag.valueOf(ParseHelper.parseByte(value)));
         }
         if (tag instanceof ShortTag) {
-            named.setTag(ShortTag.valueOf(ParseHelper.parseShort(value)));
+            node.setTag(ShortTag.valueOf(ParseHelper.parseShort(value)));
         }
         if (tag instanceof IntTag) {
-            named.setTag(IntTag.valueOf(ParseHelper.parseInt(value)));
+            node.setTag(IntTag.valueOf(ParseHelper.parseInt(value)));
         }
         if (tag instanceof LongTag) {
-            named.setTag(LongTag.valueOf(ParseHelper.parseLong(value)));
+            node.setTag(LongTag.valueOf(ParseHelper.parseLong(value)));
         }
         if (tag instanceof FloatTag) {
-            named.setTag(FloatTag.valueOf(ParseHelper.parseFloat(value)));
+            node.setTag(FloatTag.valueOf(ParseHelper.parseFloat(value)));
         }
         if (tag instanceof DoubleTag) {
-            named.setTag(DoubleTag.valueOf(ParseHelper.parseDouble(value)));
+            node.setTag(DoubleTag.valueOf(ParseHelper.parseDouble(value)));
         }
         if (tag instanceof ByteArrayTag) {
-            named.setTag(new ByteArrayTag(ParseHelper.parseByteArray(value)));
+            node.setTag(new ByteArrayTag(ParseHelper.parseByteArray(value)));
         }
         if (tag instanceof IntArrayTag) {
-            named.setTag(new IntArrayTag(ParseHelper.parseIntArray(value)));
+            node.setTag(new IntArrayTag(ParseHelper.parseIntArray(value)));
         }
         if (tag instanceof StringTag) {
-            named.setTag(StringTag.valueOf(value));
+            node.setTag(StringTag.valueOf(value));
         }
+    }
+
+    @Override
+    public void close() {
+
     }
 }

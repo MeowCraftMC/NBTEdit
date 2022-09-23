@@ -1,54 +1,39 @@
 package cx.rain.mc.nbtedit.gui;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.component.EditSubWindowComponent;
+import cx.rain.mc.nbtedit.gui.component.window.EditValueSubWindow;
 import cx.rain.mc.nbtedit.gui.component.NBTNodeComponent;
 import cx.rain.mc.nbtedit.gui.component.button.NBTOperatorButton;
 import cx.rain.mc.nbtedit.gui.component.button.SaveLoadSlotButton;
-import cx.rain.mc.nbtedit.utility.NBTHelper;
-import cx.rain.mc.nbtedit.utility.NBTIOHelper;
-import cx.rain.mc.nbtedit.utility.nbt.*;
+import cx.rain.mc.nbtedit.gui.component.window.ISubWindowHolder;
+import cx.rain.mc.nbtedit.gui.component.window.SubWindowComponent;
+import cx.rain.mc.nbtedit.nbt.NBTTree;
+import cx.rain.mc.nbtedit.nbt.NBTHelper;
+import cx.rain.mc.nbtedit.utility.SortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class NBTEditGui extends Gui {
-    private final int START_X = 10;
-    private final int START_Y = 30;
-
-    private final int X_GAP = 10;
-    private final int Y_GAP = getMinecraft().font.lineHeight + 2;
-
-    protected NBTTree tree;
-
-    protected NBTNode<NamedNBT> focused;
+public class NBTEditGui extends Gui implements ISubWindowHolder {
     protected int focusedSaveSlotIndex = -1;
 
     protected SaveLoadSlotButton[] saves = new SaveLoadSlotButton[7];
     protected List<NBTNodeComponent> nodes = new ArrayList<>();
-
-    protected NBTOperatorButton[] nbtButtons = new NBTOperatorButton[11];
-
-    protected NBTOperatorButton nbtEditButton;
-    protected NBTOperatorButton nbtDeleteButton;
-    protected NBTOperatorButton nbtCopyButton;
-    protected NBTOperatorButton nbtCutButton;
-    protected NBTOperatorButton nbtPasteButton;
 
     protected int width;
     protected int height;
@@ -62,7 +47,7 @@ public class NBTEditGui extends Gui {
 
     protected int yClick = -1;
 
-    protected EditSubWindowComponent subWindow = null;
+//    protected EditValueSubWindow subWindow = null;
 
     public NBTEditGui(NBTTree treeIn) {
         super(Minecraft.getInstance(), Minecraft.getInstance().getItemRenderer());
@@ -73,22 +58,15 @@ public class NBTEditGui extends Gui {
         addSaveSlotButtons();
     }
 
-    // Getter start.
+    // <editor-fold desc="Properties and accessors.">
+    private final int START_X = 10;
+    private final int START_Y = 30;
+
+    private final int X_GAP = 10;
+    private final int Y_GAP = getMinecraft().font.lineHeight + 2;
 
     protected Minecraft getMinecraft() {
         return minecraft;
-    }
-
-    public NBTTree getTree() {
-        return tree;
-    }
-
-    public SaveLoadSlotButton getFocusedSaveSlotIndex() {
-        return (focusedSaveSlotIndex != -1) ? saves[focusedSaveSlotIndex] : null;
-    }
-
-    public NBTNode<NamedNBT> getFocused() {
-        return focused;
     }
 
     private int getHeightDifference() {
@@ -99,9 +77,9 @@ public class NBTEditGui extends Gui {
         return Y_GAP * nodes.size();
     }
 
-    // Getter end.
+    // </editor-fold>
 
-    // Init start.
+    // <editor-fold desc="Initializations.">
 
     public void init(int widthIn, int heightIn, int bottomIn) {
         width = widthIn;
@@ -109,15 +87,29 @@ public class NBTEditGui extends Gui {
         bottom = bottomIn;
 
         yClick = -1;
-        init(false);
+        update(false);
+    }
 
-        if (subWindow != null) {
-            subWindow.init((width - EditSubWindowComponent.WIDTH) / 2,
-                    (height - EditSubWindowComponent.HEIGHT) / 2);
+    // </editor-fold>
+
+    // <editor-fold desc="Updates.">
+
+    public void update(NBTTree.Node<?> node) {
+        var parent = node.getParent();
+        Collections.sort(parent.getChildren(), SortHelper.get());
+        update(true);
+    }
+
+    public void updateFromRoot(NBTTree.Node<?> node, boolean circular) {
+        Collections.sort(node.getChildren(), SortHelper.get());
+        if (circular) {
+            for (var child : node.getChildren()) {
+                updateFromRoot(child, true);
+            }
         }
     }
 
-    public void init(boolean isShiftToFocused) {
+    public void update(boolean isShiftToFocused) {
         y = START_Y;
         nodes.clear();
         addNodes(tree.getRoot(), START_X);
@@ -148,30 +140,359 @@ public class NBTEditGui extends Gui {
                 shiftToFocus(focused);
             }
         }
+
+        updateFromRoot(getTree().getRoot(), true);
     }
 
-    // Init end.
+    // </editor-fold>
 
-    // Focus start.
+    // <editor-fold desc="Buttons.">
 
-    private void addNodes(NBTNode<NamedNBT> root, int start_x) {
-        nodes.add(new NBTNodeComponent(start_x, y,
-                Component.literal(NBTHelper.getNBTNameSpecial(root.get())), this, root));
+    protected List<AbstractButton> buttons = new ArrayList<>();
 
-        start_x += X_GAP;
-        y += Y_GAP;
+    protected NBTOperatorButton[] addButtons = new NBTOperatorButton[11];
+    protected NBTOperatorButton editButton;
+    protected NBTOperatorButton deleteButton;
+    protected NBTOperatorButton copyButton;
+    protected NBTOperatorButton cutButton;
+    protected NBTOperatorButton pasteButton;
 
-        if (root.shouldShowChildren()) {
-            for (var child : root.getChildren()) {
-                addNodes(child, start_x);
+    private void addButton(AbstractButton button) {
+        buttons.add(button);
+    }
+
+    private void addButtons() {
+        int xLoc = 18;
+        int yLoc = 4;
+
+        // Todo: qyl27: Copy/Paste function.
+        copyButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onCopyButtonClick); // Copy Button.
+        addButton(copyButton);
+
+        xLoc += 15;
+        cutButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onCutButtonClick); // Cut Button.
+        addButton(cutButton);
+
+        xLoc += 15;
+        pasteButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onPasteButtonClick); // Paste Button.
+        addButton(pasteButton);
+
+        xLoc += 45;
+        editButton = new NBTOperatorButton(12, xLoc, yLoc, this, this::onEditButtonClick); // Edit Button.
+        addButton(editButton);
+
+        xLoc += 15;
+        deleteButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onDeleteButtonClick); // Delete Button.
+        addButton(deleteButton);
+
+        // Add nbt type buttons.
+        xLoc = 18;
+        yLoc = 17;
+        for (var i = 1; i < 12; i++) {
+            var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick);
+            addButtons[i - 1] = button;
+            addButton(button);
+            xLoc += 9;
+        }
+
+        updateButtons();
+    }
+
+    protected void onEditButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton operatorButton) {
+            if (operatorButton.getButtonId() == 12) {  // 但愿人没事。
+                doEditSelected();
             }
         }
     }
 
-    private void setFocused(NBTNode<NamedNBT> nodeToFocus) {
-        updateButtons(nodeToFocus);
+    protected void onDeleteButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton operatorButton) {
+            if (operatorButton.getButtonId() == 13) {
+                deleteSelected();
+            }
+        }
+    }
 
-        focused = nodeToFocus;
+    protected void onCopyButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton nbtOperator) {
+            if (nbtOperator.getButtonId() == 14) {
+                copySelected();
+            }
+        }
+    }
+
+    protected void onCutButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton nbtOperator) {
+            if (nbtOperator.getButtonId() == 15) {
+                copySelected();
+                deleteSelected();
+            }
+        }
+    }
+
+    protected void onPasteButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton nbtOperator) {
+            if (nbtOperator.getButtonId() == 16) {
+                paste();
+            }
+        }
+    }
+
+    protected void onAddButtonsClick(Button button) {
+        if (button instanceof NBTOperatorButton operatorButton) {
+            if (operatorButton.getButtonId() >= 0 && operatorButton.getButtonId() <= 11) {
+                if (getFocused() != null) {
+                    getFocused().setShowChildren(true);
+                    var children = getFocused().getChildren();
+                    String type = button.getMessage().getString();
+
+                    if (getFocused().getTag() instanceof ListTag) {
+                        var tag = NBTHelper.newTag((operatorButton.getButtonId()));
+                        if (tag != null) {
+                            var newChild = getFocused().newChild("", tag);
+                            setFocused(newChild);
+                        }
+                    } else {
+                        var typeId = operatorButton.getButtonId();
+                        setFocused(insertOnFocus(newName(getFocused(), typeId), NBTHelper.newTag(typeId)));
+                    }
+                    update(true);
+                }
+            }
+        }
+    }
+
+    public void doEditSelected() {
+        var base = getFocused().getTag();
+        var parent = getFocused().getParent().getTag();
+        var editor = new EditValueSubWindow(this, getFocused(), !(parent instanceof ListTag),
+                !(base instanceof CompoundTag || base instanceof ListTag));
+        editor.init((width - EditValueSubWindow.WIDTH) / 2, (height - EditValueSubWindow.HEIGHT) / 2);
+        addWindow(editor);
+    }
+
+    private void copySelected() {
+        var node = getFocused();
+        if (node != null) {
+            if (node.getTag() instanceof ListTag) {
+                var list = new ListTag();
+//                focused.newChild("", list);
+                // Todo: qyl27: clipboard.
+//                NBTEdit.getInstance().getClientManager().setClipboard(new NamedNBT(node.getName(), list));
+            } else if (node.getTag() instanceof CompoundTag) {
+                CompoundTag compound = new CompoundTag();
+//                focused.newChild(compound);
+                // Todo: qyl27: clipboard.
+//                NBTEdit.getInstance().getClientManager().setClipboard(new NamedNBT(node.getName(), compound));
+            } else {
+                // Todo: qyl27: clipboard.
+//                NBTEdit.getInstance().getClientManager().setClipboard(focused.copy());
+            }
+
+            setFocused(focused);
+        }
+    }
+
+    private void paste() {
+        // Todo: qyl27: paste.
+//        if (focused != null) {
+//            if (NBTEdit.getInstance().getClientManager().getClipboard() != null) {
+//                focused.setShowChildren(true);
+//
+//                var namedNBT = NBTEdit.getInstance().getClientManager().getClipboard().copy();
+//                if (focused.getTag() instanceof ListTag) {
+//                    namedNBT.setName("");
+//                    focused.newChild(namedNBT);
+//                    tree.addChildrenToTree(node);
+//                    tree.sort(node);
+//                    setFocused(node);
+//                } else {
+//                    String name = namedNBT.getName();
+//                    List<NBTTree.Node<?>> children = focused.getChildren();
+//                    if (!isNameValid(name, children)) {
+//                        for (int i = 1; i <= children.size() + 1; ++i) {
+//                            String n = name + "(" + i + ")";
+//                            if (isNameValid(n, children)) {
+//                                namedNBT.setName(n);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    NBTTree.Node<?> node = insertNode(namedNBT);
+//                    tree.addChildrenToTree(node);
+//                    tree.sort(node);
+//                    setFocused(node);
+//                }
+//
+//                update(true);
+//            }
+//        }
+    }
+
+    public void deleteSelected() {
+        var prevFocused = getFocused();
+        if (prevFocused != null) {
+            var parent = prevFocused.getParent();
+            parent.removeChild(prevFocused);
+            shiftFocus(true);
+            if (focused == prevFocused) {
+                setFocused(null);
+            }
+            update(false);
+        }
+    }
+
+    private void updateButtons() {
+        var nodeToFocus = getFocused();
+        if (nodeToFocus == null) {
+            inactiveAllButtons();
+        } else if (nodeToFocus.getTag() instanceof CompoundTag) {
+            activeAllButtons();
+            editButton.active = nodeToFocus.hasParent() && !(nodeToFocus.getParent().getTag() instanceof ListTag);
+            deleteButton.active = nodeToFocus != tree.getRoot();
+            cutButton.active = nodeToFocus != tree.getRoot();
+            pasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null;
+        } else if (nodeToFocus.getTag() instanceof ListTag) {
+            if (nodeToFocus.hasChild()) {
+                var elementType = nodeToFocus.getChildren().get(0).getTag().getId();
+                inactiveAllButtons();
+
+                addButtons[elementType - 1].active = true;
+                editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
+                deleteButton.active = true;
+                copyButton.active = true;
+                cutButton.active = true;
+                pasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null
+                        && NBTEdit.getInstance().getClientManager().getClipboard().getTag().getId() == elementType;
+            } else {
+                inactiveAllButtons();
+
+                editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
+                pasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null;
+            }
+        } else {
+            inactiveAllButtons();
+
+            editButton.active = true;
+            deleteButton.active = true;
+            copyButton.active = true;
+            cutButton.active = true;
+        }
+    }
+
+    private void activeAllButtons() {
+        for (var button : addButtons) {
+            button.active = true;
+        }
+
+        editButton.active = true;
+        deleteButton.active = true;
+        copyButton.active = true;
+        cutButton.active = true;
+        pasteButton.active = true;
+    }
+
+    private void inactiveAllButtons() {
+        for (var button : addButtons) {
+            button.active = false;
+        }
+
+        editButton.active = false;
+        deleteButton.active = false;
+        copyButton.active = false;
+        cutButton.active = false;
+        pasteButton.active = false;
+    }
+
+    private void addSaveSlotButtons() {
+        var saveStates = NBTEdit.getInstance().getClientManager().getClipboardSaves();
+        for (int i = 0; i < 7; ++i) {
+            saves[i] = new SaveLoadSlotButton(saveStates.getClipboard(i), width - 24, 31 + i * 25, i + 1, this::onSaveSlotClicked);
+        }
+    }
+
+    private void onSaveSlotClicked(Button button) {
+        // Todo: qyl27: S/L function.
+//        if (button instanceof SaveLoadSlotButton saveButton) {
+//            if (saveButton.getSave().tag.isEmpty()) { //Copy into save slot
+//                var node = (focused == null) ? tree.getRoot() : focused;
+//                var base = node.getTag();
+//                var name = node.getName();
+//                if (base instanceof ListTag) {
+//                    var list = new ListTag();
+//                    node.newChild(list);
+//                    saveButton.getSave().tag.put(name, list);
+//                } else if (base instanceof CompoundTag) {
+//                    var compound = new CompoundTag();
+//                    node.newChild(compound);
+//                    saveButton.getSave().tag.put(name, compound);
+//                } else {
+//                    saveButton.getSave().tag.put(name, base.copy());
+//                }
+//                saveButton.saved();
+//                NBTEdit.getInstance().getClientManager().getClipboardSaves().save();
+//                getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+//            } else { //Paste into
+//                var nbtMap = saveButton.getSave().tag.tags;
+//                if (nbtMap.isEmpty()) {
+//                    // Todo: AS: Logging.
+//                } else {
+//                    if (focused == null) {
+//                        setFocused(tree.getRoot());
+//                    }
+//                    var firstEntry = nbtMap.entrySet().iterator().next();
+//                    assert firstEntry != null;
+//                    var name = firstEntry.getKey();
+//                    var nbt = firstEntry.getValue().copy();
+//                    if (focused == tree.getRoot() && nbt instanceof CompoundTag && name.equals("ROOT")) {
+//                        setFocused(null);
+//                        tree = NBTTree.root((CompoundTag) nbt);
+//                        update(false);
+//                        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+//                    } else if (canAddToParentByType(focused.getTag(), nbt)) {
+//                        focused.setShowChildren(true);
+//                        for (var it = focused.getChildren().iterator(); it.hasNext(); ) { //Replace object with same name
+//                            if (it.next().getName().equals(name)) {
+//                                it.remove();
+//                                break;
+//                            }
+//                        }
+//
+//                        var node = insertNode(new NamedNBT(name, nbt));
+//                        tree.addChildrenToTree(node);
+//                        tree.sort(node);
+//                        setFocused(node);
+//                        update(true);
+//                        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+//                    }
+//                }
+//            }
+//        }
+    }
+    
+    // </editor-fold>
+
+    // <editor-fold desc="Focusing.">
+
+    private void addNodes(NBTTree.Node<?> root, int startX) {
+        nodes.add(new NBTNodeComponent(startX, y,
+                Component.literal(NBTHelper.getNBTNameSpecial(root)), this, root));
+
+        startX += X_GAP;
+        y += Y_GAP;
+
+        if (root.shouldShowChildren()) {
+            for (var child : root.getChildren()) {
+                addNodes(child, startX);
+            }
+        }
+    }
+
+    private void setFocused(NBTTree.Node<?> toFocus) {
+        updateButtons();
+
+        focused = toFocus;
         if (focused != null && focusedSaveSlotIndex != -1) {
             stopEditingSlot();
         }
@@ -183,7 +504,7 @@ public class NBTEditGui extends Gui {
         focusedSaveSlotIndex = -1;
     }
 
-    private void shiftToFocus(NBTNode<NamedNBT> focused) {
+    private void shiftToFocus(NBTTree.Node<?> focused) {
         var index = getIndexOf(focused);
         if (index != -1) {
             var component = nodes.get(index);
@@ -202,7 +523,7 @@ public class NBTEditGui extends Gui {
         }
     }
 
-    private int getIndexOf(NBTNode<NamedNBT> focused) {
+    private int getIndexOf(NBTTree.Node<?> focused) {
         for (var i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).getNode() == focused) {
                 return i;
@@ -212,7 +533,7 @@ public class NBTEditGui extends Gui {
     }
 
     public void shiftY(int offsetY) {
-        if (heightDiff <= 0 || subWindow != null) {
+        if (heightDiff <= 0 || hasWindow()) {
             return;
         }
 
@@ -232,7 +553,7 @@ public class NBTEditGui extends Gui {
         heightOffset = difference;
     }
 
-    private boolean checkValidFocus(NBTNode<NamedNBT> focused) {
+    private boolean checkValidFocus(NBTTree.Node<?> focused) {
         for (var node : nodes) { // Check all nodes.
             if (node.getNode() == focused) {
                 setFocused(focused);
@@ -242,322 +563,182 @@ public class NBTEditGui extends Gui {
         return focused.hasParent() && checkValidFocus(focused.getParent());
     }
 
-    // Focus end.
+    // </editor-fold>
 
-    // Buttons start.
+    // <editor-fold desc="NBT tree.">
 
-    private void addButtons() {
-        int xLoc = 18;
-        int yLoc = 4;
+    protected NBTTree tree;
+    protected NBTTree.Node<?> focused;
 
-        nbtCopyButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onCopyButtonClick); // Copy Button.
-
-        xLoc += 15;
-        nbtCutButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onCutButtonClick); // Cut Button.
-
-        xLoc += 15;
-        nbtPasteButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onPasteButtonClick); // Paste Button.
-
-        xLoc += 45;
-        nbtEditButton = new NBTOperatorButton(12, xLoc, yLoc, this, this::onEditButtonClick); // Edit Button.
-
-        xLoc += 15;
-        nbtDeleteButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onDeleteButtonClick); // Delete Button.
-
-        // Add nbt buttons.
-        xLoc = 18;
-        yLoc = 17;
-        for (var i = 1; i < 12; i++) {
-            nbtButtons[i - 1] = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddNBTButtonsClick);
-            xLoc += 9;
-        }
+    public NBTTree getTree() {
+        return tree;
     }
 
-    protected void onEditButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 12) {  // 但愿人没事。
-                doEditSelected();
+    public NBTTree.Node<?> getFocused() {
+        return focused;
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="Helper methods.">
+
+    private NBTTree.Node<?> insertOnFocus(String name, Tag tag) {
+        // Todo: qyl27: more check for it?
+        if (isNameValid(name, getFocused())) {
+            return getFocused().newChild(name, tag);
+        }
+
+        return getFocused().newChild("", tag);
+    }
+
+    private boolean isNameValid(String name, NBTTree.Node<?> parent) {
+        for (var node : parent.getChildren()) {
+            if (node.getName().equals(name)) {
+                return false;
             }
         }
+        return true;
     }
 
-    protected void onDeleteButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 13) {
-                doDeleteSelected();
+    private String newName(NBTTree.Node<?> parent, byte typeId) {
+        var typeName = NBTHelper.getNameByButton(typeId);
+        if (!parent.hasChild()) {
+            return typeName + "1";
+        }
+        for (int i = 1; i <= parent.getChildren().size() + 1; ++i) {
+            String name = typeName + i;
+            if (isNameValid(name, parent)) {
+                return name;
             }
         }
+        return typeName + "INF";
     }
 
-    protected void onCopyButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 14) {
-                doCopySelected();
+    private boolean canAddToParentByType(Tag parent, Tag child) {
+        if (parent instanceof CompoundTag) {
+            return true;
+        }
+
+        if (parent instanceof ListTag list) {
+            return list.size() == 0 || list.getElementType() == child.getId();
+        }
+        return false;
+    }
+
+    // </editor-fold>
+
+    // Getter start.
+
+//    public SaveLoadSlotButton getFocusedSaveSlotIndex() {
+//        return (focusedSaveSlotIndex != -1) ? saves[focusedSaveSlotIndex] : null;
+//    }
+//
+//    // Getter end.
+//
+//    // Interact start.
+//
+//    public void update() {
+//        if (subWindow != null) {
+//            subWindow.update();
+//        }
+//
+//        if (focusedSaveSlotIndex != -1) {
+//            saves[focusedSaveSlotIndex].update();
+//        }
+//    }
+//    // Interact end.
+//
+//    // Nodes start.
+//
+//    public boolean isEditingSlot() {
+//        return focusedSaveSlotIndex != -1;
+//    }
+//
+//    // Nodes end.
+//
+//    // Misc start.
+//
+//    private boolean canPaste() {
+//        return NBTEdit.getInstance().getClientManager().getClipboard() != null && focused != null
+//                && canAddToParent(focused.getTag(), NBTEdit.getInstance().getClientManager().getClipboard().getTag());
+//    }
+//
+//
+//    // Misc end.
+
+    // <editor-fold desc="Input processing.">
+
+    public boolean onMouseClicked(int mouseX, int mouseY, int partialTick) {
+        if (hasWindow()) {
+            return getActiveWindow().mouseClicked(mouseX, mouseY, partialTick);
+        }
+
+        for (var button : buttons) {
+            if (button.isMouseOver(mouseX, mouseY)) {
+                button.mouseClicked(mouseX, mouseY, partialTick);
             }
         }
-    }
 
-    protected void onCutButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 15) {
-                doCutSelected();
+        var shouldUpdate = false;
+
+        for (var node : nodes) {
+            if (node.spoilerClicked(mouseX, mouseY)) { // Check hide/show children buttons
+                shouldUpdate = true;
+                if (node.shouldShowChildren()) {
+                    heightOffset = (START_Y + 1) - (node.y) + heightOffset;
+                }
+                break;
             }
         }
-    }
 
-    protected void onPasteButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 16) {
-                doPaste();
-            }
-        }
-    }
-
-    protected void onAddNBTButtonsClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() >= 0 && nbtOperator.getButtonId() <= 11) {
-                if (focused != null) {
-                    focused.setShowChildren(true);
-                    var children = focused.getChildren();
-                    String type = button.getMessage().getString();
-
-                    if (focused.get().getTag() instanceof ListTag) {
-                        var nbt = NBTHelper.newTag((nbtOperator.getButtonId()));
-                        if (nbt != null) {
-                            var newNode = new NBTNode<>(focused, new NamedNBT("", nbt));
-                            children.add(newNode);
-                            setFocused(newNode);
-                        }
-                    } else if (children.size() == 0) {
-                        setFocused(insertNode(type + "1", nbtOperator.getButtonId()));
-                    } else {
-                        for (int i = 1; i <= children.size() + 1; ++i) {
-                            String name = type + i;
-                            if (isNameValid(name, children)) {
-                                setFocused(insertNode(name, nbtOperator.getButtonId()));
-                                break;
-                            }
-                        }
-                    }
-                    init(true);
+        if (mouseY >= START_Y && mouseX <= width - 175) { //Check actual nodes, remove focus if nothing clicked
+            NBTTree.Node<?> newFocus = null;
+            for (var node : nodes) {
+                if (node.isTextClicked(mouseX, mouseY)) {
+                    newFocus = node.getNode();
+                    break;
                 }
             }
-        }
-    }
-
-    public void doEditSelected() {
-        var base = focused.get().getTag();
-        var parent = focused.getParent().get().getTag();
-        subWindow = new EditSubWindowComponent(this, focused, !(parent instanceof ListTag),
-                !(base instanceof CompoundTag || base instanceof ListTag));
-        subWindow.init((width - EditSubWindowComponent.WIDTH) / 2, (height - EditSubWindowComponent.HEIGHT) / 2);
-    }
-
-    private void doCopySelected() {
-        if (focused != null) {
-            var named = focused.get();
-            if (named.getTag() instanceof ListTag) {
-                var list = new ListTag();
-                tree.addChild(focused, list);
-                NBTEdit.getInstance().getClientManager().setClipboard(new NamedNBT(named.getName(), list));
-            } else if (named.getTag() instanceof CompoundTag) {
-                CompoundTag compound = new CompoundTag();
-                tree.addChild(focused, compound);
-                NBTEdit.getInstance().getClientManager().setClipboard(new NamedNBT(named.getName(), compound));
-            } else {
-                NBTEdit.getInstance().getClientManager().setClipboard(focused.get().copy());
+            if (focusedSaveSlotIndex != -1) {
+                stopEditingSlot();
             }
 
-            setFocused(focused);
-        }
-    }
-
-    private void doCutSelected() {
-        doCopySelected();
-        doDeleteSelected();
-    }
-
-    private void doPaste() {
-        if (focused != null) {
-            if (NBTEdit.getInstance().getClientManager().getClipboard() != null) {
-                focused.setShowChildren(true);
-
-                var namedNBT = NBTEdit.getInstance().getClientManager().getClipboard().copy();
-                if (focused.get().getTag() instanceof ListTag) {
-                    namedNBT.setName("");
-                    var node = new NBTNode<>(focused, namedNBT);
-                    focused.addChild(node);
-                    tree.addChildrenToTree(node);
-                    tree.sort(node);
-                    setFocused(node);
-                } else {
-                    String name = namedNBT.getName();
-                    List<NBTNode<NamedNBT>> children = focused.getChildren();
-                    if (!isNameValid(name, children)) {
-                        for (int i = 1; i <= children.size() + 1; ++i) {
-                            String n = name + "(" + i + ")";
-                            if (isNameValid(n, children)) {
-                                namedNBT.setName(n);
-                                break;
-                            }
-                        }
-                    }
-                    NBTNode<NamedNBT> node = insertNode(namedNBT);
-                    tree.addChildrenToTree(node);
-                    tree.sort(node);
-                    setFocused(node);
-                }
-
-                init(true);
-            }
-        }
-    }
-
-    public void doDeleteSelected() {
-        if (focused != null) {
-            if (tree.delete(focused)) {
-                NBTNode<NamedNBT> oldFocused = focused;
-                shiftFocus(true);
-                if (focused == oldFocused)
-                    setFocused(null);
-                init(false);
-            }
-        }
-    }
-
-    private void updateButtons(NBTNode<NamedNBT> nodeToFocus) {
-        if (nodeToFocus == null) {
-            activeAllButtons();
-        } else if (nodeToFocus.get().getTag() instanceof CompoundTag) {
-            activeAllButtons();
-            nbtEditButton.active = nodeToFocus.hasParent() && !(nodeToFocus.getParent().get().getTag() instanceof ListTag);
-            nbtDeleteButton.active = nodeToFocus != tree.getRoot();
-            nbtCutButton.active = nodeToFocus != tree.getRoot();
-            nbtPasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null;
-        } else if (nodeToFocus.get().getTag() instanceof ListTag) {
-            if (nodeToFocus.hasChildren()) {
-                var elementType = nodeToFocus.getChildren().get(0).get().getTag().getId();
-                inactiveAllButtons();
-
-                nbtButtons[elementType - 1].active = true;
-
-                nbtEditButton.active = !(nodeToFocus.getParent().get().getTag() instanceof ListTag);
-                nbtDeleteButton.active = true;
-                nbtCopyButton.active = true;
-                nbtCutButton.active = true;
-                nbtPasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null
-                        && NBTEdit.getInstance().getClientManager().getClipboard().getTag().getId() == elementType;
-            } else {
-                activeAllButtons();
-
-                nbtEditButton.active = !(nodeToFocus.getParent().get().getTag() instanceof ListTag);
-                nbtPasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null;
-            }
-        } else {
-            inactiveAllButtons();
-
-            nbtEditButton.active = true;
-            nbtDeleteButton.active = true;
-            nbtCopyButton.active = true;
-            nbtCutButton.active = true;
-        }
-    }
-
-    private void activeAllButtons() {
-        for (var button : nbtButtons) {
-            button.active = true;
+            setFocused(newFocus);
         }
 
-        nbtEditButton.active = true;
-        nbtDeleteButton.active = true;
-        nbtCopyButton.active = true;
-        nbtCutButton.active = true;
-        nbtPasteButton.active = true;
-    }
-
-    private void inactiveAllButtons() {
-        for (var button : nbtButtons) {
-            button.active = true;
+        if (shouldUpdate) {
+            update(false);
         }
 
-        nbtEditButton.active = true;
-        nbtDeleteButton.active = true;
-        nbtCopyButton.active = true;
-        nbtCutButton.active = true;
-        nbtPasteButton.active = true;
+        return false;
     }
 
-    private void addSaveSlotButtons() {
-        var saveStates = NBTEdit.getInstance().getClientManager().getClipboardSaves();
-        for (int i = 0; i < 7; ++i) {
-            saves[i] = new SaveLoadSlotButton(saveStates.getClipboard(i), width - 24, 31 + i * 25, i + 1, this::onSaveSlotClicked);
+    public boolean onKeyPress(int keyCode, int scanCode, int modifiers) {
+        if (hasWindow()) {
+            return getActiveWindow().keyPressed(keyCode, scanCode, modifiers);
         }
+
+        // Todo: qyl27: copy/paste shortcut.
+
+        return false;
     }
 
-    private void onSaveSlotClicked(Button button) {
-        if (button instanceof SaveLoadSlotButton saveButton) {
-            if (saveButton.getSave().tag.isEmpty()) { //Copy into save slot
-                var nbt = (focused == null) ? tree.getRoot() : focused;
-                var base = nbt.get().getTag();
-                var name = nbt.get().getName();
-                if (base instanceof ListTag) {
-                    var list = new ListTag();
-                    tree.addChild(nbt, list);
-                    saveButton.getSave().tag.put(name, list);
-                } else if (base instanceof CompoundTag) {
-                    var compound = new CompoundTag();
-                    tree.addChild(nbt, compound);
-                    saveButton.getSave().tag.put(name, compound);
-                } else {
-                    saveButton.getSave().tag.put(name, base.copy());
-                }
-                saveButton.saved();
-                NBTEdit.getInstance().getClientManager().getClipboardSaves().save();
-                getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            } else { //Paste into
-                var nbtMap = NBTIOHelper.getMap(saveButton.getSave().tag);
-                if (nbtMap.isEmpty()) {
-                    // Todo: AS: Logging.
-                } else {
-                    if (focused == null) {
-                        setFocused(tree.getRoot());
-                    }
-                    var firstEntry = nbtMap.entrySet().iterator().next();
-                    assert firstEntry != null;
-                    var name = firstEntry.getKey();
-                    var nbt = firstEntry.getValue().copy();
-                    if (focused == tree.getRoot() && nbt instanceof CompoundTag && name.equals("ROOT")) {
-                        setFocused(null);
-                        tree = new NBTTree((CompoundTag) nbt);
-                        init(false);
-                        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                    } else if (canAddToParent(focused.get().getTag(), nbt)) {
-                        focused.setShowChildren(true);
-                        for (var it = focused.getChildren().iterator(); it.hasNext(); ) { //Replace object with same name
-                            if (it.next().get().getName().equals(name)) {
-                                it.remove();
-                                break;
-                            }
-                        }
-                        var node = insertNode(new NamedNBT(name, nbt));
-                        tree.addChildrenToTree(node);
-                        tree.sort(node);
-                        setFocused(node);
-                        init(true);
-                        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                    }
-                }
-            }
-        }
-    }
+//    public void onArrowKeyPress(boolean isUp) {
+//        if (focused == null) {
+//            shiftY((isUp) ? Y_GAP : -Y_GAP);
+//        } else {
+//            shiftFocus(isUp);
+//        }
+//    }
 
-    // Buttons end.
+    // </editor-fold>
 
-    // Renderer start.
-
+    // <editor-fold desc="Render.">
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
-        int prevMouseX = mouseX, prevMouseY = mouseY;
-        if (subWindow != null) {
+        var prevMouseX = mouseX;
+        var prevMouseY = mouseY;
+
+        if (hasWindow()) {
             prevMouseX = -1;
             prevMouseY = -1;
         }
@@ -568,9 +749,8 @@ public class NBTEditGui extends Gui {
             }
         }
 
-        renderBackground(stack, 0, START_Y - 1, 255, 255);
-        renderBackground(stack, bottom, height, 255, 255);
-        for (var button : nbtButtons) {
+        renderBackground(stack);
+        for (var button : buttons) {
             button.render(stack, prevMouseX, prevMouseY, partialTick);
         }
 
@@ -578,22 +758,17 @@ public class NBTEditGui extends Gui {
             button.render(stack, prevMouseX, prevMouseY, partialTick);
         }
 
-        nbtEditButton.render(stack, prevMouseX, prevMouseY, partialTick);
-        nbtDeleteButton.render(stack, prevMouseX, prevMouseY, partialTick);
-        nbtCopyButton.render(stack, prevMouseX, prevMouseY, partialTick);
-        nbtCutButton.render(stack, prevMouseX, prevMouseY, partialTick);
-        nbtPasteButton.render(stack, prevMouseX, prevMouseY, partialTick);
-
         renderScrollBar(stack, prevMouseX, prevMouseY);
 
-        if (subWindow != null) {
-            subWindow.render(stack, mouseX, mouseY, partialTick);
+        if (hasWindow()) {
+            getActiveWindow().render(stack, mouseX, mouseY, partialTick);
         }
     }
 
     private void renderScrollBar(PoseStack stack, int mouseX, int mouseY) {
         if (heightDiff > 0) {
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.MOUSE_BUTTON_LEFT)) {
+            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),
+                    InputConstants.MOUSE_BUTTON_LEFT)) {
                 if (yClick == -1) {
                     if (mouseX >= width - 20 && mouseX < width && mouseY >= START_Y - 1 && mouseY < bottom) {
                         yClick = mouseY;
@@ -605,14 +780,16 @@ public class NBTEditGui extends Gui {
                     if (height < 1) {
                         height = 1;
                     }
+
                     int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
-                    if (length < 32)
+                    if (length < 32) {
                         length = 32;
-                    if (length > bottom - (START_Y - 1) - 8)
+                    }
+                    if (length > bottom - (START_Y - 1) - 8) {
                         length = bottom - (START_Y - 1) - 8;
+                    }
 
                     scrollMultiplier /= (float) (this.bottom - (START_Y - 1) - length) / (float) height;
-
 
                     shiftY((int) ((yClick - mouseY) * scrollMultiplier));
                     yClick = mouseY;
@@ -624,10 +801,12 @@ public class NBTEditGui extends Gui {
             fill(stack, width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
 
             int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
-            if (length < 32)
+            if (length < 32) {
                 length = 32;
-            if (length > bottom - (START_Y - 1) - 8)
+            }
+            if (length > bottom - (START_Y - 1) - 8) {
                 length = bottom - (START_Y - 1) - 8;
+            }
             int y = -heightOffset * (this.bottom - (START_Y - 1) - length) / heightDiff + (START_Y - 1);
 
             if (y < START_Y - 1) {
@@ -638,231 +817,119 @@ public class NBTEditGui extends Gui {
         }
     }
 
-    private void renderBackground(PoseStack stack, int bottom, int height, int alpha1, int alpha2) {
+    private void renderDirtBackground(int bottom, int height) {
         var tesselator = Tesselator.getInstance();
-        var builder = tesselator.getBuilder();
+        var bufferBuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, BACKGROUND_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         var f = 32.0F;
-        var color = new Color(4210752);
-        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        builder.vertex(0.0D, height, 0.0D).uv(0.0f, (float) height / f).color(color.getRed(), color.getGreen(), color.getBlue(), alpha2).endVertex();
-        builder.vertex(width, height, 0.0D).uv((float) width / f, (float) height / f).color(color.getRed(), color.getGreen(), color.getBlue(), alpha2).endVertex();
-        builder.vertex(width, bottom, 0.0D).uv((float) width / f, (float) bottom / f).color(color.getRed(), color.getGreen(), color.getBlue(), alpha2).endVertex();
-        builder.vertex(0.0D, bottom, 0.0D).uv(0.0f, (float) bottom / f).color(color.getRed(), color.getGreen(), color.getBlue(), alpha2).endVertex();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferBuilder.vertex(0.0D, height, 0.0D).uv(0.0f, (float) height / f).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(width, height, 0.0D).uv((float) width / f, (float) height / f).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(width, bottom, 0.0D).uv((float) width / f, (float) bottom / f).color(64, 64, 64, 255).endVertex();
+        bufferBuilder.vertex(0.0D, bottom, 0.0D).uv(0.0f, (float) bottom / f).color(64, 64, 64, 255).endVertex();
         tesselator.end();
     }
 
-    // Renderer end.
+    private void renderBackground(PoseStack stack) {
+//        fillGradient(stack, 0, 0, this.width, this.height, -1072689136, -804253680);
 
-    // Interact start.
+        renderDirtBackground(0, START_Y - 1);
+        renderDirtBackground(bottom, height);
+    }
 
-    public void onMouseClicked(int mouseX, int mouseY, int partialTick) {
-        if (subWindow == null) {
-            boolean reInit = false;
+    // </editor-fold>
 
-            for (var node : nodes) {
-                if (node.spoilerClicked(mouseX, mouseY)) { // Check hide/show children buttons
-                    reInit = true;
-                    if (node.shouldShowChildren()) {
-                        heightOffset = (START_Y + 1) - (node.y) + heightOffset;
-                    }
-                    break;
-                }
-            }
+    // <editor-fold desc="Sub-window holder.">
 
-            if (!reInit) {
-                for (var button : nbtButtons) { //Check top buttons
-                    if (button.isMouseInside(mouseX, mouseY)) {
-                        onAddNBTButtonsClick(button);
-                        return;
-                    }
-                }
+    private final List<SubWindowComponent> subWindows = new ArrayList<>();
+    private final BiMap<String, SubWindowComponent> mutexSubWindows = HashBiMap.create();
+    private SubWindowComponent activeSubWindow = null;
 
-                if (nbtCopyButton.isMouseInside(mouseX, mouseY)) {
-                    onCopyButtonClick(nbtCopyButton);
-                }
+    @Override
+    public List<SubWindowComponent> getWindows() {
+        var list = ImmutableList.<SubWindowComponent>builder();
+        list.addAll(subWindows).addAll(mutexSubWindows.values());
+        return list.build();
+    }
 
-                if (nbtCutButton.isMouseInside(mouseX, mouseY)) {
-                    onCutButtonClick(nbtCutButton);
-                }
+    @Override
+    public SubWindowComponent getActiveWindow() {
+        return activeSubWindow;
+    }
 
-                if (nbtPasteButton.isMouseInside(mouseX, mouseY)) {
-                    onPasteButtonClick(nbtPasteButton);
-                }
+    @Override
+    public void setActiveWindow(SubWindowComponent window) {
+        activeSubWindow = window;
+    }
 
-                if (nbtEditButton.isMouseInside(mouseX, mouseY)) {
-                    onEditButtonClick(nbtEditButton);
-                }
+    @Override
+    public boolean hasWindow() {
+        return getWindows().size() > 0;
+    }
 
-                if (nbtDeleteButton.isMouseInside(mouseX, mouseY)) {
-                    onDeleteButtonClick(nbtDeleteButton);
-                }
+    @Override
+    public boolean hasWindow(SubWindowComponent window) {
+        return getWindows().contains(window);
+    }
 
-                for (var button : saves) {
-                    if (button.isMouseInside(mouseX, mouseY)) {
-                        button.reset();
-                        NBTEdit.getInstance().getClientManager().getClipboardSaves().save();
-                        getMinecraft().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        return;
-                    }
+    @Override
+    public boolean hasMutexWindow(String name) {
+        return mutexSubWindows.containsKey(name);
+    }
 
-                    if (button.isMouseInside(mouseX, mouseY)) {
-                        onSaveSlotClicked(button);
-                        return;
-                    }
-                }
-                if (mouseY >= START_Y && mouseX <= width - 175) { //Check actual nodes, remove focus if nothing clicked
-                    NBTNode<NamedNBT> newFocus = null;
-                    for (var node : nodes) {
-                        if (node.isTextClicked(mouseX, mouseY)) {
-                            newFocus = node.getNode();
-                            break;
-                        }
-                    }
-                    if (focusedSaveSlotIndex != -1) {
-                        stopEditingSlot();
-                    }
+    @Override
+    public void addWindow(SubWindowComponent window) {
+        subWindows.add(window);
+        setActiveWindow(window);
+    }
 
-                    setFocused(newFocus);
-                }
-            } else {
-                init(false);
-            }
+    @Override
+    public void addMutexWindow(String name, SubWindowComponent window) {
+        if (hasMutexWindow(name)) {
+            throw new RuntimeException("Check has mutex first.");
+        }
+
+        mutexSubWindows.put(name, window);
+    }
+
+    @Override
+    public boolean isMutexWindow(SubWindowComponent window) {
+        return mutexSubWindows.containsValue(window);
+    }
+
+    @Override
+    public void closeWindow(SubWindowComponent window) {
+        if (!hasWindow(window)) {
+            throw new IllegalStateException("The window is not in this GUI.");
+        }
+
+        window.close();
+        if (isMutexWindow(window)) {
+            var name = mutexSubWindows.inverse().get(window);
+            mutexSubWindows.remove(name);
         } else {
-            subWindow.onMouseClicked(mouseX, mouseY, partialTick);
+            subWindows.remove(window);
         }
     }
 
-    public void closeSubWindow() {
-        subWindow = null;
-    }
-
-    public void update() {
-        if (subWindow != null) {
-            subWindow.update();
-        }
-
-        if (focusedSaveSlotIndex != -1) {
-            saves[focusedSaveSlotIndex].update();
+    @Override
+    public void closeAll() {
+        for (var window : subWindows) {
+            window.close();
         }
     }
 
-    public EditSubWindowComponent getSubWindow() {
-        return subWindow;
-    }
-
-    // Interact end.
-
-    // Keyboard interact start.
-
-    public void keyPressed(int mouseX, int mouseY, int delta) {
-        if (subWindow != null) {
-            subWindow.keyPressed(mouseX, mouseY, delta);
-        }
-    }
-
-    public void arrowKeyPressed(boolean isUp) {
-        if (focused == null) {
-            shiftY((isUp) ? Y_GAP : -Y_GAP);
-        } else {
-            shiftFocus(isUp);
-        }
-    }
-
-    public void charTyped(char character, int keyId) {
-        if (subWindow != null) {
-            subWindow.charTyped(character, keyId);
-        } else if (focusedSaveSlotIndex != -1) {
-            saves[focusedSaveSlotIndex].charTyped(character, keyId);
-        } else {
-            if (keyId == InputConstants.KEY_C && Screen.hasControlDown()) {
-                doCopySelected();
-            }
-            if (keyId == InputConstants.KEY_V && Screen.hasControlDown() && canPaste()) {
-                doPaste();
-            }
-            if (keyId == InputConstants.KEY_X && Screen.hasControlDown()) {
-                doCutSelected();
-            }
-        }
-    }
-
-    // Keyboard interact end.
-
-    // Nodes start.
-
-    public void updateNode(NBTNode<NamedNBT> node) {
-        var parent = node.getParent();
-        Collections.sort(parent.getChildren(), NBTSortHelper.get());
-        init(true);
-    }
-
-    private NBTNode<NamedNBT> insertNode(NamedNBT nbt) {
-        var newNode = new NBTNode<>(focused, nbt);
-
-        if (focused.hasChildren()) {
-            var children = focused.getChildren();
-
-            var added = false;
-            for (int i = 0; i < children.size(); ++i) {
-                if (NBTSortHelper.get().compare(newNode, children.get(i)) < 0) {
-                    children.add(i, newNode);
-                    added = true;
-                    break;
-                }
-            }
-            if (!added) {
-                children.add(newNode);
-            }
-        } else {
-            focused.addChild(newNode);
-        }
-        return newNode;
-    }
-
-    private NBTNode<NamedNBT> insertNode(String name, byte type) {
-        var nbt = NBTHelper.newTag(type);
-        if (nbt != null) {
-            return insertNode(new NamedNBT(name, nbt));
-        }
-        return null;
-    }
-
-    public boolean isEditingSlot() {
-        return focusedSaveSlotIndex != -1;
-    }
-
-    // Nodes end.
-
-    // Misc start.
-
-    private boolean isNameValid(String name, List<NBTNode<NamedNBT>> children) {
-        for (var node : children) {
-            if (node.get().getName().equals(name)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean canPaste() {
-        return NBTEdit.getInstance().getClientManager().getClipboard() != null && focused != null
-                && canAddToParent(focused.get().getTag(), NBTEdit.getInstance().getClientManager().getClipboard().getTag());
-    }
-
-    private boolean canAddToParent(Tag parent, Tag child) {
-        if (parent instanceof CompoundTag) {
-            return true;
+    @Override
+    public void focus(SubWindowComponent window) {
+        for (var w : getWindows()) {
+           w.inactive();
         }
 
-        if (parent instanceof ListTag) {
-            var list = (ListTag) parent;
-            return list.size() == 0 || list.getElementType() == child.getId();
-        }
-        return false;
+        window.onFocus();
+        activeSubWindow = window;
     }
 
-    // Misc end.
+    // </editor-fold>
 }

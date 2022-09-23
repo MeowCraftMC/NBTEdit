@@ -1,11 +1,10 @@
 package cx.rain.mc.nbtedit.gui.screen;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
+import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
-import cx.rain.mc.nbtedit.utility.nbt.NBTTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -37,7 +36,7 @@ public class NBTEditScreen extends Screen {
         entityId = id;
         isSelf = self;
 
-        gui = new NBTEditGui(new NBTTree(tag));
+        gui = new NBTEditGui(NBTTree.root(tag));
     }
 
     public NBTEditScreen(BlockPos pos, CompoundTag tag) {
@@ -48,8 +47,59 @@ public class NBTEditScreen extends Screen {
         isEntity = false;
         blockPos = pos;
 
-        gui = new NBTEditGui(new NBTTree(tag));
+        gui = new NBTEditGui(NBTTree.root(tag));
     }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+        clearWidgets();
+
+        gui.init(width, height, height - 35);
+
+        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
+        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
+    }
+
+    @Override
+    public void tick() {
+        if (!getMinecraft().player.isAlive()) {
+            doClose();
+        } else {
+            gui.update(true);
+        }
+
+        super.tick();
+    }
+
+    @Override
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
+        renderBackground(stack);
+        gui.render(stack, mouseX, mouseY, partialTick);
+        drawCenteredString(stack, getMinecraft().font, title, this.width / 2, 5, 16777215);
+
+        if (gui.hasWindow()) {
+            super.render(stack, mouseX, mouseY, partialTick);
+        } else {
+            super.render(stack, -1, -1, partialTick);
+        }
+    }
+
+//    @Override
+//    public boolean isPauseScreen() {
+//        return false;
+//    }
+
+    // <editor-fold desc="Properties and accessors.">
 
     public boolean isEntity() {
         return isEntity;
@@ -75,18 +125,9 @@ public class NBTEditScreen extends Screen {
         return blockPos;
     }
 
-    @Override
-    protected void init() {
-        super.init();
+    // </editor-fold>
 
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
-        clearWidgets();
-
-        gui.init(width, height, height - 35);
-
-        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
-        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
-    }
+    // <editor-fold desc="Button handler.">
 
     private void onSaveClicked(Button button) {
         doSave();
@@ -110,87 +151,36 @@ public class NBTEditScreen extends Screen {
         getMinecraft().cursorEntered();
     }
 
-    @Override
-    public void onClose() {
-        super.onClose();
+    // </editor-fold>
 
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
-    }
-
-    @Override
-    public boolean charTyped(char character, int keyId) {
-        var subWindow = gui.getSubWindow();
-        if (subWindow != null)
-            subWindow.charTyped(character, keyId);
-        else {
-            if (keyId == 1) {
-                if (gui.isEditingSlot()) {
-                    gui.stopEditingSlot();
-                } else {
-                    doClose();
-                }
-            } else if (keyId == InputConstants.KEY_DELETE) {
-                gui.doDeleteSelected();
-            } else if (keyId == InputConstants.KEY_RETURN) {
-                gui.doEditSelected();
-            } else if (keyId == InputConstants.KEY_UP) {
-                gui.arrowKeyPressed(true);
-            } else if (keyId == InputConstants.KEY_DOWN) {
-                gui.arrowKeyPressed(false);
-            } else {
-                gui.charTyped(character, keyId);
-            }
-        }
-        return true;
-    }
+    // <editor-fold desc="Input processing.">
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         super.mouseScrolled(mouseX, mouseY, delta);
 
-        var ofs = (int) delta;
-        if (ofs != 0) {
-            gui.shiftY((ofs >= 1) ? 6 : -6);
+        var offset = (int) delta;
+        if (offset != 0) {
+            gui.shiftY((offset >= 1) ? 6 : -6);
         }
         return true;
     }
 
     @Override
-    public void tick() {
-        if (!getMinecraft().player.isAlive()) {
-            doClose();
-        } else {
-            gui.update();
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        var superResult = super.keyPressed(keyCode, scanCode, modifiers);
+        if (superResult) {
+            return true;
         }
+
+        return gui.onKeyPress(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean keyPressed(int mouseX, int mouseY, int delta) {
-        gui.keyPressed(mouseX, mouseY, delta);
-        return true;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        var result = gui.onMouseClicked(Mth.floor(mouseX), Mth.floor(mouseY), button);
+        return result || super.mouseClicked(mouseX, mouseY, button);
     }
 
-    @Override
-    public boolean mouseClicked(double par1, double par2, int par3) {
-        gui.onMouseClicked(Mth.floor(par1), Mth.floor(par2), par3);
-        return super.mouseClicked(par1, par2, par3);
-    }
-
-    @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(stack);
-        gui.render(stack, mouseX, mouseY, partialTick);
-        drawCenteredString(stack, getMinecraft().font, title, this.width / 2, 5, 16777215);
-
-        if (gui.getSubWindow() == null) {
-            super.render(stack, mouseX, mouseY, partialTick);
-        } else {
-            super.render(stack, -1, -1, partialTick);
-        }
-    }
-
-    @Override
-    public boolean isPauseScreen() {
-        return true;
-    }
+    // </editor-fold>
 }
