@@ -41,4 +41,7 @@ public abstract class SubWindowComponent extends AbstractWidget {
 
 
     }
+
+    public void tick() {
+    }
 }

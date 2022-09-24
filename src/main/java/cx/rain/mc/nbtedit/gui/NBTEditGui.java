@@ -144,11 +144,25 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         updateFromRoot(getTree().getRoot(), true);
     }
 
+    @Override
+    public void tick(boolean pause) {
+        if (hasWindow()) {
+            for (var window : getWindows()) {
+                window.tick();
+            }
+        }
+
+        for (var button : getButtons()) {
+            if (button.isActive()) {
+            }
+        }
+    }
+
     // </editor-fold>
 
     // <editor-fold desc="Buttons.">
 
-    protected List<AbstractButton> buttons = new ArrayList<>();
+    protected List<Button> buttons = new ArrayList<>();
 
     protected NBTOperatorButton[] addButtons = new NBTOperatorButton[11];
     protected NBTOperatorButton editButton;
@@ -157,7 +171,11 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     protected NBTOperatorButton cutButton;
     protected NBTOperatorButton pasteButton;
 
-    private void addButton(AbstractButton button) {
+    protected List<Button> getButtons() {
+        return buttons;
+    }
+
+    protected void addButton(Button button) {
         buttons.add(button);
     }
 
@@ -673,7 +691,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             return getActiveWindow().mouseClicked(mouseX, mouseY, partialTick);
         }
 
-        for (var button : buttons) {
+        for (var button : getButtons()) {
             if (button.isMouseOver(mouseX, mouseY)) {
                 button.mouseClicked(mouseX, mouseY, partialTick);
             }
@@ -719,6 +737,14 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         }
 
         // Todo: qyl27: copy/paste shortcut.
+
+        return false;
+    }
+
+    public boolean onCharTyped(char character, int keyId) {
+        if (hasWindow()) {
+            return getActiveWindow().charTyped(character, keyId);
+        }
 
         return false;
     }

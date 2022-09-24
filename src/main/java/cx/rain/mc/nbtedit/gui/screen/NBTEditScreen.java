@@ -75,6 +75,7 @@ public class NBTEditScreen extends Screen {
         if (!getMinecraft().player.isAlive()) {
             doClose();
         } else {
+            gui.tick(false);
             gui.update(true);
         }
 
@@ -168,18 +169,20 @@ public class NBTEditScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        var superResult = super.keyPressed(keyCode, scanCode, modifiers);
-        if (superResult) {
-            return true;
-        }
-
-        return gui.onKeyPress(keyCode, scanCode, modifiers);
+        var result = gui.onKeyPress(keyCode, scanCode, modifiers);
+        return result || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         var result = gui.onMouseClicked(Mth.floor(mouseX), Mth.floor(mouseY), button);
         return result || super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        var result = gui.onCharTyped(codePoint, modifiers);
+        return result || super.charTyped(codePoint, modifiers);
     }
 
     // </editor-fold>

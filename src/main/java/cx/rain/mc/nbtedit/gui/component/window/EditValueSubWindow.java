@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
+import cx.rain.mc.nbtedit.gui.component.IWidgetHolder;
 import cx.rain.mc.nbtedit.gui.component.button.SpecialCharacterButton;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
@@ -22,7 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditValueSubWindow extends SubWindowComponent {
+public class EditValueSubWindow extends SubWindowComponent implements IWidgetHolder {
     public static final ResourceLocation WINDOW_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/window.png");
     public static final int WIDTH = 178;
@@ -70,10 +71,10 @@ public class EditValueSubWindow extends SubWindowComponent {
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
         nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
-        widgets.add(nameField);
+        addWidget(nameField);
 
         valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
-        widgets.add(valueField);
+        addWidget(valueField);
 
         nameField.setValue(name);
         nameField.setEditable(canEditName);
@@ -93,16 +94,16 @@ public class EditValueSubWindow extends SubWindowComponent {
             }
         }
 
-        colorButton.active = valueField.isFocused();
-        newLineButton.active = valueField.isFocused();
+//        colorButton.active = valueField.isFocused();
+//        newLineButton.active = valueField.isFocused();
 
         saveButton = new Button(x + 9, y + 62, 75, 20,
                 Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
-        widgets.add(saveButton);
+        addWidget(saveButton);
 
         cancelButton = new Button(x + 93, y + 62, 75, 20,
                 Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
-        widgets.add(cancelButton);
+        addWidget(cancelButton);
     }
 
     protected void onSaveButtonClicked(Button button) {
@@ -156,11 +157,7 @@ public class EditValueSubWindow extends SubWindowComponent {
             fill(stack, x + 42, y + 41, x + 169, y + 57, 0x80000000);
         }
 
-        nameField.render(stack, mouseX, mouseY, partialTicks);
-        valueField.render(stack, mouseX, mouseY, partialTicks);
-
-        saveButton.renderButton(stack, mouseX, mouseY, partialTicks);
-        cancelButton.renderButton(stack, mouseX, mouseY, partialTicks);
+        renderWidgets(stack, mouseX, mouseY, partialTicks);
 
         if (nameError != null) {
             drawCenteredString(stack, getMinecraft().font, nameError, x + width / 2, y + 4, 0xFF0000);
@@ -169,19 +166,15 @@ public class EditValueSubWindow extends SubWindowComponent {
             drawCenteredString(stack, getMinecraft().font, nameError, x + width / 2, y + 32, 0xFF0000);
         }
 
-        colorButton.render(stack, mouseX, mouseY, partialTicks);
-        newLineButton.render(stack, mouseX, mouseY, partialTicks);
+//        colorButton.render(stack, mouseX, mouseY, partialTicks);
+//        newLineButton.render(stack, mouseX, mouseY, partialTicks);
     }
 
-//    public void update() {
-//        nameField.tick();
-//        valueField.tick();
-//    }
-//
-//    public void setWindowTop(int xIn, int yIn) {
-//        x = xIn;
-//        y = yIn;
-//    }
+    @Override
+    public void tick() {
+        nameField.tick();
+        valueField.tick();
+    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -190,6 +183,16 @@ public class EditValueSubWindow extends SubWindowComponent {
         } else {
             return valueField.keyPressed(keyCode, scanCode, modifiers);
         }
+    }
+
+    @Override
+    public boolean charTyped(char character, int keyId) {
+        if (nameField.isFocused()) {
+            nameField.charTyped(character, keyId);
+        } else {
+            valueField.charTyped(character, keyId);
+        }
+        return true;
     }
 
     @Override
@@ -306,5 +309,20 @@ public class EditValueSubWindow extends SubWindowComponent {
     @Override
     public void close() {
 
+    }
+
+    @Override
+    public List<AbstractWidget> getWidgets() {
+        return widgets;
+    }
+
+    @Override
+    public void addWidget(AbstractWidget widget) {
+        widgets.add(widget);
+    }
+
+    @Override
+    public void clearWidgets() {
+        widgets.clear();
     }
 }
