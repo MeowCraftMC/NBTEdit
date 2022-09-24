@@ -199,7 +199,9 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Todo: qyl27: remove new line button and color button.
         for (var widget : widgets) {
-            if (widget.isMouseOver(mouseX, mouseY)) {
+            if (widget instanceof EditBox) {
+                widget.mouseClicked(mouseX, mouseY, button);
+            } else if (widget.isMouseOver(mouseX, mouseY)) {
                 return widget.mouseClicked(mouseX, mouseY, button);
             }
         }
@@ -276,33 +278,36 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     protected static void setValidValue(NBTTree.Node<Tag> node, String value) {
         Tag tag = node.getTag();
-
-        if (tag instanceof ByteTag) {
-            node.setTag(ByteTag.valueOf(ParseHelper.parseByte(value)));
-        }
-        if (tag instanceof ShortTag) {
-            node.setTag(ShortTag.valueOf(ParseHelper.parseShort(value)));
-        }
-        if (tag instanceof IntTag) {
-            node.setTag(IntTag.valueOf(ParseHelper.parseInt(value)));
-        }
-        if (tag instanceof LongTag) {
-            node.setTag(LongTag.valueOf(ParseHelper.parseLong(value)));
-        }
-        if (tag instanceof FloatTag) {
-            node.setTag(FloatTag.valueOf(ParseHelper.parseFloat(value)));
-        }
-        if (tag instanceof DoubleTag) {
-            node.setTag(DoubleTag.valueOf(ParseHelper.parseDouble(value)));
-        }
-        if (tag instanceof ByteArrayTag) {
-            node.setTag(new ByteArrayTag(ParseHelper.parseByteArray(value)));
-        }
-        if (tag instanceof IntArrayTag) {
-            node.setTag(new IntArrayTag(ParseHelper.parseIntArray(value)));
-        }
-        if (tag instanceof StringTag) {
-            node.setTag(StringTag.valueOf(value));
+        try {
+            if (tag instanceof ByteTag) {
+                node.setTag(ByteTag.valueOf(ParseHelper.parseByte(value)));
+            }
+            if (tag instanceof ShortTag) {
+                node.setTag(ShortTag.valueOf(ParseHelper.parseShort(value)));
+            }
+            if (tag instanceof IntTag) {
+                node.setTag(IntTag.valueOf(ParseHelper.parseInt(value)));
+            }
+            if (tag instanceof LongTag) {
+                node.setTag(LongTag.valueOf(ParseHelper.parseLong(value)));
+            }
+            if (tag instanceof FloatTag) {
+                node.setTag(FloatTag.valueOf(ParseHelper.parseFloat(value)));
+            }
+            if (tag instanceof DoubleTag) {
+                node.setTag(DoubleTag.valueOf(ParseHelper.parseDouble(value)));
+            }
+            if (tag instanceof ByteArrayTag) {
+                node.setTag(new ByteArrayTag(ParseHelper.parseByteArray(value)));
+            }
+            if (tag instanceof IntArrayTag) {
+                node.setTag(new IntArrayTag(ParseHelper.parseIntArray(value)));
+            }
+            if (tag instanceof StringTag) {
+                node.setTag(StringTag.valueOf(value));
+            }
+        } catch (NumberFormatException ex) {
+            setValidValue(node, "0");   // Todo: qyl27: 但愿人没事。
         }
     }
 
