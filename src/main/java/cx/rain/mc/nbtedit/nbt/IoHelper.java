@@ -23,11 +23,11 @@ public class IoHelper {
 	}
 
 	public static Map<String, Tag> getMap(CompoundTag tag) {
-		return ObfuscationReflectionHelper.getPrivateValue(CompoundTag.class, tag, "tags");
+		return tag.tags;
 	}
 
 	public static Tag getTagAt(ListTag tag, int index) {
-		List<Tag> list = ObfuscationReflectionHelper.getPrivateValue(ListTag.class, tag, "list");
+		var list = tag.list;
 		return list.get(index);
 	}
 
