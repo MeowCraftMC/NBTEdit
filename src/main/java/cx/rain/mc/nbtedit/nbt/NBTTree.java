@@ -19,52 +19,87 @@ public class NBTTree {
     }
 
     public CompoundTag toCompound() {
-        var tag = new CompoundTag();
-        toCompoundInternal(rootNode, tag);
-        return tag;
+//        var tag = new CompoundTag();
+//        toCompoundInternal(rootNode, tag);
+//        return tag;
+        return compoundNodeToTag(rootNode);
     }
 
     public Node<CompoundTag> getRoot() {
         return rootNode;
     }
 
-    private void toCompoundInternal(Node<?> node, CompoundTag tag) {
+    // Fixme: work, plz.
+    private CompoundTag compoundNodeToTag(Node<?> node) {
+        var tag = new CompoundTag();
         for (var child : node.getChildren()) {
-            String name = child.getName();
-            Tag base = child.getTag();
-            if (base instanceof CompoundTag compound) {
-                toCompoundInternal(child, compound);
-                tag.put(name, compound);
-            } else if (base instanceof ListTag list) {
-                toCompoundInternal(child, list);
-                tag.put(name, list);
+            var name = child.getName();
+            var childTag = child.getTag();
+
+            if (childTag instanceof CompoundTag) {
+                tag.put(name, compoundNodeToTag(child));
+            } else if (childTag instanceof ListTag) {
+                tag.put(name, listNodeToTag(child));
             } else {
-                tag.put(name, base.copy());
+                tag.put(name, childTag);
             }
         }
+        return tag;
     }
 
-    public void toCompoundInternal(Node<?> node, ListTag list) {
+    private ListTag listNodeToTag(Node<?> node) {
+        var tag = new ListTag();
         for (var child : node.getChildren()) {
-            Tag childTag = child.getTag();
-            if (childTag instanceof CompoundTag compound) {
-                toCompoundInternal(child, compound);
-                list.add(compound);
-            } else if (childTag instanceof ListTag childListTag) {
-                toCompoundInternal(child, childListTag);
-                list.add(childListTag);
+            var childTag = child.getTag();
+
+            if (childTag instanceof CompoundTag) {
+                tag.add(compoundNodeToTag(child));
+            } else if (childTag instanceof ListTag) {
+                tag.add(listNodeToTag(child));
             } else {
-                list.add(childTag.copy());
+                tag.add(childTag);
             }
         }
+        return tag;
     }
+
+//    private void toCompoundInternal(Node<?> node, CompoundTag tag) {
+//        for (var child : node.getChildren()) {
+//            String name = child.getName();
+//            Tag base = child.getTag();
+//            if (base instanceof CompoundTag compound) {
+//                toCompoundInternal(child, compound);
+//                tag.put(name, compound);
+//            } else if (base instanceof ListTag list) {
+//                toCompoundInternal(child, list);
+//                tag.put(name, list);
+//            } else {
+//                tag.put(name, base.copy());
+//            }
+//        }
+//    }
+//
+//    public void toCompoundInternal(Node<?> node, ListTag list) {
+//        for (var child : node.getChildren()) {
+//            Tag childTag = child.getTag();
+//            if (childTag instanceof CompoundTag compound) {
+//                toCompoundInternal(child, compound);
+////                list.add(compound);
+//            } else if (childTag instanceof ListTag childListTag) {
+//                toCompoundInternal(child, childListTag);
+////                list.add(childListTag);
+//            } else {
+//                list.add(childTag.copy());
+//            }
+//        }
+//    }
 
     public static class Node<T extends Tag> {
         private String nbtName;
         private T nbtTag;
 
-        private Node<?> parent = null;
-        private List<Node<?>> children = new ArrayList<>();
+        private Node<? extends Tag> parent = null;
+        private final List<Node<? extends Tag>> children = new ArrayList<>();
         private boolean shouldShowChildren = false;
 
         private Node(T tag) {
@@ -140,7 +175,7 @@ public class NBTTree {
         }
 
         public boolean hasChild() {
-            return children.size() > 0;
+            return !children.isEmpty();
         }
 
         public List<Node<?>> getChildren() {

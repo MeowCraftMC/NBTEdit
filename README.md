@@ -12,5 +12,8 @@ http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-
 ## Bug report（Bug反馈/催更）：
 Discord: [Here](https://discord.gg/7k6NcRRpGg)
 
-## Update log:
-A fatal bug was fixed.
+### Update log:
+```
+1.19.2-4.0.3:
+Some fatal bug was fixed.
+```
