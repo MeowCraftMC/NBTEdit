@@ -6,6 +6,7 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.nbt.ClipboardStates;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -23,7 +24,8 @@ public class SaveLoadSlotButton extends Button {
     private int tickCount = -1;
 
     public SaveLoadSlotButton(ClipboardStates.Clipboard saveIn, int xRight, int y, int id, OnPress onPressed) {
-        super(0, y, 0, HEIGHT, Component.literal("Save #" + id), onPressed);
+        // Todo: Save slot component i18n.
+        super(0, y, 0, HEIGHT, Component.literal("Save #" + id), onPressed, componentSupplier -> componentSupplier.get().append(Component.literal("Save #" + id)));
 
         save = saveIn;
         rightX = xRight;
@@ -48,11 +50,11 @@ public class SaveLoadSlotButton extends Button {
         }
 
         width = Mth.clamp(width, MIN_WIDTH, MAX_WIDTH);
-        x = rightX - width;
+        setX(rightX - width);
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        return mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
     }
 
     public ClipboardStates.Clipboard getSave() {
@@ -63,19 +65,19 @@ public class SaveLoadSlotButton extends Button {
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
         int textColor = ((isMouseInside(mouseX, mouseY))) ? 16777120 : 0xffffff;
 
-        renderButton(stack, getMinecraft(), x, y, 0, 66, width, height);
+        renderButton(stack, getMinecraft(), getX(), getY(), 0, 66, width, height);
 
-        drawCenteredString(stack, getMinecraft().font, text, x + width / 2, y + 6, textColor);
+        drawCenteredString(stack, getMinecraft().font, text, getX() + width / 2, getY() + 6, textColor);
         if (tickCount != -1 && tickCount / 6 % 2 == 0) {
             getMinecraft().font.drawShadow(stack, "_",
-                    x + (width + getMinecraft().font.width(text)) / 2 + 1, y + 6, 0xffffff);
+                    getX() + (width + getMinecraft().font.width(text)) / 2 + 1, getY() + 6, 0xffffff);
         }
 
         if (isVisible) {
             textColor = (isMouseInside(mouseX, mouseY)) ? 16777120 : 0xffffff;
             renderButton(stack, getMinecraft(), mouseX, mouseY, 0, 66, width, height);
             drawCenteredString(stack, getMinecraft().font, "x",
-                    x - width / 2, y + 6, textColor);
+                    getX() - width / 2, getY() + 6, textColor);
         }
     }
 

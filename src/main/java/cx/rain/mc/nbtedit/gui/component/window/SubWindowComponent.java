@@ -36,10 +36,8 @@ public abstract class SubWindowComponent extends AbstractWidget {
     protected void onDrag(double startX, double startY, double dragX, double dragY) {
         super.onDrag(startX, startY, dragX, dragY);
 
-        x += (int) (startX + dragX);
-        y += (int) (startY + dragY);
-
-
+        setX(getX() + (int) (startX + dragX));
+        setY(getY() + (int) (startY + dragY));
     }
 
     public void tick() {

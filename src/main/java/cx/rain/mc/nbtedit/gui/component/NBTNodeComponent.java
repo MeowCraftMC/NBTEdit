@@ -49,11 +49,11 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public boolean isMouseInsideText(int mouseX, int mouseY) {
-        return mouseX >= x && mouseY >= y && mouseX < width + x && mouseY < height + y;
+        return mouseX >= getX() && mouseY >= getY() && mouseX < width + getX() && mouseY < height + getY();
     }
 
     public boolean isMouseInsideSpoiler(int mouseX, int mouseY) {
-        return mouseX >= x - 9 && mouseY >= y && mouseX < x && mouseY < y + height;
+        return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + height;
     }
 
     public boolean shouldShowChildren() {
@@ -77,15 +77,15 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public void shiftY(int offsetY) {
-        y += offsetY;
+        setY(getY() + offsetY);
     }
 
     public boolean shouldRender(int top, int bottom) {
-        return y + height >= top && y <= bottom;
+        return getY() + height >= top && getY() <= bottom;
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narration) {
+    protected void updateWidgetNarration(NarrationElementOutput narration) {
         narration.add(NarratedElementType.TITLE, text);
     }
 
@@ -99,14 +99,14 @@ public class NBTNodeComponent extends AbstractWidget {
         RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
 
         if (isSelected) {
-            Gui.fill(stack, x + 11, y, x + width, y + height, Integer.MIN_VALUE);
+            Gui.fill(stack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
         }
 
         if (node.hasChild()) {
-            blit(stack, x - 9, y, (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
+            blit(stack, getX() - 9, getY(), (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
         }
 
-        blit(stack, x + 1, y, (node.getTag().getId() - 1) * 9, 18, 9, 9);
-        drawString(stack, getMinecraft().font, text, x + 11, y + (this.height - 8) / 2, color);
+        blit(stack, getX() + 1, getY(), (node.getTag().getId() - 1) * 9, 18, 9, 9);
+        drawString(stack, getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
 }

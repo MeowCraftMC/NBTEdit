@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
@@ -16,8 +17,8 @@ public class SpecialCharacterButton extends Button {
 
     protected int buttonId;
 
-    public SpecialCharacterButton(int id, int x, int y, OnPress p_93726_) {
-        super(x, y, 14, 14, Component.empty(), p_93726_);
+    public SpecialCharacterButton(int id, int x, int y, OnPress onPress) {
+        super(x, y, 14, 14, Component.empty(), onPress, componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER)));
 
         buttonId = id;
     }
@@ -31,7 +32,7 @@ public class SpecialCharacterButton extends Button {
         RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
 
         if (isMouseInside(mouseX, mouseY))
-            Gui.fill(stack, x, y, x + width, y + height, 0x80ffffff);
+            Gui.fill(stack, getX(), getY(), getX() + width, getY() + height, 0x80ffffff);
 
         if (isActive()) {
             GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -39,10 +40,10 @@ public class SpecialCharacterButton extends Button {
             GlStateManager._clearColor(0.5F, 0.5F, 0.5F, 1.0F);
         }
 
-        blit(stack, x, y, buttonId * width, 27, width, height);
+        blit(stack, getX(), getY(), buttonId * width, 27, width, height);
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return isActive() && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        return isActive() && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
     }
 }

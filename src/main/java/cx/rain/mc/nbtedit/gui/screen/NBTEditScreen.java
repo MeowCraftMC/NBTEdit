@@ -54,21 +54,25 @@ public class NBTEditScreen extends Screen {
     protected void init() {
         super.init();
 
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         clearWidgets();
 
         gui.init(width, height, height - 35);
 
-        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
-        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
+        addRenderableWidget(Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked)
+                .pos(width / 4 - 100, height - 27)
+                .size(200, 20)
+                .build());
+
+        addRenderableWidget(Button.builder(Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked)
+                .pos(width * 3 / 4 - 100, height - 27)
+                .size(200, 20)
+                .build());
     }
 
-    @Override
-    public void onClose() {
-        super.onClose();
-
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
-    }
+//    @Override
+//    public void onClose() {
+//        super.onClose();
+//    }
 
     @Override
     public void tick() {

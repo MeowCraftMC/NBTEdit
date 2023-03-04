@@ -26,4 +26,15 @@ public class Constants {
     public static final String GUI_BUTTON_LOAD = "gui.button.load";
     public static final String GUI_BUTTON_QUIT = "gui.button.quit";
     public static final String GUI_BUTTON_CANCEL = "gui.button.cancel";
+
+    public static final String GUI_NARRATION_BUTTON_COPY = "gui.narration.button.copy";
+    public static final String GUI_NARRATION_BUTTON_PASTE = "gui.narration.button.paste";
+    public static final String GUI_NARRATION_BUTTON_CUT = "gui.narration.button.cut";
+    public static final String GUI_NARRATION_BUTTON_EDIT = "gui.narration.button.edit";
+    public static final String GUI_NARRATION_BUTTON_DELETE = "gui.narration.button.delete";
+    public static final String GUI_NARRATION_BUTTON_ADD = "gui.narration.button.add";   // Todo: Specify data type name.
+    public static final String GUI_NARRATION_BUTTON_SPECIAL_CHARACTER = "gui.narration.button.special_character";
+    public static final String GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR = "gui.narration.sub_window.value_editor";
+
+
 }

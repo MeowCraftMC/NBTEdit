@@ -3,11 +3,12 @@ package cx.rain.mc.nbtedit.data.provider.language;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class LanguageProviderZHCN extends LanguageProvider {
-    public LanguageProviderZHCN(DataGenerator gen) {
-        super(gen, NBTEdit.MODID, "zh_cn");
+    public LanguageProviderZHCN(PackOutput packOutput) {
+        super(packOutput, NBTEdit.MODID, "zh_cn");
     }
 
     @Override
@@ -36,5 +37,14 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(Constants.GUI_BUTTON_LOAD, "加载");
         add(Constants.GUI_BUTTON_QUIT, "退出");
         add(Constants.GUI_BUTTON_CANCEL, "取消");
+
+        add(Constants.GUI_NARRATION_BUTTON_COPY, "复制按钮");
+        add(Constants.GUI_NARRATION_BUTTON_PASTE, "粘贴按钮");
+        add(Constants.GUI_NARRATION_BUTTON_CUT, "剪切按钮");
+        add(Constants.GUI_NARRATION_BUTTON_EDIT, "编辑按钮");
+        add(Constants.GUI_NARRATION_BUTTON_DELETE, "删除按钮");
+        add(Constants.GUI_NARRATION_BUTTON_ADD, "添加按钮");
+        add(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER, "插入特殊符号");
+        add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "数值编辑子窗口");
     }
 }

@@ -15,6 +15,7 @@ import cx.rain.mc.nbtedit.gui.component.window.ISubWindowHolder;
 import cx.rain.mc.nbtedit.gui.component.window.SubWindowComponent;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
+import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.SortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -184,30 +185,36 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         int yLoc = 4;
 
         // Todo: qyl27: Copy/Paste function.
-        copyButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onCopyButtonClick); // Copy Button.
+        copyButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onCopyButtonClick,
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_COPY))); // Copy Button.
         addButton(copyButton);
 
         xLoc += 15;
-        cutButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onCutButtonClick); // Cut Button.
+        cutButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onCutButtonClick,
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_CUT))); // Cut Button.
         addButton(cutButton);
 
         xLoc += 15;
-        pasteButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onPasteButtonClick); // Paste Button.
+        pasteButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onPasteButtonClick,
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_PASTE))); // Paste Button.
         addButton(pasteButton);
 
         xLoc += 45;
-        editButton = new NBTOperatorButton(12, xLoc, yLoc, this, this::onEditButtonClick); // Edit Button.
+        editButton = new NBTOperatorButton(12, xLoc, yLoc, this, this::onEditButtonClick,
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_EDIT))); // Edit Button.
         addButton(editButton);
 
         xLoc += 15;
-        deleteButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onDeleteButtonClick); // Delete Button.
+        deleteButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onDeleteButtonClick,
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_DELETE))); // Delete Button.
         addButton(deleteButton);
 
         // Add nbt type buttons.
         xLoc = 18;
         yLoc = 17;
         for (var i = 1; i < 12; i++) {
-            var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick);
+            var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
+                    componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_ADD)));
             addButtons[i - 1] = button;
             addButton(button);
             xLoc += 9;
@@ -525,7 +532,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         var index = getIndexOf(focused);
         if (index != -1) {
             var component = nodes.get(index);
-            shiftY((bottom + START_Y + 1) / 2 - (component.y + component.getHeight()));
+            shiftY((bottom + START_Y + 1) / 2 - (component.getY() + component.getHeight()));
         }
     }
 
@@ -702,7 +709,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             if (node.spoilerClicked(mouseX, mouseY)) { // Check hide/show children buttons
                 shouldUpdate = true;
                 if (node.shouldShowChildren()) {
-                    heightOffset = (START_Y + 1) - (node.y) + heightOffset;
+                    heightOffset = (START_Y + 1) - (node.getY()) + heightOffset;
                 }
                 break;
             }

@@ -3,11 +3,12 @@ package cx.rain.mc.nbtedit.data.provider.language;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class LanguageProviderENUS extends LanguageProvider {
-    public LanguageProviderENUS(DataGenerator gen) {
-        super(gen, NBTEdit.MODID, "en_us");
+    public LanguageProviderENUS(PackOutput packOutput) {
+        super(packOutput, NBTEdit.MODID, "en_us");
     }
 
     @Override
@@ -36,5 +37,14 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(Constants.GUI_BUTTON_LOAD, "Load");
         add(Constants.GUI_BUTTON_QUIT, "Quit");
         add(Constants.GUI_BUTTON_CANCEL, "Cancel");
+
+        add(Constants.GUI_NARRATION_BUTTON_COPY, "Copy Button");
+        add(Constants.GUI_NARRATION_BUTTON_PASTE, "Paste Button");
+        add(Constants.GUI_NARRATION_BUTTON_CUT, "Cut Button");
+        add(Constants.GUI_NARRATION_BUTTON_EDIT, "Edit Button");
+        add(Constants.GUI_NARRATION_BUTTON_DELETE, "Delete Button");
+        add(Constants.GUI_NARRATION_BUTTON_ADD, "Add Button");
+        add(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER, "Insert Special Character");
+        add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "Value Editor Sub-Window");
     }
 }

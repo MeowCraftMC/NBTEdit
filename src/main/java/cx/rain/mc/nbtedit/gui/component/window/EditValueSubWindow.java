@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.gui.component.window;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.*;
@@ -61,19 +63,19 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     public void init(int xLoc, int yLoc) {
-        x = xLoc;
-        y = yLoc;
+        setX(getX() + xLoc);
+        setY(getY() + yLoc);
 
-//        colorButton = new SpecialCharacterButton((byte) 0, x + width - 1, y + 34, this::onColorButtonClicked);
-//        newLineButton = new SpecialCharacterButton((byte) 1, x + width - 1, y + 50, this::onNewLineButtonClicked);
+//        colorButton = new SpecialCharacterButton((byte) 0, getX()+ width - 1, getY() + 34, this::onColorButtonClicked);
+//        newLineButton = new SpecialCharacterButton((byte) 1, getX()+ width - 1, getY() + 50, this::onNewLineButtonClicked);
 
         String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
-        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
+        nameField = new EditBox(getMinecraft().font, getX() + 46, getY() + 18, 116, 15, Component.literal("Name"));
         addWidget(nameField);
 
-        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
+        valueField = new EditBox(getMinecraft().font, getX() + 46, getY() + 44, 116, 15, Component.literal("Value"));
         addWidget(valueField);
 
         nameField.setValue(name);
@@ -88,8 +90,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         if (!nameField.isFocused() && !valueField.isFocused()) {
             if (canEditName) {
                 nameField.setFocus(true);
-            }
-            else if (canEditValue) {
+            } else if (canEditValue) {
                 valueField.setFocus(true);
             }
         }
@@ -97,25 +98,29 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 //        colorButton.active = valueField.isFocused();
 //        newLineButton.active = valueField.isFocused();
 
-        saveButton = new Button(x + 9, y + 62, 75, 20,
-                Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
+        saveButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked)
+                .pos(getX() + 9, getY() + 62)
+                .size(75, 20)
+                .build();
         addWidget(saveButton);
 
-        cancelButton = new Button(x + 93, y + 62, 75, 20,
-                Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
+        cancelButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked)
+                .pos(getX() + 93, getY() + 62)
+                .size(75, 20)
+                .build();
         addWidget(cancelButton);
     }
 
     protected void onSaveButtonClicked(Button button) {
-        nameField.mouseClicked(button.x, button.y, 0);
-        valueField.mouseClicked(button.x, button.y, 0);
+        nameField.mouseClicked(button.getX(), button.getY(), 0);
+        valueField.mouseClicked(button.getX(), button.getY(), 0);
         save();
         quit();
     }
 
     protected void onCancelButtonClicked(Button button) {
-        nameField.mouseClicked(button.x, button.y, 0);
-        valueField.mouseClicked(button.x, button.y, 0);
+        nameField.mouseClicked(button.getX(), button.getY(), 0);
+        valueField.mouseClicked(button.getX(), button.getY(), 0);
         quit();
     }
 
@@ -149,21 +154,21 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
 
-        blit(stack, x, y, 0, 0, width, height);
+        blit(stack, getX(), getY(), 0, 0, width, height);
         if (!canEditName) {
-            fill(stack, x + 42, y + 15, x + 169, y + 31, 0x80000000);
+            fill(stack, getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
         }
         if (!canEditValue) {
-            fill(stack, x + 42, y + 41, x + 169, y + 57, 0x80000000);
+            fill(stack, getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
         }
 
         renderWidgets(stack, mouseX, mouseY, partialTicks);
 
         if (nameError != null) {
-            drawCenteredString(stack, getMinecraft().font, nameError, x + width / 2, y + 4, 0xFF0000);
+            drawCenteredString(stack, getMinecraft().font, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
         }
         if (valueError != null) {
-            drawCenteredString(stack, getMinecraft().font, nameError, x + width / 2, y + 32, 0xFF0000);
+            drawCenteredString(stack, getMinecraft().font, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
         }
 
 //        colorButton.render(stack, mouseX, mouseY, partialTicks);
@@ -209,8 +214,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narration) {
-        narration.add(NarratedElementType.HINT, "NBTEdit sub-window.");
+    public void updateWidgetNarration(NarrationElementOutput narration) {
+        narration.add(NarratedElementType.HINT, Component.translatable(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
     }
 
     private void isValidInput() {

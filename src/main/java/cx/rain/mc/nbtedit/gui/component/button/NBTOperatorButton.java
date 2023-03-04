@@ -8,8 +8,10 @@ import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public class NBTOperatorButton extends Button {
     public static final ResourceLocation BUTTONS_TEXTURE =
@@ -21,8 +23,8 @@ public class NBTOperatorButton extends Button {
 
     private NBTEditGui gui;
 
-    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed) {
-        super(x, y, 9, 9, Component.literal(NBTHelper.getNameByButton((byte) id)), onPressed);
+    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, CreateNarration createNarration) {
+        super(x, y, 9, 9, Component.literal(NBTHelper.getNameByButton((byte) id)), onPressed, createNarration);
 
         buttonId = id;
         gui = parent;
@@ -33,7 +35,7 @@ public class NBTOperatorButton extends Button {
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return isActive() && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        return isActive() && mouseX >= getX()&& mouseY >= getY()&& mouseX < getX()+ width && mouseY < getY()+ height;
     }
 
     public byte getButtonId() {
@@ -45,7 +47,7 @@ public class NBTOperatorButton extends Button {
         RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
 
         if (isMouseInside(mouseX, mouseY)) {    // checks if the mouse is over the button
-            Gui.fill(stack, x, y, x + width, y + height, 0x80ffffff);   // draw a grayish background
+            Gui.fill(stack, getX(), getY(), getX()+ width, getY()+ height, 0x80ffffff);   // draw a grayish background
             if (hoverTime == -1)
                 hoverTime = System.currentTimeMillis();
         } else {
@@ -54,7 +56,7 @@ public class NBTOperatorButton extends Button {
 
         if (isActive()) {
             // qyl27: A very hacky way to draw button's texture.
-            blit(stack, x, y, (buttonId - 1) * 9, 18, width, height); //Draw the texture
+            blit(stack, getX(), getY(), (buttonId - 1) * 9, 18, width, height); //Draw the texture
         }
 
         if (hoverTime != -1 && System.currentTimeMillis() - hoverTime > 300) {
@@ -62,7 +64,7 @@ public class NBTOperatorButton extends Button {
         }
     }
 
-    @Override
+//    @Override
     public void renderToolTip(PoseStack stack, int mouseX, int mouseY) {
         var str = getMessage();
         var width = getMinecraft().font.width(str);
