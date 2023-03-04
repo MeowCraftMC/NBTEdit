@@ -384,8 +384,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 pasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null
                         && NBTEdit.getInstance().getClientManager().getClipboard().getTag().getId() == elementType;
             } else {
-                inactiveAllButtons();
-
+                activeAllButtons();
                 editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
                 pasteButton.active = NBTEdit.getInstance().getClientManager().getClipboard() != null;
             }

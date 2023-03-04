@@ -255,24 +255,49 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     private static String getValue(Tag tag) {
         switch (tag.getId()) {
-            case 7:
+            case Tag.TAG_BYTE -> {
+                var byteTag = (ByteTag) tag;
+                return Integer.toString(byteTag.getAsInt());
+            }
+            case Tag.TAG_SHORT -> {
+                var shortTag = (ShortTag) tag;
+                return Integer.toString(shortTag.getAsInt());
+            }
+            case Tag.TAG_LONG -> {
+                var longTag = (LongTag) tag;
+                return Long.toString(longTag.getAsLong());
+            }
+            case Tag.TAG_FLOAT -> {
+                var floatTag = (FloatTag) tag;
+                return Float.toString(floatTag.getAsFloat());
+            }
+            case Tag.TAG_DOUBLE -> {
+                var doubleTag = (DoubleTag) tag;
+                return Double.toString(doubleTag.getAsDouble());
+            }
+            case Tag.TAG_BYTE_ARRAY -> {
                 var s = new StringBuilder();
                 for (byte b : ((ByteArrayTag) tag).getAsByteArray()) {
-                    s.append(b).append(" ");
+                    s.append(b).append(",");
                 }
                 return s.toString();
-            case 9:
+            }
+            case Tag.TAG_LIST -> {
                 return "TagList";
-            case 10:
+            }
+            case Tag.TAG_COMPOUND -> {
                 return "TagCompound";
-            case 11:
+            }
+            case Tag.TAG_INT_ARRAY -> {
                 var i = new StringBuilder();
                 for (int a : ((IntArrayTag) tag).getAsIntArray()) {
-                    i.append(a).append(" ");
+                    i.append(a).append(",");
                 }
                 return i.toString();
-            default:
+            }
+            default -> {
                 return NBTHelper.toString(tag);
+            }
         }
     }
 

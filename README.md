@@ -10,7 +10,7 @@ http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-
 ![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.19.2-dev/img/3.png)
 
 ## Bug report（Bug反馈/催更）：
-Discord: [Here](https://discord.gg/7k6NcRRpGg)
+Please go to the issues page.
 
 ### Update log:
 ```
