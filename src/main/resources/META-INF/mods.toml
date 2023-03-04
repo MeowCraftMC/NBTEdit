@@ -21,13 +21,13 @@ It can help many map creator to make custom items or help many mod creator to de
 [[dependencies.nbtedit]]
     modId="forge"
     mandatory=true
-    versionRange="[43,)"
+    versionRange="[44,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbtedit]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.19.3,1.20)"
     ordering="NONE"
     side="BOTH"
