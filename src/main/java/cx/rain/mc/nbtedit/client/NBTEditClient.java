@@ -12,9 +12,10 @@ public class NBTEditClient {
     public NBTEditClient() {
         clipboardSaves = new ClipboardStates(Paths.get(".", "nbtedit", "Clipboard.nbt").toFile());
 
-        ClipboardStates clipboard = getClipboardSaves();
-        clipboard.load();
-        clipboard.save();
+        // Fixme: it is not working.
+//        ClipboardStates clipboard = getClipboardSaves();
+//        clipboard.load();
+//        clipboard.save();
     }
 
 	public ClipboardStates getClipboardSaves() {

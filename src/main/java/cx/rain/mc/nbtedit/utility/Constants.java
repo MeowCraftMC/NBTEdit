@@ -14,6 +14,7 @@ public class Constants {
 
     public static final String MESSAGE_EDITING_ENTITY = "message.editing.entity";
     public static final String MESSAGE_EDITING_BLOCK_ENTITY = "message.editing.block_entity";
+    public static final String MESSAGE_EDITING_ITEM_STACK = "message.editing.item_stack";
 
     public static final String MESSAGE_SAVING_SUCCESSFUL = "message.saved.successful";
     public static final String MESSAGE_SAVING_FAILED_INVALID_NBT = "message.saving.failed.invalid_nbt";
@@ -22,6 +23,7 @@ public class Constants {
 
     public static final String GUI_TITLE_NBTEDIT_ENTITY = "gui.title.nbtedit_entity";
     public static final String GUI_TITLE_NBTEDIT_BLOCK_ENTITY = "gui.title.nbtedit_block_entity";
+    public static final String GUI_TITLE_NBTEDIT_ITEM_STACK = "gui.title.nbtedit_item_stack";
     public static final String GUI_BUTTON_SAVE = "gui.button.save";
     public static final String GUI_BUTTON_LOAD = "gui.button.load";
     public static final String GUI_BUTTON_QUIT = "gui.button.quit";

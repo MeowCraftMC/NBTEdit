@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
@@ -14,5 +15,9 @@ public class ScreenHelper {
 
     public static void showNBTEditScreen(BlockPos pos, CompoundTag tag) {
         Minecraft.getInstance().setScreen(new NBTEditScreen(pos, tag));
+    }
+
+    public static void showNBTEditScreen(ItemStack itemStack, CompoundTag tag) {
+        Minecraft.getInstance().setScreen(new NBTEditScreen(itemStack, tag));
     }
 }

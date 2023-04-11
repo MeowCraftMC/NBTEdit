@@ -13,17 +13,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
 
 public class NBTEditScreen extends Screen {
-    protected final boolean isEntity;
-
     protected UUID entityUuid;
-    protected int entityId;
+    protected int entityId = -1;
     protected boolean isSelf;
 
     protected BlockPos blockPos;
+
+    protected ItemStack itemStack;
 
     protected NBTEditGui gui;
 
@@ -31,7 +32,6 @@ public class NBTEditScreen extends Screen {
         super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_ENTITY, uuid));
         minecraft = Minecraft.getInstance();
 
-        isEntity = true;
         entityUuid = uuid;
         entityId = id;
         isSelf = self;
@@ -44,8 +44,16 @@ public class NBTEditScreen extends Screen {
                 pos.getX(), pos.getY(), pos.getZ()));
         minecraft = Minecraft.getInstance();
 
-        isEntity = false;
         blockPos = pos;
+
+        gui = new NBTEditGui(NBTTree.root(tag));
+    }
+
+    public NBTEditScreen(ItemStack itemStack, CompoundTag tag) {
+        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_ITEM_STACK, itemStack.getDisplayName().getString()));
+        minecraft = Minecraft.getInstance();
+
+        this.itemStack = itemStack;
 
         gui = new NBTEditGui(NBTTree.root(tag));
     }
@@ -68,11 +76,6 @@ public class NBTEditScreen extends Screen {
                 .size(200, 20)
                 .build());
     }
-
-//    @Override
-//    public void onClose() {
-//        super.onClose();
-//    }
 
     @Override
     public void tick() {
@@ -107,16 +110,20 @@ public class NBTEditScreen extends Screen {
     // <editor-fold desc="Properties and accessors.">
 
     public boolean isEntity() {
-        return isEntity;
+        return entityUuid != null || entityId != -1;
     }
 
     public boolean isBlockEntity() {
-        return !isEntity;
+        return blockPos != null;
+    }
+
+    public boolean isItemStack() {
+        return itemStack != null;
     }
 
     public Entity getEntity() {
         if (!isEntity()) {
-            throw new UnsupportedOperationException("Cannot get Entity by an BlockEntity!");
+            throw new UnsupportedOperationException("Cannot get Entity, it is not an Entity!");
         }
 
         return getMinecraft().level.getEntity(entityId);
@@ -124,10 +131,18 @@ public class NBTEditScreen extends Screen {
 
     public BlockPos getBlockPos() {
         if (!isBlockEntity()) {
-            throw new UnsupportedOperationException("Cannot get block position of an Entity!");
+            throw new UnsupportedOperationException("Cannot get block position, it is not a BlockEntity!");
         }
 
         return blockPos;
+    }
+
+    public ItemStack getItemStack() {
+        if (!isItemStack()) {
+            throw new UnsupportedOperationException("Cannot get ItemStack, it is not an ItemStack!");
+        }
+
+        return itemStack;
     }
 
     // </editor-fold>
@@ -144,10 +159,12 @@ public class NBTEditScreen extends Screen {
     }
 
     private void doSave() {
-        if (isEntity) {
+        if (isEntity()) {
             NBTEdit.getInstance().getNetworkManager().saveEditing(getEntity(), gui.getTree().toCompound(), isSelf);
-        } else {
+        } else if (isBlockEntity()) {
             NBTEdit.getInstance().getNetworkManager().saveEditing(getBlockPos(), gui.getTree().toCompound());
+        } else {
+            NBTEdit.getInstance().getNetworkManager().saveEditing(getItemStack(), gui.getTree().toCompound());
         }
     }
 

@@ -30,7 +30,9 @@ public class NBTEditCommand {
             .then(argument("block", BlockPosArgument.blockPos())
                     .executes(NBTEditCommand::onBlockEntity))
             .then(literal("me")
-                    .executes(NBTEditCommand::onEntityMe));
+                    .executes(NBTEditCommand::onEntityMe))
+            .then(literal("hand")
+                    .executes(NBTEditCommand::onItemHand));
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
@@ -92,6 +94,20 @@ public class NBTEditCommand {
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit to edit itself.");
         NBTEdit.getInstance().getNetworkManager().serverOpenClientGui(player);
+        return 1;
+    }
+
+    private static int onItemHand(final CommandContext<CommandSourceStack> context) {
+        if (!ensurePlayer(context)) {
+            return 0;
+        }
+
+        var player = context.getSource().getPlayer();
+        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+                " issued command /nbtedit to edit hand.");
+
+        var stack = player.getMainHandItem();
+        NBTEdit.getInstance().getNetworkManager().serverOpenClientGui(player, stack);
         return 1;
     }
 
