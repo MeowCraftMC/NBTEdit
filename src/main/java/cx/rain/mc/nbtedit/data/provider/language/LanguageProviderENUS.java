@@ -24,7 +24,8 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(Constants.MESSAGE_UNKNOWN_ENTITY_ID, "Unknown Entity ID.");
 
         add(Constants.MESSAGE_EDITING_ENTITY, "Editing Entity {0}.");
-        add(Constants.MESSAGE_EDITING_BLOCK_ENTITY, "Editing BlockEntity at {0} {1} {2}");
+        add(Constants.MESSAGE_EDITING_BLOCK_ENTITY, "Editing BlockEntity at {0} {1} {2}.");
+        add(Constants.MESSAGE_EDITING_ITEM_STACK, "Editing ItemStack named {0}.");
 
         add(Constants.MESSAGE_SAVING_SUCCESSFUL, "Saved successfully!");
         add(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT, "Save failed. Invalid NBT.");
@@ -33,6 +34,7 @@ public class LanguageProviderENUS extends LanguageProvider {
 
         add(Constants.GUI_TITLE_NBTEDIT_ENTITY, "Editing Entity {0}");
         add(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY, "Editing BlockEntity in {0} {1} {2}");
+        add(Constants.GUI_TITLE_NBTEDIT_ITEM_STACK, "Editing ItemStack named {0}");
         add(Constants.GUI_BUTTON_SAVE, "Save");
         add(Constants.GUI_BUTTON_LOAD, "Load");
         add(Constants.GUI_BUTTON_QUIT, "Quit");

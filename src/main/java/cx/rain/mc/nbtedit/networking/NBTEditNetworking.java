@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -55,6 +56,12 @@ public class NBTEditNetworking {
 				.consumerMainThread(S2CRayTracePacket::clientHandleOnMain)
 				.add();
 
+		CHANNEL.messageBuilder(C2SNothingToEditPacket.class, nextId())
+				.encoder(C2SNothingToEditPacket::toBytes)
+				.decoder(C2SNothingToEditPacket::new)
+				.consumerMainThread(C2SNothingToEditPacket::serverHandleOnMain)
+				.add();
+
 		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId())
 				.encoder(C2SEntityEditingRequestPacket::toBytes)
 				.decoder(C2SEntityEditingRequestPacket::new)
@@ -67,11 +74,12 @@ public class NBTEditNetworking {
 				.consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain)
 				.add();
 
-		CHANNEL.messageBuilder(C2SNothingToEditPacket.class, nextId())
-				.encoder(C2SNothingToEditPacket::toBytes)
-				.decoder(C2SNothingToEditPacket::new)
-				.consumerMainThread(C2SNothingToEditPacket::serverHandleOnMain)
+		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId())
+				.encoder(C2SItemStackEditingRequestPacket::toBytes)
+				.decoder(C2SItemStackEditingRequestPacket::new)
+				.consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain)
 				.add();
+
 
 		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId())
 				.encoder(S2COpenEntityEditingGuiPacket::toBytes)
@@ -85,6 +93,13 @@ public class NBTEditNetworking {
 				.consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain)
 				.add();
 
+		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId())
+				.encoder(S2COpenItemStackEditingGuiPacket::toBytes)
+				.decoder(S2COpenItemStackEditingGuiPacket::new)
+				.consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain)
+				.add();
+
+
 		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId())
 				.encoder(C2SEntitySavingPacket::toBytes)
 				.decoder(C2SEntitySavingPacket::new)
@@ -95,6 +110,12 @@ public class NBTEditNetworking {
 				.encoder(C2SBlockEntitySavingPacket::toBytes)
 				.decoder(C2SBlockEntitySavingPacket::new)
 				.consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain)
+				.add();
+
+		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId())
+				.encoder(C2SItemStackSavingPacket::toBytes)
+				.decoder(C2SItemStackSavingPacket::new)
+				.consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain)
 				.add();
 	}
 
@@ -110,8 +131,8 @@ public class NBTEditNetworking {
 		CHANNEL.sendToServer(new C2SBlockEntityEditingRequestPacket(pos));
 	}
 
-	public void clientOpenGuiRequest() {
-		CHANNEL.sendToServer(new C2SNothingToEditPacket());
+	public void clientOpenGuiRequest(ItemStack stack) {
+		CHANNEL.sendToServer(new C2SItemStackEditingRequestPacket(stack));
 	}
 
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
@@ -171,11 +192,30 @@ public class NBTEditNetworking {
 		}
 	}
 
+	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
+		if (NBTEditPermissions.hasPermission(player)) {
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+					" is editing ItemStack named " + stack.getDisplayName().getString() + ".");
+			player.getServer().execute(() -> {
+				var tag = stack.serializeNBT();
+				CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
+						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+			});
+		} else {
+			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+					.withStyle(ChatFormatting.RED));
+		}
+	}
+
 	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
 		CHANNEL.sendToServer(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
 	}
 
 	public void saveEditing(BlockPos pos, CompoundTag tag) {
 		CHANNEL.sendToServer(new C2SBlockEntitySavingPacket(pos, tag));
+	}
+
+	public void saveEditing(ItemStack stack, CompoundTag tag) {
+		CHANNEL.sendToServer(new C2SItemStackSavingPacket(stack, tag));
 	}
 }

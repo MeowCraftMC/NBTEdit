@@ -23,8 +23,9 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER, "你不能编辑其他玩家！");
         add(Constants.MESSAGE_UNKNOWN_ENTITY_ID, "无效的实体 ID！");
 
-        add(Constants.MESSAGE_EDITING_ENTITY, "正在编辑实体 %s。");
-        add(Constants.MESSAGE_EDITING_BLOCK_ENTITY, "正在编辑位于 %s %s %s 的方块实体。");
+        add(Constants.MESSAGE_EDITING_ENTITY, "正在编辑实体 {0}。");
+        add(Constants.MESSAGE_EDITING_BLOCK_ENTITY, "正在编辑位于 {0} {1} {2} 的方块实体。");
+        add(Constants.MESSAGE_EDITING_ITEM_STACK, "正在编辑名为 {0} 的物品。");
 
         add(Constants.MESSAGE_SAVING_SUCCESSFUL, "保存成功！");
         add(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT, "保存失败。无效的 NBT！");
@@ -33,6 +34,7 @@ public class LanguageProviderZHCN extends LanguageProvider {
 
         add(Constants.GUI_TITLE_NBTEDIT_ENTITY, "正在编辑实体 ID： {0}");
         add(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY, "正在编辑位于 {0} {1} {2} 的方块实体");
+        add(Constants.GUI_TITLE_NBTEDIT_ITEM_STACK, "正在编辑名为 {0} 的物品");
         add(Constants.GUI_BUTTON_SAVE, "保存");
         add(Constants.GUI_BUTTON_LOAD, "加载");
         add(Constants.GUI_BUTTON_QUIT, "退出");
