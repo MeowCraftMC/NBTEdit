@@ -26,6 +26,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 
 import java.util.*;
 import java.util.List;
@@ -799,8 +801,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     private void renderScrollBar(PoseStack stack, int mouseX, int mouseY) {
         if (heightDiff > 0) {
-            if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(),
-                    InputConstants.MOUSE_BUTTON_LEFT)) {
+            if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(),
+                    InputConstants.MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { // XXX: bad implementation, it should use AbstractScrollWidget instead.
                 if (yClick == -1) {
                     if (mouseX >= width - 20 && mouseX < width && mouseY >= START_Y - 1 && mouseY < bottom) {
                         yClick = mouseY;
