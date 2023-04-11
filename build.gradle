@@ -13,7 +13,7 @@ apply plugin: 'dev.architectury.loom'
 group = 'cx.rain.mc.nbtedit'
 archivesBaseName = 'nbtedit'
 
-version = '1.19.4-4.2.0'
+version = '1.19.4-4.2.1'
 if (System.getenv("JITPACK") == "true") {
     version += "-${System.getenv("VERSION")}"
 }

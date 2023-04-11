@@ -1,6 +1,6 @@
 # In-Game NBTEdit / 游戏内NBT编辑器
-A Minecraft mod allows you to edit any NBT tags of the game content while in-game. Such as TileEntities, Entities. It can help many map creators to make custom items or help many mod creators to debug.
-这是一个能帮助很多地图制作者设计自定义物品，或帮助很多模组制作者 Debug 的MC模组。你可以在游戏里面修改实体或者方块实体的NBT标签，而不需要重启游戏就可以立刻看到结果。
+A Minecraft mod allows you to edit any NBT tags of the game content with a GUI while in-game. Such as TileEntities, Entities. It may help map creators to make custom items or help mod creators to debug.  
+本模组可以用于在游戏内编辑物品、实体或方块的 NBT ，可能会对地图制作者制作自定义物品或模组开发者 Debug 有所帮助。
 
 ## Origin（原帖地址）: 
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
@@ -14,6 +14,10 @@ Please go to the issues page.
 
 ### Update log:
 ```
+NBTEdit 1.19.4-4.2.1:
+Fix a mistake about scroll bar.
+Bump version.
+
 NBTEdit 1.19.4-4.2.0:
 Updated NBTEdit to 1.19.4.
 New GUI is still WIP.
