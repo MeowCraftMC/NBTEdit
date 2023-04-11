@@ -90,7 +90,7 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);

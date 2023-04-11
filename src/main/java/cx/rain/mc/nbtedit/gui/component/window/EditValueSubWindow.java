@@ -89,9 +89,9 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
         if (!nameField.isFocused() && !valueField.isFocused()) {
             if (canEditName) {
-                nameField.setFocus(true);
+                nameField.setFocused(true);
             } else if (canEditValue) {
-                valueField.setFocus(true);
+                valueField.setFocused(true);
             }
         }
 
@@ -151,7 +151,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
 
         blit(stack, getX(), getY(), 0, 0, width, height);

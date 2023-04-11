@@ -99,7 +99,7 @@ public class NBTEditNetworking {
 	}
 
 	public void serverRayTraceRequest(ServerPlayer player) {
-		CHANNEL.sendTo(new S2CRayTracePacket(), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+		CHANNEL.sendTo(new S2CRayTracePacket(), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	public void clientOpenGuiRequest(Entity entity, boolean self) {
@@ -130,7 +130,7 @@ public class NBTEditNetworking {
 			player.getServer().execute(() -> {
 				var tag = entity.serializeNBT();
 				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
-						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			});
 		} else {
 			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
@@ -146,7 +146,7 @@ public class NBTEditNetworking {
 			if (blockEntity != null) {
 				var tag = blockEntity.serializeNBT();
 				CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
-						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			} else {
 				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
 						.withStyle(ChatFormatting.RED));
@@ -163,7 +163,7 @@ public class NBTEditNetworking {
 			player.getServer().execute(() -> {
 				var tag = player.serializeNBT();
 				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
-						player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			});
 		} else {
 			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)

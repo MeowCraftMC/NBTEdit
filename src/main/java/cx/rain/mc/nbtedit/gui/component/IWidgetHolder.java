@@ -7,16 +7,16 @@ import net.minecraft.client.gui.components.Button;
 import java.util.List;
 
 public interface IWidgetHolder {
-    public List<AbstractWidget> getWidgets();
+    List<AbstractWidget> getWidgets();
 
-    public void addWidget(AbstractWidget widget);
+    void addWidget(AbstractWidget widget);
 
-    public void clearWidgets();
+    void clearWidgets();
 
-    public default void renderWidgets(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    default void renderWidgets(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         for (var widget : getWidgets()) {
             if (widget instanceof Button button) {
-                button.renderButton(stack, mouseX, mouseY, partialTicks);
+                button.render(stack, mouseX, mouseY, partialTicks);
             } else {
                 widget.render(stack, mouseX, mouseY, partialTicks);
             }

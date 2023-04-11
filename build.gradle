@@ -13,7 +13,7 @@ apply plugin: 'dev.architectury.loom'
 group = 'cx.rain.mc.nbtedit'
 archivesBaseName = 'nbtedit'
 
-version = '1.19.3-4.1.0'
+version = '1.19.4-4.2.0'
 if (System.getenv("JITPACK") == "true") {
     version += "-${System.getenv("VERSION")}"
 }
@@ -33,9 +33,6 @@ loom {
     silentMojangMappingsLicense()
 
     forge {
-        dataGen {
-            mod 'nbtedit'
-        }
     }
 
     runs {
@@ -83,12 +80,12 @@ repositories {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.19.3"
-    forge "net.minecraftforge:forge:1.19.3-44.1.21"
+    minecraft "com.mojang:minecraft:1.19.4"
+    forge "net.minecraftforge:forge:1.19.4-45.0.43"
 
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:2023.02.26@zip")
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
     }
 
     if (!release) {
