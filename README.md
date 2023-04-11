@@ -14,16 +14,16 @@ Please go to the issues page.
 
 ### Update log:
 ```
-**NBTEdit 1.19.4-4.2.0**:
+NBTEdit 1.19.4-4.2.0:
 Updated NBTEdit to 1.19.4.
 New GUI is still WIP.
 
-**NBTEdit 1.19.3-4.1.0**:
+NBTEdit 1.19.3-4.1.0:
 Updated NBTEdit to 1.19.3.
 
-**NBTEdit 1.19.2-4.0.4**:
+NBTEdit 1.19.2-4.0.4:
 Fixed a mistake about ListTag editor.
 
-**NBTEdit 1.19.2-4.0.3**:
+NBTEdit 1.19.2-4.0.3:
 Some fatal bug was fixed.
 ```
