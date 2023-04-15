@@ -19,11 +19,11 @@ Edit ItemStack in player's main hand.
 编辑玩家主手上的物品。
 
 - `/nbtedit <x> <y> <z>`  
-Edit BlockEntity at x y z.
+Edit BlockEntity at x y z.  
 编辑位于 x y z 的方块实体。
 
 - `/nbtedit <entity selector>`  
-Edit Entity with entity selector.
+Edit Entity with entity selector.  
 编辑由 entity selector 选择的实体。
 
 ### Permissions（权限）
