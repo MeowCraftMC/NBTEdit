@@ -48,7 +48,7 @@ Location（位置）: `./config/nbtedit.json`
 | Settings（配置选项）  | Description                             | 说明                      |
 |-----------------|-----------------------------------------|-------------------------|
 | canEditOthers   | Allow edit other player in multiplayer. | 是否允许对其他玩家使用 NBTEdit 编辑。 |
-| permissionLevel | Permission level to use NBTEdit.        | 使用 NBTEdit 所需的权限等级      |
+| permissionLevel | Permission level to use NBTEdit.        | 使用 NBTEdit 所需的权限等级。     |
 
 ## Origin（原帖地址） 
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
