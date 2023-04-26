@@ -29,7 +29,26 @@ Edit Entity with <entity selector>.
 ### Permissions（权限）
 `nbtedit.use`:  
 The permission to use NBTEdit. Server operators have this permission by default.  
-使用 NBTEdit 的权限。默认服务器OP拥有。
+使用 NBTEdit 的权限。默认服务器OP拥有。  
+**Permission nodes above are Forge only**, Fabric OP(permission level >= 2) have this permission by default, change it in configuration files.  
+**上述权限节点是 Forge 限定**，Fabric 下默认权限等级大于等于 2 的 OP 拥有，可在配置文件中调整。
+
+### Configurations（配置文件）
+
+#### Forge
+Location（位置）: `./config/nbtedit.toml`
+
+| Settings（配置选项）         | Description                             | 说明                      |
+|------------------------|-----------------------------------------|-------------------------|
+| can_edit_other_players | Allow edit other player in multiplayer. | 是否允许对其他玩家使用 NBTEdit 编辑。 |
+
+#### Fabric
+Location（位置）: `./config/nbtedit.json`
+
+| Settings（配置选项）  | Description                             | 说明                      |
+|-----------------|-----------------------------------------|-------------------------|
+| canEditOthers   | Allow edit other player in multiplayer. | 是否允许对其他玩家使用 NBTEdit 编辑。 |
+| permissionLevel | Permission level to use NBTEdit.        | 使用 NBTEdit 所需的权限等级      |
 
 ## Origin（原帖地址） 
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
@@ -44,6 +63,9 @@ Please go to the issues page.
 
 ## Update log（更新日志）
 ```
+NBTEdit 1.19.4-4.2.3:
+Add fabric version, use architectury for it.
+
 NBTEdit 1.19.4-4.2.2:
 Add command /nbtedit hand to edit ItemStack in hand.
 

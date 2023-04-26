@@ -1,139 +1,64 @@
 plugins {
-    id 'eclipse'
-    id 'maven-publish'
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.1-SNAPSHOT" apply false
 }
 
-apply plugin: 'java'
-apply plugin: 'architectury-plugin'
-apply plugin: 'maven-publish'
-apply plugin: 'dev.architectury.loom'
-
-group = 'cx.rain.mc.nbtedit'
-archivesBaseName = 'nbtedit'
-
-version = '1.19.4-4.2.2'
-if (System.getenv("JITPACK") == "true") {
-    version += "-${System.getenv("VERSION")}"
-}
-var release = false
-if (release || (System.getenv("MOD_RELEASE") == 'true')) {
-    version += '-release'
-} else {
-    version += '-dev'
-}
-
 architectury {
-    platformSetupLoomIde()
-    forge()
+    minecraft = project.minecraft_version
 }
 
-loom {
-    silentMojangMappingsLicense()
+subprojects {
+    apply plugin: 'dev.architectury.loom'
 
-    forge {
+    loom {
+        silentMojangMappingsLicense()
     }
 
-    runs {
-        data {
-            data()
-            programArgs '--all', '--mod', 'nbtedit'
-            programArgs '--output', file('src/generated/resources').absolutePath
-            programArgs '--existing', file('src/main/resources').absolutePath
+    dependencies {
+        minecraft "com.mojang:minecraft:${project.minecraft_version}"
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_version}@zip")
         }
     }
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
 
-println "Java: ${System.getProperty 'java.version'}, " +
-        "JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), " +
-        "Arch: ${System.getProperty 'os.arch'}"
+    group = 'cx.rain.mc.nbtedit'
+    archivesBaseName = project.archives_base_name
 
-sourceSets.main.resources {
-    srcDir 'src/generated/resources'
-}
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
-repositories {
-    flatDir {
-        dir 'libs'
+    version = project.mod_version
+    if (System.getenv('GITHUB_SHA') != null) {
+        version += "-${System.getenv('GITHUB_SHA').substring(0, 7)}"
+    } else if (System.getenv('JITPACK') == 'true') {
+        version += "-${System.getenv('VERSION')}"
     }
 
-    maven {
-        name = 'Jitpack'
-        url = 'https://jitpack.io'
+    var release = false
+    if (release || (System.getenv("MOD_RELEASE") == 'true')) {
+        version += '-release'
+    } else {
+        version += '-dev'
     }
+    project.version = version;
 
-    maven {
-        name = 'ParchmentMC'
-        url = 'https://maven.parchmentmc.org'
-    }
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:1.19.4"
-    forge "net.minecraftforge:forge:1.19.4-45.0.43"
-
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
-    }
-
-    if (!release) {
-        // qyl27: Mod dependency for debug here.
-    }
-}
-jar {
-    archiveClassifier.set('')
-
-    manifest {
-        attributes([
-                "Specification-Title"     : "nbtedit",
-                "Specification-Vendor"    : "qyl27",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "qyl27",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
         }
     }
-}
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-import org.apache.tools.ant.filters.ReplaceTokens
-task injectString(type: Copy) {
-    delete(file("${buildDir}/generated"))
-
-    from ('src/main/java') {
-        include '**/*.java'
-        filter(ReplaceTokens, tokens: [version: project.version])
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
     }
-    into "${buildDir}/generated/java"
+
+    java {
+        withSourcesJar()
+    }
 }
-compileJava.source = "${buildDir}/generated/java"
-compileJava.dependsOn injectString

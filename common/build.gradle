@@ -1,0 +1,36 @@
+architectury {
+    common(rootProject.enabled_platforms.split(','))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/nbtedit.accesswidener")
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+}
+
+publishing {
+    publications {
+        mavenCommon(MavenPublication) {
+            artifactId = rootProject.archives_base_name
+            from components.java
+        }
+    }
+
+    repositories {
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+task injectString(type: Copy) {
+    delete(file("${buildDir}/generated"))
+
+    from('src/main/java') {
+        include '**/*.java'
+        filter(ReplaceTokens, tokens: [version: project.version])
+    }
+    into "${buildDir}/generated/java"
+}
+compileJava.source = "${buildDir}/generated/java"
+compileJava.dependsOn injectString

@@ -6,3 +6,7 @@ pluginManagement {
         maven { url = 'https://maven.minecraftforge.net/' }
     }
 }
+
+include(':common')
+include(':fabric')
+include(':forge')
