@@ -46,6 +46,8 @@ public class S2COpenItemStackEditingGuiPacket implements FabricPacket {
 
         NBTEdit.getInstance().getLogger().info("Editing ItemStack "
                 + itemStack.getDisplayName().getString() + "in hand.");
-        ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
+        client.execute(() -> {
+            ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
+        });
     }
 }

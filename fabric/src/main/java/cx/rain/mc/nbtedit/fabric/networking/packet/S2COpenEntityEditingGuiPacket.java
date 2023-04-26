@@ -56,6 +56,8 @@ public class S2COpenEntityEditingGuiPacket implements FabricPacket {
         var isSelf = buf.readBoolean();
 
         NBTEdit.getInstance().getLogger().info("Editing entity with UUID " + entityUuid + ".");
-        ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
+        client.execute(() -> {
+            ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
+        });
     }
 }

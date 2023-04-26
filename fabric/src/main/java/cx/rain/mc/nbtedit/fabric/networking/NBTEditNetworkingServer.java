@@ -78,7 +78,7 @@ public class NBTEditNetworkingServer {
 			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " is editing itself.");
 			player.getServer().execute(() -> {
 				var tag = new CompoundTag();
-				player.save(tag);
+				player.saveWithoutId(tag);
 				ServerPlayNetworking.send(player, new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true));
 			});
 		} else {

@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 architectury {
@@ -8,7 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+    accessWidenerPath = project(':common').loom.accessWidenerPath
 }
 
 configurations {
@@ -21,8 +21,8 @@ configurations {
 
 repositories {
     maven {
-        name = "Mod Menu"
-        url = "https://maven.terraformersmc.com/releases"
+        name = 'Mod Menu'
+        url = 'https://maven.terraformersmc.com/releases'
     }
 }
 
@@ -30,25 +30,25 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modRuntimeOnly "com.terraformersmc:modmenu:6.2.1"
+    modRuntimeOnly 'com.terraformersmc:modmenu:6.2.1'
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive = false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive = false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive = false }
 }
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property 'version', project.version
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
     }
 }
 
 shadowJar {
-    exclude "architectury.common.json"
+    exclude 'architectury.common.json'
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    classifier 'dev-shadow'
 }
 
 remapJar {
@@ -59,13 +59,17 @@ remapJar {
 }
 
 jar {
-    classifier "dev"
+    classifier 'dev'
 }
 
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
+    def commonSources = project(':common').sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
+}
+
+remapJar {
+    classifier 'fabric'
 }
 
 components.java {
@@ -77,7 +81,7 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifactId = rootProject.archives_base_name + '-' + project.name
             from components.java
         }
     }

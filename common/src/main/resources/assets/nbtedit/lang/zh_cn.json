@@ -12,7 +12,7 @@
   "gui.narration.button.special_character": "插入特殊符号",
   "gui.narration.sub_window.value_editor": "数值编辑子窗口",
   "gui.title.nbtedit_block_entity": "正在编辑位于 {0} {1} {2} 的方块实体",
-  "gui.title.nbtedit_entity": "正在编辑实体 ID： {0}",
+  "gui.title.nbtedit_entity": "正在编辑实体 ID：{0}",
   "gui.title.nbtedit_item_stack": "正在编辑名为 {0} 的物品",
   "key.category.nbtedit": "游戏内 NBT 修改器 （重制版）",
   "key.nbtedit.shortcut": "修改所指向内容的 NBT",

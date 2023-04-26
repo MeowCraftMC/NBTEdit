@@ -46,6 +46,8 @@ public class S2COpenBlockEntityEditingGuiPacket implements FabricPacket {
 
         NBTEdit.getInstance().getLogger().info("Editing BlockEntity at XYZ " +
                 blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + ".");
-        ScreenHelper.showNBTEditScreen(blockPos, compoundTag);
+        client.execute(() -> {
+            ScreenHelper.showNBTEditScreen(blockPos, compoundTag);
+        });
     }
 }
