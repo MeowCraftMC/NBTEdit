@@ -63,6 +63,10 @@ Please go to the issues page.
 
 ## Update log（更新日志）
 ```
+NBTEdit 1.19.4-4.2.4:
+A logo in game.
+Fix fabric message bug.
+
 NBTEdit 1.19.4-4.2.3:
 Add fabric version, use architectury for it.
 
