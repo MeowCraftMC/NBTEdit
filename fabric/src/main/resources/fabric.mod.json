@@ -12,6 +12,7 @@
     "sources": "https://github.com/qyl27/NBTEdit",
     "issues": "https://github.com/qyl27/NBTEdit/issues"
   },
+  "icon": "logo-fabric.png",
   "license": "Apache-2.0",
   "environment": "*",
   "entrypoints": {
