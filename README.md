@@ -54,8 +54,8 @@ Location（位置）: `./config/nbtedit.json`
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
 
 ## Screenshots（使用截图）
-![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.19.4/img/2.png)  
-![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.19.4/img/3.png)
+![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.20/img/2.png)  
+![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.20/img/3.png)
 
 ## Bug report（Bug反馈/催更）
 Please go to the issues page.  
@@ -63,6 +63,10 @@ Please go to the issues page.
 
 ## Update log（更新日志）
 ```
+NBTEdit 1.20-4.3.0:
+Update to 1.20.
+Fix bugs about drag scroll bar.
+
 NBTEdit 1.19.4-4.2.4:
 A logo in game.
 Fix fabric message bug.

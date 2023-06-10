@@ -50,7 +50,7 @@ public class C2SBlockEntitySavingPacket implements FabricPacket {
     public static void serverHandle(C2SBlockEntitySavingPacket packet,
                              ServerPlayer player, PacketSender responseSender) {
         var server = player.getServer();
-        var level = player.getLevel();
+        var level = player.serverLevel();
         server.execute(() -> {
             var blockEntity = level.getBlockEntity(packet.blockPos);
             if (blockEntity != null) {

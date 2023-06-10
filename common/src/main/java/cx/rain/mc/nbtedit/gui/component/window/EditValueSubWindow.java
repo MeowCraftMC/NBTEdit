@@ -12,6 +12,7 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.nbt.ParseHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -66,8 +67,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         setX(getX() + xLoc);
         setY(getY() + yLoc);
 
-//        colorButton = new SpecialCharacterButton((byte) 0, getX()+ width - 1, getY() + 34, this::onColorButtonClicked);
-//        newLineButton = new SpecialCharacterButton((byte) 1, getX()+ width - 1, getY() + 50, this::onNewLineButtonClicked);
+        // Todo: newline and color button.
 
         String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
@@ -95,8 +95,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             }
         }
 
-//        colorButton.active = valueField.isFocused();
-//        newLineButton.active = valueField.isFocused();
+        // Todo: newline and color button.
 
         saveButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked)
                 .pos(getX() + 9, getY() + 62)
@@ -151,28 +150,27 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.blit(WINDOW_TEXTURE, getX(), getY(), 0, 0, width, height);
 
-        blit(stack, getX(), getY(), 0, 0, width, height);
         if (!canEditName) {
-            fill(stack, getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
-        }
-        if (!canEditValue) {
-            fill(stack, getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
+            graphics.fill(getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
         }
 
-        renderWidgets(stack, mouseX, mouseY, partialTicks);
+        if (!canEditValue) {
+            graphics.fill(getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
+        }
+
+        renderWidgets(graphics, mouseX, mouseY, partialTicks);
 
         if (nameError != null) {
-            drawCenteredString(stack, getMinecraft().font, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
+            graphics.drawCenteredString(getMinecraft().font, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
         }
         if (valueError != null) {
-            drawCenteredString(stack, getMinecraft().font, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
+            graphics.drawCenteredString(getMinecraft().font, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
         }
 
-//        colorButton.render(stack, mouseX, mouseY, partialTicks);
-//        newLineButton.render(stack, mouseX, mouseY, partialTicks);
+        // Todo: newline and color button.
     }
 
     @Override
@@ -204,9 +202,12 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Todo: qyl27: remove new line button and color button.
         for (var widget : widgets) {
-            if (widget instanceof EditBox) {
-                widget.mouseClicked(mouseX, mouseY, button);
-            } else if (widget.isMouseOver(mouseX, mouseY)) {
+            widget.setFocused(false);
+        }
+
+        for (var widget : widgets) {
+            if (widget.isMouseOver(mouseX, mouseY)) {
+                widget.setFocused(true);
                 return widget.mouseClicked(mouseX, mouseY, button);
             }
         }

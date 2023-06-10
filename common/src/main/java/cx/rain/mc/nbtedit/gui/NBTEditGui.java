@@ -19,7 +19,9 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.SortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -720,7 +722,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     // </editor-fold>
 
     // <editor-fold desc="Render.">
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         var prevMouseX = mouseX;
         var prevMouseY = mouseY;
 
@@ -731,27 +733,27 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
         for (var node : nodes) {
             if (node.shouldRender(START_Y - 1, bottom)) {
-                node.render(stack, prevMouseX, prevMouseY, partialTick);
+                node.render(graphics, prevMouseX, prevMouseY, partialTick);
             }
         }
 
-        renderBackground(stack);
+        renderBackground(graphics);
         for (var button : buttons) {
-            button.render(stack, prevMouseX, prevMouseY, partialTick);
+            button.render(graphics, prevMouseX, prevMouseY, partialTick);
         }
 
         for (var button : saves) {
-            button.render(stack, prevMouseX, prevMouseY, partialTick);
+            button.render(graphics, prevMouseX, prevMouseY, partialTick);
         }
 
-        renderScrollBar(stack, prevMouseX, prevMouseY);
+        renderScrollBar(graphics, prevMouseX, prevMouseY);
 
         if (hasWindow()) {
-            getActiveWindow().render(stack, mouseX, mouseY, partialTick);
+            getActiveWindow().render(graphics, mouseX, mouseY, partialTick);
         }
     }
 
-    private void renderScrollBar(PoseStack stack, int mouseX, int mouseY) {
+    private void renderScrollBar(GuiGraphics graphics, int mouseX, int mouseY) {
         if (heightDiff > 0) {
             if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(),
                     InputConstants.MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { // XXX: bad implementation, it should use AbstractScrollWidget instead.
@@ -784,7 +786,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 yClick = -1;
             }
 
-            fill(stack, width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
+            graphics.fill(width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
 
             int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
             if (length < 32) {
@@ -799,28 +801,19 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 y = START_Y - 1;
             }
 
-            fillGradient(stack, width - 20, y, width, y + length, 0x80ffffff, 0x80333333);
+            graphics.fillGradient(width - 20, y, width, y + length, 0x80ffffff, 0x80333333);
         }
     }
 
-    private void renderDirtBackground(int bottom, int height) {
-        var tesselator = Tesselator.getInstance();
-        var bufferBuilder = tesselator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, BACKGROUND_LOCATION);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        var f = 32.0F;
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferBuilder.vertex(0.0D, height, 0.0D).uv(0.0f, (float) height / f).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex(width, height, 0.0D).uv((float) width / f, (float) height / f).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex(width, bottom, 0.0D).uv((float) width / f, (float) bottom / f).color(64, 64, 64, 255).endVertex();
-        bufferBuilder.vertex(0.0D, bottom, 0.0D).uv(0.0f, (float) bottom / f).color(64, 64, 64, 255).endVertex();
-        tesselator.end();
+    private void renderBackground(GuiGraphics graphics) {
+        renderDirtBackground(graphics, 0, 0, width, START_Y - 1);
+        renderDirtBackground(graphics, 0, bottom, width, height);
     }
 
-    private void renderBackground(PoseStack stack) {
-        renderDirtBackground(0, START_Y - 1);
-        renderDirtBackground(bottom, height);
+    public void renderDirtBackground(GuiGraphics graphics, int xLoc, int yLoc, int width, int height) {
+        graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
+        graphics.blit(Screen.BACKGROUND_LOCATION, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     // </editor-fold>

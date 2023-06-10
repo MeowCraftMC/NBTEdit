@@ -7,6 +7,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,11 +29,10 @@ public class SpecialCharacterButton extends Button {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
-
-        if (isMouseInside(mouseX, mouseY))
-            Gui.fill(stack, getX(), getY(), getX() + width, getY() + height, 0x80ffffff);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        if (isMouseInside(mouseX, mouseY)) {
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80ffffff);
+        }
 
         if (isActive()) {
             GlStateManager._clearColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -40,7 +40,7 @@ public class SpecialCharacterButton extends Button {
             GlStateManager._clearColor(0.5F, 0.5F, 0.5F, 1.0F);
         }
 
-        blit(stack, getX(), getY(), buttonId * width, 27, width, height);
+        graphics.blit(WIDGET_TEXTURE, getX(), getY(), buttonId * width, 27, width, height);
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {

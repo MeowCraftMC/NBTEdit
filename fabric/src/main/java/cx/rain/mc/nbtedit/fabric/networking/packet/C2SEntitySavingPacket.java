@@ -62,7 +62,7 @@ public class C2SEntitySavingPacket implements FabricPacket {
 	public static void serverHandle(C2SEntitySavingPacket packet,
 									ServerPlayer player, PacketSender responseSender) {
 		var server = player.getServer();
-		var level = player.getLevel();
+		var level = player.serverLevel();
 		server.execute(() -> {
 			var entity = level.getEntity(packet.entityUuid);
 			if (!NBTEdit.getInstance().getPermission().hasPermission(player)) {

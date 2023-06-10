@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 architectury {
@@ -30,7 +30,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modRuntimeOnly 'com.terraformersmc:modmenu:6.2.1'
+    modRuntimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive = false }
@@ -48,18 +48,18 @@ shadowJar {
     exclude 'architectury.common.json'
 
     configurations = [project.configurations.shadowCommon]
-    classifier 'dev-shadow'
+    archiveClassifier = 'dev-shadow'
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier = null
 }
 
 jar {
-    classifier 'dev'
+    archiveClassifier = 'dev'
 }
 
 sourcesJar {
@@ -69,7 +69,7 @@ sourcesJar {
 }
 
 remapJar {
-    classifier 'fabric'
+    archiveClassifier = 'fabric'
 }
 
 components.java {

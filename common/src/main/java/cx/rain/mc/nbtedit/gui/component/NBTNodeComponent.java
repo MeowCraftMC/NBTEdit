@@ -8,6 +8,7 @@ import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -90,23 +91,21 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
         var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
-        RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
-
         if (isSelected) {
-            Gui.fill(stack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
+            graphics.fill(getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
         }
 
         if (node.hasChild()) {
-            blit(stack, getX() - 9, getY(), (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
+            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
         }
 
-        blit(stack, getX() + 1, getY(), (node.getTag().getId() - 1) * 9, 18, 9, 9);
-        drawString(stack, getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), (node.getTag().getId() - 1) * 9, 18, 9, 9);
+        graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
 }

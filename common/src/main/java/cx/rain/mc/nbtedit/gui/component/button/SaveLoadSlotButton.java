@@ -1,12 +1,11 @@
 package cx.rain.mc.nbtedit.gui.component.button;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.nbt.ClipboardStates;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -30,9 +29,6 @@ public class SaveLoadSlotButton extends Button {
         save = saveIn;
         rightX = xRight;
         updateText();
-//        text = (save.tag.isEmpty()
-//                ? "Save"
-//                : "Load") + save.name;
         isVisible = !save.tag.isEmpty();
 
         updatePosition();
@@ -62,32 +58,30 @@ public class SaveLoadSlotButton extends Button {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int textColor = ((isMouseInside(mouseX, mouseY))) ? 16777120 : 0xffffff;
 
-        renderButton(stack, getMinecraft(), getX(), getY(), 0, 66, width, height);
+        renderButton(graphics, getMinecraft(), getX(), getY(), 0, 66, width, height);
 
-        drawCenteredString(stack, getMinecraft().font, text, getX() + width / 2, getY() + 6, textColor);
+        graphics.drawCenteredString(getMinecraft().font, text, getX() + width / 2, getY() + 6, textColor);
         if (tickCount != -1 && tickCount / 6 % 2 == 0) {
-            getMinecraft().font.drawShadow(stack, "_",
-                    getX() + (width + getMinecraft().font.width(text)) / 2 + 1, getY() + 6, 0xffffff);
+            graphics.drawString(getMinecraft().font, "_",
+                    getX() + (width + getMinecraft().font.width(text)) / 2 + 1, getY() + 6, 0xffffff, true);
         }
 
         if (isVisible) {
             textColor = (isMouseInside(mouseX, mouseY)) ? 16777120 : 0xffffff;
-            renderButton(stack, getMinecraft(), mouseX, mouseY, 0, 66, width, height);
-            drawCenteredString(stack, getMinecraft().font, "x",
+            renderButton(graphics, getMinecraft(), mouseX, mouseY, 0, 66, width, height);
+            graphics.drawCenteredString(getMinecraft().font, "x",
                     getX() - width / 2, getY() + 6, textColor);
         }
     }
 
-    protected void renderButton(PoseStack stack, Minecraft mc, int xLoc, int yLoc, int u, int v, int width, int height) {
-        mc.getTextureManager().bindForSetup(WIDGETS_LOCATION);
-
-        blit(stack, xLoc, yLoc, u, v, width / 2, height / 2);
-        blit(stack, xLoc + width / 2, yLoc, u + 200 - width / 2, v, width / 2, height / 2);
-        blit(stack, xLoc, yLoc + height / 2, u, v + 20 - height / 2, width / 2, height / 2);
-        blit(stack, xLoc + width / 2, yLoc + height / 2, u + 200 - width / 2, v + 20 - height / 2, width / 2, height / 2);
+    protected void renderButton(GuiGraphics graphics, Minecraft mc, int xLoc, int yLoc, int u, int v, int width, int height) {
+        graphics.blit(WIDGETS_LOCATION, xLoc, yLoc, u, v, width / 2, height / 2);
+        graphics.blit(WIDGETS_LOCATION, xLoc + width / 2, yLoc, u + 200 - width / 2, v, width / 2, height / 2);
+        graphics.blit(WIDGETS_LOCATION, xLoc, yLoc + height / 2, u, v + 20 - height / 2, width / 2, height / 2);
+        graphics.blit(WIDGETS_LOCATION, xLoc + width / 2, yLoc + height / 2, u + 200 - width / 2, v + 20 - height / 2, width / 2, height / 2);
     }
 
     public void reset() {

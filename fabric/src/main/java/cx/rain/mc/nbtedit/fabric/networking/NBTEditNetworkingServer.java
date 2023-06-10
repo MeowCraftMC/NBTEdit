@@ -59,7 +59,7 @@ public class NBTEditNetworkingServer {
 		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
 			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
 					" is editing block at XYZ " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + ".");
-			var blockEntity = player.getLevel().getBlockEntity(pos);
+			var blockEntity = player.serverLevel().getBlockEntity(pos);
 			if (blockEntity != null) {
 				var tag = blockEntity.saveWithFullMetadata();
 				ServerPlayNetworking.send(player, new S2COpenBlockEntityEditingGuiPacket(pos, tag));
