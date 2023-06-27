@@ -101,11 +101,28 @@ public class NBTNodeComponent extends AbstractWidget {
             graphics.fill(getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
         }
 
-        if (node.hasChild()) {
-            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), (node.shouldShowChildren()) ? 9 : 0, (isSpoilerHover) ? height : 0, 9, height);
+        var w = 18;
+        var h = 16;
+        var u = 0;
+        if (node.shouldShowChildren()) {
+            w = 16;
+            h = 18;
+            if (isSpoilerHover) {
+                u = 18 + 18 + 18;
+            } else {
+                u = 18;
+            }
+        } else {
+            if (isSpoilerHover) {
+                u = 18 + 16;
+            }
         }
 
-        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), (node.getTag().getId() - 1) * 9, 18, 9, 9);
+        if (node.hasChild()) {
+            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
+        }
+
+        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
         graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
 }

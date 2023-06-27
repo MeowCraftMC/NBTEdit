@@ -7,14 +7,6 @@ import net.minecraft.nbt.*;
 public class NBTHelper {
 	public static final char SECTION_SIGN = '\u00A7';
 
-	public static String getNBTName(NBTTree.Node<?> nbtNode) {
-		String name = nbtNode.getName();
-		Tag tag = nbtNode.getTag();
-
-		String s = tag.getAsString();
-		return Strings.isNullOrEmpty(name) ? "" + s : name + ": " + s;
-	}
-
 	public static String getNBTNameSpecial(NBTTree.Node<?> nbtNode) {
 		String name = nbtNode.getName();
 		Tag tag = nbtNode.getTag();
@@ -49,6 +41,7 @@ public class NBTHelper {
 			case 9 -> new ListTag();
 			case 10 -> new CompoundTag();
 			case 11 -> new IntArrayTag(new int[0]);
+			case 12 -> new LongArrayTag(new long[0]);
 			default -> null;
 		};
 	}
@@ -67,6 +60,7 @@ public class NBTHelper {
 			case 9 -> new ListTag();
 			case 10 -> new CompoundTag();
 			case 11 -> new IntArrayTag(new int[0]);
+			case 12 -> new LongArrayTag(new long[0]);
 			default -> null;
 		};
 	}
@@ -84,11 +78,12 @@ public class NBTHelper {
 			case 9 -> "List";
 			case 10 -> "Compound";
 			case 11 -> "IntArray";
-			case 12 -> "Edit";
-			case 13 -> "Delete";
-			case 14 -> "Copy";
-			case 15 -> "Cut";
-			case 16 -> "Paste";
+			case 12 -> "LongArray";
+			case 13 -> "Edit";
+			case 14 -> "Delete";
+			case 15 -> "Paste";
+			case 16 -> "Cut";
+			case 17 -> "Copy";
 			default -> "Unknown";
 		};
 	}

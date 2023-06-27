@@ -19,9 +19,6 @@ public class NBTTree {
     }
 
     public CompoundTag toCompound() {
-//        var tag = new CompoundTag();
-//        toCompoundInternal(rootNode, tag);
-//        return tag;
         return compoundNodeToTag(rootNode);
     }
 

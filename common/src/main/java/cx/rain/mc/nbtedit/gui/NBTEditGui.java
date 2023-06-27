@@ -167,7 +167,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     protected List<Button> buttons = new ArrayList<>();
 
-    protected NBTOperatorButton[] addButtons = new NBTOperatorButton[11];
+    protected NBTOperatorButton[] addButtons = new NBTOperatorButton[12];
     protected NBTOperatorButton editButton;
     protected NBTOperatorButton deleteButton;
     protected NBTOperatorButton copyButton;
@@ -187,34 +187,34 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         int yLoc = 4;
 
         // Todo: qyl27: Copy/Paste function.
-        copyButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onCopyButtonClick,
+        copyButton = new NBTOperatorButton(17, xLoc, yLoc, this, this::onCopyButtonClick,
                 componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_COPY))); // Copy Button.
         addButton(copyButton);
 
         xLoc += 15;
-        cutButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onCutButtonClick,
+        cutButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onCutButtonClick,
                 componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_CUT))); // Cut Button.
         addButton(cutButton);
 
         xLoc += 15;
-        pasteButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onPasteButtonClick,
+        pasteButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onPasteButtonClick,
                 componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_PASTE))); // Paste Button.
         addButton(pasteButton);
 
         xLoc += 45;
-        editButton = new NBTOperatorButton(12, xLoc, yLoc, this, this::onEditButtonClick,
+        editButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onEditButtonClick,
                 componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_EDIT))); // Edit Button.
         addButton(editButton);
 
         xLoc += 15;
-        deleteButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onDeleteButtonClick,
+        deleteButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onDeleteButtonClick,
                 componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_DELETE))); // Delete Button.
         addButton(deleteButton);
 
         // Add nbt type buttons.
         xLoc = 18;
         yLoc = 17;
-        for (var i = 1; i < 12; i++) {
+        for (var i = 1; i < 13; i++) {
             var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
                     componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_ADD)));
             addButtons[i - 1] = button;
@@ -227,7 +227,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     protected void onEditButtonClick(Button button) {
         if (button instanceof NBTOperatorButton operatorButton) {
-            if (operatorButton.getButtonId() == 12) {  // 但愿人没事。
+            if (operatorButton.getButtonId() == 13) {  // 但愿人没事。
                 doEditSelected();
             }
         }
@@ -235,24 +235,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     protected void onDeleteButtonClick(Button button) {
         if (button instanceof NBTOperatorButton operatorButton) {
-            if (operatorButton.getButtonId() == 13) {
-                deleteSelected();
-            }
-        }
-    }
-
-    protected void onCopyButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 14) {
-                copySelected();
-            }
-        }
-    }
-
-    protected void onCutButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 15) {
-                copySelected();
+            if (operatorButton.getButtonId() == 14) {
                 deleteSelected();
             }
         }
@@ -260,8 +243,25 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     protected void onPasteButtonClick(Button button) {
         if (button instanceof NBTOperatorButton nbtOperator) {
-            if (nbtOperator.getButtonId() == 16) {
+            if (nbtOperator.getButtonId() == 15) {
                 paste();
+            }
+        }
+    }
+
+    protected void onCutButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton nbtOperator) {
+            if (nbtOperator.getButtonId() == 16) {
+                copySelected();
+                deleteSelected();
+            }
+        }
+    }
+
+    protected void onCopyButtonClick(Button button) {
+        if (button instanceof NBTOperatorButton nbtOperator) {
+            if (nbtOperator.getButtonId() == 17) {
+                copySelected();
             }
         }
     }
@@ -271,8 +271,6 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             if (operatorButton.getButtonId() >= 0 && operatorButton.getButtonId() <= 11) {
                 if (getFocused() != null) {
                     getFocused().setShowChildren(true);
-                    var children = getFocused().getChildren();
-                    String type = button.getMessage().getString();
 
                     if (getFocused().getTag() instanceof ListTag) {
                         var tag = NBTHelper.newTag((operatorButton.getButtonId()));

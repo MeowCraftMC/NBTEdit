@@ -32,7 +32,7 @@ public class NBTOperatorButton extends Button {
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return isActive() && mouseX >= getX()&& mouseY >= getY()&& mouseX < getX()+ width && mouseY < getY()+ height;
+        return isActive() && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
     }
 
     public byte getButtonId() {
@@ -42,7 +42,7 @@ public class NBTOperatorButton extends Button {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (isMouseInside(mouseX, mouseY)) {    // checks if the mouse is over the button
-            graphics.fill(getX(), getY(), getX()+ width, getY()+ height, 0x80ffffff);   // draw a grayish background
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80ffffff);   // draw a grayish background
             if (hoverTime == -1) {
                 hoverTime = System.currentTimeMillis();
             }
@@ -51,15 +51,15 @@ public class NBTOperatorButton extends Button {
         }
 
         if (isActive()) {
-            // qyl27: A very hacky way to draw button's texture.
-            graphics.blit(BUTTONS_TEXTURE, getX(), getY(), (buttonId - 1) * 9, 18, width, height); //Draw the texture
+            graphics.blit(BUTTONS_TEXTURE, getX(), getY(), width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
         }
 
         if (hoverTime != -1 && System.currentTimeMillis() - hoverTime > 300) {
-            renderToolTip(graphics, mouseX, mouseY);
+            graphics.renderTooltip(getMinecraft().font, getMessage(), mouseX, mouseY);
         }
     }
 
+    // Todo: delete it.
     public void renderToolTip(GuiGraphics graphics, int mouseX, int mouseY) {
         var str = getMessage();
         var width = getMinecraft().font.width(str);
