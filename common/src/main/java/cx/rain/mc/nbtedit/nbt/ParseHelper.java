@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.utility.nbt;
+package cx.rain.mc.nbtedit.nbt;
 
 public class ParseHelper {
 
@@ -58,10 +58,11 @@ public class ParseHelper {
 
     public static byte[] parseByteArray(String s) throws NumberFormatException {
         try {
-            String[] input = s.split(" ");
-            byte[] arr = new byte[input.length];
-            for (int i = 0; i < input.length; ++i)
+            var input = s.split(",");
+            var arr = new byte[input.length];
+            for (int i = 0; i < input.length; ++i) {
                 arr[i] = parseByte(input[i]);
+            }
             return arr;
         } catch (NumberFormatException e) {
 //            return new byte[0];
@@ -71,14 +72,29 @@ public class ParseHelper {
 
     public static int[] parseIntArray(String s) throws NumberFormatException {
         try {
-            String[] input = s.split(" ");
-            int[] arr = new int[input.length];
-            for (int i = 0; i < input.length; ++i)
+            var input = s.split(",");
+            var arr = new int[input.length];
+            for (int i = 0; i < input.length; ++i) {
                 arr[i] = parseInt(input[i]);
+            }
             return arr;
         } catch (NumberFormatException e) {
 //            return new int[0];
             throw new NumberFormatException("Not a valid int array");
+        }
+    }
+
+    public static long[] parseLongArray(String s) throws NumberFormatException {
+        try {
+            var input = s.split(",");
+            var arr = new long[input.length];
+            for (int i = 0; i < input.length; ++i) {
+                arr[i] = parseInt(input[i]);
+            }
+            return arr;
+        } catch (NumberFormatException e) {
+//            return new int[0];
+            throw new NumberFormatException("Not a valid long array");
         }
     }
 }

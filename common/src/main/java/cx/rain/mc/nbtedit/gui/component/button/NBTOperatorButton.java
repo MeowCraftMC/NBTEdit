@@ -58,12 +58,4 @@ public class NBTOperatorButton extends Button {
             graphics.renderTooltip(getMinecraft().font, getMessage(), mouseX, mouseY);
         }
     }
-
-    // Todo: delete it.
-    public void renderToolTip(GuiGraphics graphics, int mouseX, int mouseY) {
-        var str = getMessage();
-        var width = getMinecraft().font.width(str);
-        graphics.fill(mouseX + 4, mouseY + 7, mouseX + 5 + width, mouseY + 17, 0xff000000);
-        graphics.drawString(getMinecraft().font, str, mouseX + 5, mouseY + 8, 0xffffff);
-    }
 }

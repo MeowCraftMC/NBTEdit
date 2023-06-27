@@ -1,35 +1,20 @@
 package cx.rain.mc.nbtedit.client;
 
 import cx.rain.mc.nbtedit.nbt.NBTTree;
-import cx.rain.mc.nbtedit.utility.nbt.ClipboardStates;
 import net.minecraft.client.Minecraft;
-
-import java.nio.file.Paths;
+import net.minecraft.nbt.Tag;
 
 public class NBTEditClient {
-	private NBTTree.Node<?> clipboard = null;
-	private ClipboardStates clipboardSaves;
-
     public NBTEditClient() {
-        clipboardSaves = new ClipboardStates(Paths.get(".", "nbtedit", "Clipboard.nbt").toFile());
-
-        // Fixme: it is not working.
-//        ClipboardStates clipboard = getClipboardSaves();
-//        clipboard.load();
-//        clipboard.save();
     }
 
-	public ClipboardStates getClipboardSaves() {
-		return clipboardSaves;
-	}
-
-    // Todo: fromString
-    public NBTTree.Node<?> getClipboard() {
-        return clipboard;
+    public NBTTree.Node<Tag> getClipboard() {
+        var data = Minecraft.getInstance().keyboardHandler.getClipboard();
+        return NBTTree.Node.fromString(data);
     }
 
-    // Todo: toString
-    public void setClipboard(NBTTree.Node<?> clipboard) {
-        this.clipboard = clipboard;
+    public void setClipboard(NBTTree.Node<?> node) {
+        var data = node.asString();
+        Minecraft.getInstance().keyboardHandler.setClipboard(data);
     }
 }
