@@ -63,6 +63,10 @@ Please go to the issues page.
 
 ## Update log（更新日志）
 ```
+NBTEdit 1.20.1-4.4.1:
+Update to 1.20.1.
+Copy and paste to clipboard now!
+
 NBTEdit 1.20-4.3.0:
 Update to 1.20.
 Fix bugs about drag scroll bar.
