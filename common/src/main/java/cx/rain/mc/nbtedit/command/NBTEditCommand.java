@@ -1,6 +1,7 @@
 package cx.rain.mc.nbtedit.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import com.mojang.brigadier.context.CommandContext;
@@ -42,13 +43,13 @@ public class NBTEditCommand {
         return 1;
     }
 
-    private static int onEntity(final CommandContext<CommandSourceStack> context) {
+    private static int onEntity(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!ensurePlayer(context)) {
             return 0;
         }
 
         var player = context.getSource().getPlayer();
-        var entity = context.getArgument("entity", Entity.class);
+        var entity = EntityArgument.getEntity(context, "entity");
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit with an entity.");
@@ -62,7 +63,7 @@ public class NBTEditCommand {
         }
 
         var player = context.getSource().getPlayer();
-        var pos = context.getArgument("block", BlockPos.class);
+        var pos = BlockPosArgument.getBlockPos(context, "block");
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit with an block at XYZ: " +
