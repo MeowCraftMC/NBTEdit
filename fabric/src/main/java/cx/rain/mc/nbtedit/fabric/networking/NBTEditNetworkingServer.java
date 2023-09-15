@@ -33,7 +33,8 @@ public class NBTEditNetworkingServer {
 
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
 		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
-			if (entity instanceof Player && !NBTEdit.getInstance().getConfig().canEditOthers()) {
+			if (entity instanceof Player
+					&& !NBTEdit.getInstance().getConfig().canEditOthers()) {
 				NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
 						" tried to use /nbtedit on a player. But config is not allow that.");
 				player.createCommandSourceStack().sendFailure(Component
@@ -46,7 +47,11 @@ public class NBTEditNetworkingServer {
 					" is editing entity " + entity.getUUID() + ".");
 			player.getServer().execute(() -> {
 				var tag = new CompoundTag();
-				entity.save(tag);
+				if (entity instanceof Player) {
+					entity.saveWithoutId(tag);
+				} else {
+					entity.save(tag);
+				}
 				ServerPlayNetworking.send(player, new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false));
 			});
 		} else {
