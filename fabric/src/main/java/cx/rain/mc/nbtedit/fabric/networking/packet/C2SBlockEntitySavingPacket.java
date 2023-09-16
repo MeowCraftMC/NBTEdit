@@ -1,21 +1,20 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.Constants;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
-public class C2SBlockEntitySavingPacket implements FabricPacket {
-    public static final PacketType<C2SBlockEntitySavingPacket> PACKET_TYPE = PacketType.create(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_SAVING_PACKET_ID, C2SBlockEntitySavingPacket::new);
+public class C2SBlockEntitySavingPacket {
     /**
      * The position of the TileEntity.
      */
@@ -36,20 +35,18 @@ public class C2SBlockEntitySavingPacket implements FabricPacket {
         compoundTag = tag;
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
+    public FriendlyByteBuf write() {
+        var buf = PacketByteBufs.create();
         buf.writeBlockPos(blockPos);
         buf.writeNbt(compoundTag);
+        return buf;
     }
 
-    @Override
-    public PacketType<?> getType() {
-        return PACKET_TYPE;
-    }
+    public static void serverHandle(MinecraftServer server, ServerPlayer player,
+                                    ServerGamePacketListenerImpl serverGamePacketListener,
+                                    FriendlyByteBuf buf, PacketSender sender) {
+        var packet = new C2SBlockEntitySavingPacket(buf);
 
-    public static void serverHandle(C2SBlockEntitySavingPacket packet,
-                             ServerPlayer player, PacketSender responseSender) {
-        var server = player.getServer();
         var level = player.getLevel();
         server.execute(() -> {
             var blockEntity = level.getBlockEntity(packet.blockPos);

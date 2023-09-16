@@ -57,13 +57,13 @@ public class NBTEditCommand {
         return 1;
     }
 
-    private static int onBlockEntity(final CommandContext<CommandSourceStack> context) {
+    private static int onBlockEntity(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!ensurePlayer(context)) {
             return 0;
         }
 
         var player = context.getSource().getPlayer();
-        var pos = BlockPosArgument.getBlockPos(context, "block");
+        var pos = BlockPosArgument.getLoadedBlockPos(context, "block");
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit with an block at XYZ: " +

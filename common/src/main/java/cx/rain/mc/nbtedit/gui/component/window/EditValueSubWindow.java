@@ -86,9 +86,9 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
         if (!nameField.isFocused() && !valueField.isFocused()) {
             if (canEditName) {
-                nameField.setFocused(true);
+                nameField.changeFocus(true);
             } else if (canEditValue) {
-                valueField.setFocused(true);
+                valueField.changeFocus(true);
             }
         }
 
@@ -147,7 +147,9 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        super.render(poseStack, mouseX, mouseY, partialTick);
+
         RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
         blit(poseStack, getX(), getY(), 0, 0, width, height);
 
@@ -200,12 +202,12 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Todo: qyl27: remove new line button and color button.
         for (var widget : widgets) {
-            widget.setFocused(false);
+            widget.changeFocus(false);
         }
 
         for (var widget : widgets) {
             if (widget.isMouseOver(mouseX, mouseY)) {
-                widget.setFocused(true);
+                widget.changeFocus(true);
                 return widget.mouseClicked(mouseX, mouseY, button);
             }
         }

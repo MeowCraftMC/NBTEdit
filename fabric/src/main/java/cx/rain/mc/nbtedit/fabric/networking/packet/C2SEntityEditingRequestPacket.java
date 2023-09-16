@@ -1,21 +1,19 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.Constants;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 import java.util.UUID;
 
-public class C2SEntityEditingRequestPacket implements FabricPacket {
-	public static final PacketType<C2SEntityEditingRequestPacket> PACKET_TYPE = PacketType.create(NBTEditNetworkingImpl.C2S_ENTITY_EDITING_PACKET_ID, C2SEntityEditingRequestPacket::new);
-
+public class C2SEntityEditingRequestPacket {
 	/**
 	 * The UUID of the entity being requested.
 	 */
@@ -37,25 +35,24 @@ public class C2SEntityEditingRequestPacket implements FabricPacket {
 		isSelf = buf.readBoolean();
 	}
 
-	public static void serverHandle(C2SEntityEditingRequestPacket packet,
-									ServerPlayer player, PacketSender responseSender) {
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " requested entity with UUID " + packet.entityUuid + ".");
-		var entity = player.getLevel().getEntity(packet.entityUuid);
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, packet.entityUuid)
-				.withStyle(ChatFormatting.GREEN));
-        NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);
-	}
-
-	@Override
-	public void write(FriendlyByteBuf buf) {
+	public FriendlyByteBuf write() {
+		var buf = PacketByteBufs.create();
 		buf.writeUUID(entityUuid);
 		buf.writeInt(entityId);
 		buf.writeBoolean(isSelf);
+		return buf;
 	}
 
-	@Override
-	public PacketType<?> getType() {
-		return PACKET_TYPE;
+	public static void serverHandle(MinecraftServer server, ServerPlayer player,
+									ServerGamePacketListenerImpl serverGamePacketListener,
+									FriendlyByteBuf buf, PacketSender sender) {
+		var packet = new C2SEntityEditingRequestPacket(buf);
+
+		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+				" requested entity with UUID " + packet.entityUuid + ".");
+		var entity = player.getLevel().getEntity(packet.entityUuid);
+		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, packet.entityUuid)
+				.withStyle(ChatFormatting.GREEN));
+		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);
 	}
 }

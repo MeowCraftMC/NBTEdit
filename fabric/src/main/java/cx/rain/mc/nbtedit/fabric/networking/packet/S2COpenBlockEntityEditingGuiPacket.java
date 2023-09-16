@@ -3,18 +3,15 @@ package cx.rain.mc.nbtedit.fabric.networking.packet;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2COpenBlockEntityEditingGuiPacket implements FabricPacket {
-    public static final PacketType<S2COpenBlockEntityEditingGuiPacket> PACKET_TYPE = PacketType.create(NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, S2COpenBlockEntityEditingGuiPacket::new);
-
+public class S2COpenBlockEntityEditingGuiPacket {
     private BlockPos blockPos;
     private CompoundTag compoundTag;
 
@@ -28,15 +25,11 @@ public class S2COpenBlockEntityEditingGuiPacket implements FabricPacket {
         compoundTag = tag;
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
+    public FriendlyByteBuf write() {
+        var buf = PacketByteBufs.create();
         buf.writeBlockPos(blockPos);
         buf.writeNbt(compoundTag);
-    }
-
-    @Override
-    public PacketType<?> getType() {
-        return PACKET_TYPE;
+        return buf;
     }
 
     public static void clientHandle(Minecraft client, ClientPacketListener handler,

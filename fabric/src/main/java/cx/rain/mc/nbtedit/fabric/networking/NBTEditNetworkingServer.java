@@ -19,16 +19,16 @@ import net.minecraft.world.item.ItemStack;
 public class NBTEditNetworkingServer {
 
 	public NBTEditNetworkingServer() {
-		ServerPlayNetworking.registerGlobalReceiver(C2SEntityEditingRequestPacket.PACKET_TYPE, C2SEntityEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(C2SEntitySavingPacket.PACKET_TYPE, C2SEntitySavingPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(C2SBlockEntityEditingRequestPacket.PACKET_TYPE, C2SBlockEntityEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(C2SBlockEntitySavingPacket.PACKET_TYPE, C2SBlockEntitySavingPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(C2SItemStackEditingRequestPacket.PACKET_TYPE, C2SItemStackEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(C2SItemStackSavingPacket.PACKET_TYPE, C2SItemStackSavingPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ENTITY_EDITING_PACKET_ID, C2SEntityEditingRequestPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ENTITY_SAVING_PACKET_ID, C2SEntitySavingPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_EDITING_PACKET_ID, C2SBlockEntityEditingRequestPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_SAVING_PACKET_ID, C2SBlockEntitySavingPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ITEM_STACK_EDITING_PACKET_ID, C2SItemStackEditingRequestPacket::serverHandle);
+		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ITEM_STACK_SAVING_PACKET_ID, C2SItemStackSavingPacket::serverHandle);
 	}
 
 	public void serverRayTraceRequest(ServerPlayer player) {
-		ServerPlayNetworking.send(player, new S2CRayTracePacket());
+		ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_RAY_TRACE_REQUEST_PACKET_ID, new S2CRayTracePacket().write());
 	}
 
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
@@ -52,7 +52,7 @@ public class NBTEditNetworkingServer {
 				} else {
 					entity.save(tag);
 				}
-				ServerPlayNetworking.send(player, new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false));
+				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false).write());
 			});
 		} else {
 			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
@@ -67,7 +67,7 @@ public class NBTEditNetworkingServer {
 			var blockEntity = player.getLevel().getBlockEntity(pos);
 			if (blockEntity != null) {
 				var tag = blockEntity.saveWithFullMetadata();
-				ServerPlayNetworking.send(player, new S2COpenBlockEntityEditingGuiPacket(pos, tag));
+				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, new S2COpenBlockEntityEditingGuiPacket(pos, tag).write());
 			} else {
 				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
 						.withStyle(ChatFormatting.RED));
@@ -84,7 +84,7 @@ public class NBTEditNetworkingServer {
 			player.getServer().execute(() -> {
 				var tag = new CompoundTag();
 				player.saveWithoutId(tag);
-				ServerPlayNetworking.send(player, new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true));
+				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true).write());
 			});
 		} else {
 			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
@@ -99,7 +99,7 @@ public class NBTEditNetworkingServer {
 			player.getServer().execute(() -> {
 				var tag = new CompoundTag();
 				stack.save(tag);
-				ServerPlayNetworking.send(player, new S2COpenItemStackEditingGuiPacket(stack, tag));
+				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, new S2COpenItemStackEditingGuiPacket(stack, tag).write());
 			});
 		} else {
 			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)

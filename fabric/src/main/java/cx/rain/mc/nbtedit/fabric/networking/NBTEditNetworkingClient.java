@@ -17,26 +17,26 @@ public class NBTEditNetworkingClient {
 	}
 
 	public void clientOpenGuiRequest(Entity entity, boolean self) {
-		ClientPlayNetworking.send(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_ENTITY_EDITING_PACKET_ID, new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self).write());
 	}
 
 	public void clientOpenGuiRequest(BlockPos pos) {
-		ClientPlayNetworking.send(new C2SBlockEntityEditingRequestPacket(pos));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_EDITING_PACKET_ID, new C2SBlockEntityEditingRequestPacket(pos).write());
 	}
 
 	public void clientOpenGuiRequest(ItemStack stack) {
-		ClientPlayNetworking.send(new C2SItemStackEditingRequestPacket(stack));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_ITEM_STACK_EDITING_PACKET_ID, new C2SItemStackEditingRequestPacket(stack).write());
 	}
 
 	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
-		ClientPlayNetworking.send(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_ENTITY_SAVING_PACKET_ID, new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self).write());
 	}
 
 	public void saveEditing(BlockPos pos, CompoundTag tag) {
-		ClientPlayNetworking.send(new C2SBlockEntitySavingPacket(pos, tag));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_SAVING_PACKET_ID, new C2SBlockEntitySavingPacket(pos, tag).write());
 	}
 
 	public void saveEditing(ItemStack stack, CompoundTag tag) {
-		ClientPlayNetworking.send(new C2SItemStackSavingPacket(stack, tag));
+		ClientPlayNetworking.send(NBTEditNetworkingImpl.C2S_ITEM_STACK_SAVING_PACKET_ID, new C2SItemStackSavingPacket(stack, tag).write());
 	}
 }
