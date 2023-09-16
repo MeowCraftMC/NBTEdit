@@ -4,6 +4,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.component.window.EditValueSubWindow;
 import cx.rain.mc.nbtedit.gui.component.NBTNodeComponent;
@@ -16,7 +18,6 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.SortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -658,7 +659,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     // </editor-fold>
 
     // <editor-fold desc="Render.">
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var prevMouseX = mouseX;
         var prevMouseY = mouseY;
 
@@ -669,23 +670,23 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
         for (var node : nodes) {
             if (node.shouldRender(START_Y - 1, bottom)) {
-                node.render(graphics, prevMouseX, prevMouseY, partialTick);
+                node.render(poseStack, prevMouseX, prevMouseY, partialTick);
             }
         }
 
-        renderBackground(graphics);
+        renderBackground(poseStack);
         for (var button : buttons) {
-            button.render(graphics, prevMouseX, prevMouseY, partialTick);
+            button.render(poseStack, prevMouseX, prevMouseY, partialTick);
         }
 
-        renderScrollBar(graphics, prevMouseX, prevMouseY);
+        renderScrollBar(poseStack, prevMouseX, prevMouseY);
 
         if (hasWindow()) {
-            getActiveWindow().render(graphics, mouseX, mouseY, partialTick);
+            getActiveWindow().render(poseStack, mouseX, mouseY, partialTick);
         }
     }
 
-    private void renderScrollBar(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderScrollBar(PoseStack poseStack, int mouseX, int mouseY) {
         if (heightDiff > 0) {
             if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(),
                     InputConstants.MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { // XXX: bad implementation, it should use AbstractScrollWidget instead.
@@ -718,7 +719,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 yClick = -1;
             }
 
-            graphics.fill(width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
+            fill(poseStack, width - 20, START_Y - 1, width, bottom, Integer.MIN_VALUE);
 
             int length = (bottom - (START_Y - 1)) * (bottom - (START_Y - 1)) / getContentHeight();
             if (length < 32) {
@@ -733,19 +734,20 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 y = START_Y - 1;
             }
 
-            graphics.fillGradient(width - 20, y, width, y + length, 0x80ffffff, 0x80333333);
+            fillGradient(poseStack, width - 20, y, width, y + length, 0x80ffffff, 0x80333333);
         }
     }
 
-    private void renderBackground(GuiGraphics graphics) {
-        renderDirtBackground(graphics, 0, 0, width, START_Y - 1);
-        renderDirtBackground(graphics, 0, bottom, width, height);
+    private void renderBackground(PoseStack poseStack) {
+        renderDirtBackground(poseStack, 0, 0, width, START_Y - 1);
+        renderDirtBackground(poseStack, 0, bottom, width, height);
     }
 
-    public void renderDirtBackground(GuiGraphics graphics, int xLoc, int yLoc, int width, int height) {
-        graphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
-        graphics.blit(Screen.BACKGROUND_LOCATION, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    public void renderDirtBackground(PoseStack poseStack, int xLoc, int yLoc, int width, int height) {
+        RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
+        RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
+        blit(poseStack, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     // </editor-fold>
