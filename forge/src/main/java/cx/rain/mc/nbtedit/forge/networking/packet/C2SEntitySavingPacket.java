@@ -56,7 +56,7 @@ public class C2SEntitySavingPacket {
 	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
 		var player = context.get().getSender();
 		var server = player.getServer();
-		var level = player.serverLevel();
+		var level = player.getLevel();
 		server.execute(() -> {
 			var entity = level.getEntity(entityUuid);
 			if (!NBTEdit.getInstance().getPermission().hasPermission(player)) {

@@ -41,7 +41,7 @@ public class C2SEntityEditingRequestPacket implements FabricPacket {
 									ServerPlayer player, PacketSender responseSender) {
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " requested entity with UUID " + packet.entityUuid + ".");
-		var entity = player.serverLevel().getEntity(packet.entityUuid);
+		var entity = player.getLevel().getEntity(packet.entityUuid);
 		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, packet.entityUuid)
 				.withStyle(ChatFormatting.GREEN));
         NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);

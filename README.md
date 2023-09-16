@@ -54,8 +54,8 @@ Location（位置）: `./config/nbtedit.json`
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
 
 ## Screenshots（使用截图）
-![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.20/img/2.png)  
-![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.20/img/3.png)
+![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.19.4/img/2.png)  
+![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.19.4/img/3.png)
 
 ## Common issues（常见问题）
 - I was kicked when I tried to save my edit（在尝试保存时被服务器踢出）:  

@@ -6,7 +6,6 @@ import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -91,15 +90,17 @@ public class NBTEditScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics);
-        gui.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(getMinecraft().font, title, this.width / 2, 5, 16777215);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        renderBackground(poseStack);
+        gui.render(poseStack, mouseX, mouseY, partialTick);
+
+        var width = font.width(title);
+        font.draw(poseStack, title, this.width / 2 - width / 2, 5, 16777215);
 
         if (gui.hasWindow()) {
-            super.render(graphics, mouseX, mouseY, partialTick);
+            super.render(poseStack, mouseX, mouseY, partialTick);
         } else {
-            super.render(graphics, -1, -1, partialTick);
+            super.render(poseStack, -1, -1, partialTick);
         }
     }
 

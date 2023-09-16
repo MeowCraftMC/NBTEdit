@@ -45,7 +45,7 @@ public class C2SEntityEditingRequestPacket {
         var player = context.get().getSender();
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " requested entity with UUID " + entityUuid + ".");
-		var entity = player.serverLevel().getEntity(entityUuid);
+		var entity = player.getLevel().getEntity(entityUuid);
 		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, entityUuid)
 				.withStyle(ChatFormatting.GREEN));
         NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);

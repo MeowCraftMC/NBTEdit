@@ -1,5 +1,7 @@
 package cx.rain.mc.nbtedit.gui.component.window;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.gui.component.IWidgetHolder;
@@ -9,7 +11,6 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.nbt.ParseHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -146,24 +147,25 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        graphics.blit(WINDOW_TEXTURE, getX(), getY(), 0, 0, width, height);
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
+        blit(poseStack, getX(), getY(), 0, 0, width, height);
 
         if (!canEditName) {
-            graphics.fill(getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
+            fill(poseStack, getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
         }
 
         if (!canEditValue) {
-            graphics.fill(getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
+            fill(poseStack, getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
         }
 
-        renderWidgets(graphics, mouseX, mouseY, partialTicks);
+        renderWidgets(poseStack, mouseX, mouseY, partialTick);
 
         if (nameError != null) {
-            graphics.drawCenteredString(getMinecraft().font, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
+            getMinecraft().font.draw(poseStack, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
         }
         if (valueError != null) {
-            graphics.drawCenteredString(getMinecraft().font, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
+            getMinecraft().font.draw(poseStack, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
         }
 
         // Todo: newline and color button.

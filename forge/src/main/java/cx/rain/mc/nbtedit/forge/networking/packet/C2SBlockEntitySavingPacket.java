@@ -47,7 +47,7 @@ public class C2SBlockEntitySavingPacket {
     public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
         var player = context.get().getSender();
         var server = player.getServer();
-        var level = player.serverLevel();
+        var level = player.getLevel();
         server.execute(() -> {
             var blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity != null) {

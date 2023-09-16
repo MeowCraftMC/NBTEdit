@@ -7,8 +7,6 @@ import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -91,14 +89,14 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
         var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
         if (isSelected) {
-            graphics.fill(getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
+            fill(poseStack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
         }
 
         var w = 18;
@@ -119,10 +117,12 @@ public class NBTNodeComponent extends AbstractWidget {
         }
 
         if (node.hasChild()) {
-            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
+            RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
+            blit(poseStack, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
         }
 
-        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
-        graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+        RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
+        blit(poseStack, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
+        getMinecraft().font.draw(poseStack, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
 }
