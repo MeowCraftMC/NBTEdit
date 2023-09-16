@@ -148,8 +148,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.render(poseStack, mouseX, mouseY, partialTick);
-
         RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
         blit(poseStack, getX(), getY(), 0, 0, width, height);
 
@@ -202,12 +200,16 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // Todo: qyl27: remove new line button and color button.
         for (var widget : widgets) {
-            widget.changeFocus(false);
+            if (widget.isFocused()) {
+                widget.changeFocus(false);
+            }
         }
 
         for (var widget : widgets) {
             if (widget.isMouseOver(mouseX, mouseY)) {
-                widget.changeFocus(true);
+                if (!widget.isFocused()) {
+                    widget.changeFocus(true);
+                }
                 return widget.mouseClicked(mouseX, mouseY, button);
             }
         }
@@ -256,6 +258,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             case 6 -> ParseHelper.parseDouble(value);
             case 7 -> ParseHelper.parseByteArray(value);
             case 11 -> ParseHelper.parseIntArray(value);
+            case 12 -> ParseHelper.parseLongArray(value);
         }
     }
 
@@ -297,6 +300,13 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             case Tag.TAG_INT_ARRAY -> {
                 var i = new StringBuilder();
                 for (int a : ((IntArrayTag) tag).getAsIntArray()) {
+                    i.append(a).append(",");
+                }
+                return i.toString();
+            }
+            case Tag.TAG_LONG_ARRAY -> {
+                var i = new StringBuilder();
+                for (long a : ((LongArrayTag) tag).getAsLongArray()) {
                     i.append(a).append(",");
                 }
                 return i.toString();
