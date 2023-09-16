@@ -21,16 +21,3 @@ publishing {
     repositories {
     }
 }
-
-import org.apache.tools.ant.filters.ReplaceTokens
-task injectString(type: Copy) {
-    delete(file("${buildDir}/generated"))
-
-    from('src/main/java') {
-        include '**/*.java'
-        filter(ReplaceTokens, tokens: [version: project.version])
-    }
-    into "${buildDir}/generated/java"
-}
-compileJava.source = "${buildDir}/generated/java"
-compileJava.dependsOn injectString

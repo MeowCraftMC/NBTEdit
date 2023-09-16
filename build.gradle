@@ -61,4 +61,27 @@ allprojects {
     java {
         withSourcesJar()
     }
+
+    processResources {
+        var resourcesToReplace = ['build.properties', 'META-INF/mods.toml', 'pack.mcmeta', 'fabric.mod.json']
+        var replaceTokens = [
+                minecraft_version: minecraft_version,
+                mod_id: mod_id,
+                mod_name: mod_name,
+                mod_full_name: mod_full_name,
+                mod_version: mod_version,
+                fabric_loader_version: fabric_loader_version,
+                fabric_api_version: fabric_api_version,
+                forge_loader_version: forge_loader_version,
+                forge_version: forge_version,
+                next_minecraft_version: next_minecraft_version,
+                next_forge_loader_version: next_forge_loader_version,
+                next_forge_version: next_forge_version
+        ]
+
+        inputs.properties replaceTokens
+        filesMatching(resourcesToReplace) {
+            expand replaceTokens
+        }
+    }
 }

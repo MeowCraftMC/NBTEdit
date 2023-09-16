@@ -1,12 +1,12 @@
 modLoader="javafml"
-loaderVersion="[46,)"
+loaderVersion="[${forge_loader_version},${next_forge_loader_version})"
 license="GPLv3"
 issueTrackerURL="https://github.com/qyl27/NBTEdit/issues"
 
 [[mods]]
 modId="nbtedit"
-version="${version}"
-displayName="In-game NBTEdit Reborn"
+version="${mod_version}"
+displayName="${mod_full_name}"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
 displayURL="https://github.com/qyl27/NBTEdit"
 logoFile="logo-forge.png"
@@ -21,13 +21,13 @@ It can help many map creator to make custom items or help many mod creator to de
 [[dependencies.nbtedit]]
     modId="forge"
     mandatory=true
-    versionRange="[46,)"
+    versionRange="[${forge_version},${next_forge_version})"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbtedit]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20,1.21)"
+    versionRange="[${minecraft_version},${next_minecraft_version})"
     ordering="NONE"
     side="BOTH"

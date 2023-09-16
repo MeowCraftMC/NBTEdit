@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "nbtedit",
-  "version": "${version}",
-  "name": "In-game NBTEdit Reborn",
+  "version": "${mod_version}",
+  "name": "${mod_full_name}",
   "description": "A Minecraft mod allows you edit any NBT tags of the game content while in game.",
   "authors": [
     "qyl27"
@@ -13,7 +13,7 @@
     "issues": "https://github.com/qyl27/NBTEdit/issues"
   },
   "icon": "logo-fabric.png",
-  "license": "Apache-2.0",
+  "license": "GPLv3",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -25,7 +25,7 @@
   },
   "depends": {
     "fabric": "*",
-    "fabricloader": ">=0.14.19",
-    "minecraft": ">=1.19.4"
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": ">=${minecraft_version}"
   }
 }

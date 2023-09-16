@@ -54,47 +54,18 @@ Location（位置）: `./config/nbtedit.json`
 http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-in-game-nbtedit-edit-mob-spawners-attributes-in
 
 ## Screenshots（使用截图）
-![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.20/img/2.png)  
-![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.20/img/3.png)
+![使用截图 #1](https://github.com/qyl27/NBTEdit/raw/1.20.1/img/2.png)  
+![使用截图 #2](https://github.com/qyl27/NBTEdit/raw/1.20.1/img/3.png)
+
+## Common issues（常见问题）
+- I was kicked when I tried to save my edit（在尝试保存时被服务器踢出）:  
+    If it shows `Payload may not be larger than 32767 bytes`, please use [Packet Fixer](https://www.curseforge.com/minecraft/mc-mods/packet-fixer) by [TonimatasDEV](https://github.com/TonimatasDEV) to fix it.    
+    如果客户端显示 `Payload may not be larger than 32767 bytes`，请使用 [TonimatasDEV](https://github.com/TonimatasDEV) 的 [Packet Fixer](https://www.curseforge.com/minecraft/mc-mods/packet-fixer) 修复。
+    
 
 ## Bug report（Bug反馈/催更）
 Please go to the issues page.  
 请到 Issues 页面提出。
 
 ## Update log（更新日志）
-```
-NBTEdit 1.20.1-4.4.1:
-Update to 1.20.1.
-Copy and paste to clipboard now!
-
-NBTEdit 1.20-4.3.0:
-Update to 1.20.
-Fix bugs about drag scroll bar.
-
-NBTEdit 1.19.4-4.2.4:
-A logo in game.
-Fix fabric message bug.
-
-NBTEdit 1.19.4-4.2.3:
-Add fabric version, use architectury for it.
-
-NBTEdit 1.19.4-4.2.2:
-Add command /nbtedit hand to edit ItemStack in hand.
-
-NBTEdit 1.19.4-4.2.1:
-Fix a mistake about scroll bar.
-Bump version.
-
-NBTEdit 1.19.4-4.2.0:
-Updated NBTEdit to 1.19.4.
-New GUI is still WIP.
-
-NBTEdit 1.19.3-4.1.0:
-Updated NBTEdit to 1.19.3.
-
-NBTEdit 1.19.2-4.0.4:
-Fixed a mistake about ListTag editor.
-
-NBTEdit 1.19.2-4.0.3:
-Some fatal bug was fixed.
-```
+See [the releases page](https://github.com/qyl27/NBTEdit/releases).
