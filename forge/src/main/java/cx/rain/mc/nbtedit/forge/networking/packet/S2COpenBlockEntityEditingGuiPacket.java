@@ -1,16 +1,12 @@
 package cx.rain.mc.nbtedit.forge.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class S2COpenBlockEntityEditingGuiPacket {
     private BlockPos blockPos;
@@ -33,7 +29,7 @@ public class S2COpenBlockEntityEditingGuiPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
+    public void clientHandleOnMain(CustomPayloadEvent.Context context) {
         NBTEdit.getInstance().getLogger().info("Editing BlockEntity at XYZ " +
                 blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + ".");
         ScreenHelper.showNBTEditScreen(blockPos, compoundTag);

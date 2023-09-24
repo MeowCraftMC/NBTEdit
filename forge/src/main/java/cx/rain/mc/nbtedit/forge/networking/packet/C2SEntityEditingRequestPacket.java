@@ -6,10 +6,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class C2SEntityEditingRequestPacket {
 	/**
@@ -41,13 +40,13 @@ public class C2SEntityEditingRequestPacket {
 		buf.writeBoolean(isSelf);
 	}
 
-	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " requested entity with UUID " + entityUuid + ".");
+	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+		var player = context.getSender();
+		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+				" requested entity with UUID " + entityUuid + ".");
 		var entity = player.serverLevel().getEntity(entityUuid);
 		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, entityUuid)
 				.withStyle(ChatFormatting.GREEN));
-        NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);
+		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, entity);
 	}
 }

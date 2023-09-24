@@ -7,9 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class C2SItemStackEditingRequestPacket {
 	private ItemStack itemStack;
@@ -28,13 +26,13 @@ public class C2SItemStackEditingRequestPacket {
 		buf.writeItem(itemStack);
 	}
 
-	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " requested to edit ItemStack named " + itemStack.getDisplayName().getString() + ".");
+	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+		var player = context.getSender();
+		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+				" requested to edit ItemStack named " + itemStack.getDisplayName().getString() + ".");
 		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ITEM_STACK,
 						itemStack.getDisplayName().getString())
 				.withStyle(ChatFormatting.GREEN));
-        NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, itemStack);
+		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, itemStack);
 	}
 }

@@ -9,12 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkEvent;
-import org.apache.logging.log4j.Level;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class C2SBlockEntitySavingPacket {
     /**
@@ -44,8 +39,8 @@ public class C2SBlockEntitySavingPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
+    public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+        var player = context.getSender();
         var server = player.getServer();
         var level = player.serverLevel();
         server.execute(() -> {

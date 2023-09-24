@@ -171,8 +171,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public void tick() {
-        nameField.tick();
-        valueField.tick();
+//        nameField.tick();
+//        valueField.tick();
     }
 
     @Override

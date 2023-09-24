@@ -6,9 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class S2COpenItemStackEditingGuiPacket {
     private ItemStack itemStack;
@@ -31,7 +29,7 @@ public class S2COpenItemStackEditingGuiPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
+    public void clientHandleOnMain(CustomPayloadEvent.Context context) {
         NBTEdit.getInstance().getLogger().info("Editing ItemStack "
                 + itemStack.getDisplayName().getString() + "in hand.");
         ScreenHelper.showNBTEditScreen(itemStack, compoundTag);

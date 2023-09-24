@@ -4,16 +4,12 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class C2SItemStackSavingPacket {
     protected ItemStack itemStack;
@@ -37,8 +33,8 @@ public class C2SItemStackSavingPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
+    public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+        var player = context.getSender();
         var server = player.getServer();
 
         server.execute(() -> {

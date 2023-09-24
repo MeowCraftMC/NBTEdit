@@ -1,7 +1,6 @@
 package cx.rain.mc.nbtedit.forge.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.forge.command.NBTEditPermissionImpl;
 import cx.rain.mc.nbtedit.utility.Constants;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
@@ -12,10 +11,9 @@ import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class C2SEntitySavingPacket {
 	/**
@@ -53,8 +51,8 @@ public class C2SEntitySavingPacket {
 		buf.writeBoolean(isSelf);
 	}
 
-	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-		var player = context.get().getSender();
+	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+		var player = context.getSender();
 		var server = player.getServer();
 		var level = player.serverLevel();
 		server.execute(() -> {
