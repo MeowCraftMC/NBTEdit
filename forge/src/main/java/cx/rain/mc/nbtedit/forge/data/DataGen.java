@@ -13,15 +13,13 @@ public class DataGen {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        var exHelper = event.getExistingFileHelper();
-        var packOutput = generator.getPackOutput();
 
         if (event.includeClient()) {
         }
 
         if (event.includeServer()) {
-            generator.addProvider(true, new LanguageProviderENUS(packOutput));
-            generator.addProvider(true, new LanguageProviderZHCN(packOutput));
+            generator.addProvider(true, new LanguageProviderENUS(generator));
+            generator.addProvider(true, new LanguageProviderZHCN(generator));
         }
     }
 }

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.gui.component.IWidgetHolder;
-import cx.rain.mc.nbtedit.gui.component.button.SpecialCharacterButton;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
@@ -43,9 +42,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     protected Button saveButton;
     protected Button cancelButton;
 
-    protected SpecialCharacterButton colorButton;
-    protected SpecialCharacterButton newLineButton;
-
     protected String nameError;
     protected String valueError;
 
@@ -61,18 +57,18 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     public void init(int xLoc, int yLoc) {
-        setX(getX() + xLoc);
-        setY(getY() + yLoc);
+        x += xLoc;
+        y += yLoc;
 
         // Todo: newline and color button.
 
         String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
-        nameField = new EditBox(getMinecraft().font, getX() + 46, getY() + 18, 116, 15, Component.literal("Name"));
+        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
         addWidget(nameField);
 
-        valueField = new EditBox(getMinecraft().font, getX() + 46, getY() + 44, 116, 15, Component.literal("Value"));
+        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
         addWidget(valueField);
 
         nameField.setValue(name);
@@ -94,29 +90,23 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
         // Todo: newline and color button.
 
-        saveButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked)
-                .pos(getX() + 9, getY() + 62)
-                .size(75, 20)
-                .build();
+        saveButton = new Button(x + 9, y + 62, 75, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
         addWidget(saveButton);
 
-        cancelButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked)
-                .pos(getX() + 93, getY() + 62)
-                .size(75, 20)
-                .build();
+        cancelButton = new Button(x + 93, y + 62, 75, 20, Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
         addWidget(cancelButton);
     }
 
     protected void onSaveButtonClicked(Button button) {
-        nameField.mouseClicked(button.getX(), button.getY(), 0);
-        valueField.mouseClicked(button.getX(), button.getY(), 0);
+        nameField.mouseClicked(button.x, button.y, 0);
+        valueField.mouseClicked(button.x, button.y, 0);
         save();
         quit();
     }
 
     protected void onCancelButtonClicked(Button button) {
-        nameField.mouseClicked(button.getX(), button.getY(), 0);
-        valueField.mouseClicked(button.getX(), button.getY(), 0);
+        nameField.mouseClicked(button.x, button.y, 0);
+        valueField.mouseClicked(button.x, button.y, 0);
         quit();
     }
 
@@ -149,23 +139,23 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
-        blit(poseStack, getX(), getY(), 0, 0, width, height);
+        blit(poseStack, x, y, 0, 0, width, height);
 
         if (!canEditName) {
-            fill(poseStack, getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
+            fill(poseStack, x + 42, y + 15, x + 169, y + 31, 0x80000000);
         }
 
         if (!canEditValue) {
-            fill(poseStack, getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
+            fill(poseStack, x + 42, y + 41, x + 169, y + 57, 0x80000000);
         }
 
         renderWidgets(poseStack, mouseX, mouseY, partialTick);
 
         if (nameError != null) {
-            getMinecraft().font.draw(poseStack, nameError, getX() + width / 2, getY() + 4, 0xFF0000);
+            getMinecraft().font.draw(poseStack, nameError, x + width / 2, y + 4, 0xFF0000);
         }
         if (valueError != null) {
-            getMinecraft().font.draw(poseStack, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
+            getMinecraft().font.draw(poseStack, nameError, x + width / 2, y + 32, 0xFF0000);
         }
 
         // Todo: newline and color button.
@@ -214,11 +204,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             }
         }
         return false;
-    }
-
-    @Override
-    public void updateWidgetNarration(NarrationElementOutput narration) {
-        narration.add(NarratedElementType.HINT, Component.translatable(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
     }
 
     private void isValidInput() {
@@ -370,5 +355,10 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     @Override
     public void clearWidgets() {
         widgets.clear();
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        narrationElementOutput.add(NarratedElementType.HINT, Component.translatable(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
     }
 }

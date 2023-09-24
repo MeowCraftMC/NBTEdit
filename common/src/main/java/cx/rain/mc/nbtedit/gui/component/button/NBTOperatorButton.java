@@ -8,6 +8,7 @@ import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -21,8 +22,12 @@ public class NBTOperatorButton extends Button {
 
     private NBTEditGui gui;
 
-    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, CreateNarration createNarration) {
-        super(x, y, 9, 9, Component.literal(NBTHelper.getNameByButton((byte) id)), onPressed, createNarration);
+    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed) {
+        this(id, x, y, parent, onPressed, Component.literal(NBTHelper.getNameByButton((byte) id)));
+    }
+
+    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, Component title) {
+        super(x, y, 9, 9, title, onPressed);
 
         buttonId = id;
         gui = parent;
@@ -33,7 +38,7 @@ public class NBTOperatorButton extends Button {
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return isActive() && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
+        return isActive() && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 
     public byte getButtonId() {
@@ -43,7 +48,7 @@ public class NBTOperatorButton extends Button {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (isMouseInside(mouseX, mouseY)) {    // checks if the mouse is over the button
-            fill(poseStack, getX(), getY(), getX() + width, getY() + height, 0x80ffffff);   // draw a grayish background
+            fill(poseStack, x, y, x + width, y + height, 0x80ffffff);   // draw a grayish background
             if (hoverTime == -1) {
                 hoverTime = System.currentTimeMillis();
             }
@@ -53,7 +58,7 @@ public class NBTOperatorButton extends Button {
 
         if (isActive()) {
             RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
-            blit(poseStack, getX(), getY(), width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
+            blit(poseStack, x, y, width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
         }
 
         if (hoverTime != -1 && System.currentTimeMillis() - hoverTime > 300) {

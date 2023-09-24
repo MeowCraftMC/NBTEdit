@@ -48,11 +48,11 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public boolean isMouseInsideText(int mouseX, int mouseY) {
-        return mouseX >= getX() && mouseY >= getY() && mouseX < width + getX() && mouseY < height + getY();
+        return mouseX >= x && mouseY >= y && mouseX < width + x && mouseY < height + y;
     }
 
     public boolean isMouseInsideSpoiler(int mouseX, int mouseY) {
-        return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + height;
+        return mouseX >= x - 9 && mouseY >= y && mouseX < x && mouseY < y + height;
     }
 
     public boolean shouldShowChildren() {
@@ -76,16 +76,11 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public void shiftY(int offsetY) {
-        setY(getY() + offsetY);
+        y += offsetY;
     }
 
     public boolean shouldRender(int top, int bottom) {
-        return getY() + height >= top && getY() <= bottom;
-    }
-
-    @Override
-    protected void updateWidgetNarration(NarrationElementOutput narration) {
-        narration.add(NarratedElementType.TITLE, text);
+        return y + height >= top && y <= bottom;
     }
 
     @Override
@@ -96,7 +91,7 @@ public class NBTNodeComponent extends AbstractWidget {
         var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
         if (isSelected) {
-            fill(poseStack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
+            fill(poseStack, x + 11, y, x + width, y + height, Integer.MIN_VALUE);
         }
 
         var w = 18;
@@ -118,11 +113,16 @@ public class NBTNodeComponent extends AbstractWidget {
 
         if (node.hasChild()) {
             RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
-            blit(poseStack, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
+            blit(poseStack, x - 9, y, 9, height, u, 16, w, h, 512, 512);
         }
 
         RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
-        blit(poseStack, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
-        getMinecraft().font.draw(poseStack, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+        blit(poseStack, x + 1, y, 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
+        getMinecraft().font.draw(poseStack, text, x + 11, y + (this.height - 8) / 2, color);
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        narrationElementOutput.add(NarratedElementType.TITLE, text);
     }
 }
