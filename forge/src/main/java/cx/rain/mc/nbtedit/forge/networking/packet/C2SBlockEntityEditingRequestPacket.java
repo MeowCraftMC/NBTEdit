@@ -4,9 +4,11 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -32,13 +34,15 @@ public class C2SBlockEntityEditingRequestPacket {
 		buf.writeBlockPos(pos);
 	}
 
-	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-		ServerPlayer player = context.get().getSender();
-		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
-				pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
+	public void serverHandle(Supplier<NetworkEvent.Context> context) {
+		context.get().enqueueWork(() -> {
+			ServerPlayer player = context.get().getSender();
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
+					pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
 
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
-				pos.getX(), pos.getY(), pos.getZ()).withStyle(ChatFormatting.GREEN));
-		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, pos);
+			player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
+					pos.getX(), pos.getY(), pos.getZ()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+			NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, pos);
+		});
 	}
 }

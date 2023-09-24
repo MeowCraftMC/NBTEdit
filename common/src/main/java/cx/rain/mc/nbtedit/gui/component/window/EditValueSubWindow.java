@@ -17,6 +17,8 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     public EditValueSubWindow(NBTEditGui parent, NBTTree.Node<?> nodeIn,
                               boolean canEditNameIn, boolean canEditValueIn) {
-        super(0, 0, 178, 93, Component.literal("NBTEdit sub-window"), parent);
+        super(0, 0, 178, 93, new TextComponent("NBTEdit sub-window"), parent);
 
         gui = parent;
         node = nodeIn;
@@ -65,10 +67,10 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
 
-        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, Component.literal("Name"));
+        nameField = new EditBox(getMinecraft().font, x + 46, y + 18, 116, 15, new TextComponent("Name"));
         addWidget(nameField);
 
-        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
+        valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, new TextComponent("Value"));
         addWidget(valueField);
 
         nameField.setValue(name);
@@ -90,10 +92,10 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
         // Todo: newline and color button.
 
-        saveButton = new Button(x + 9, y + 62, 75, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
+        saveButton = new Button(x + 9, y + 62, 75, 20, new TranslatableComponent(Constants.GUI_BUTTON_SAVE), this::onSaveButtonClicked);
         addWidget(saveButton);
 
-        cancelButton = new Button(x + 93, y + 62, 75, 20, Component.translatable(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
+        cancelButton = new Button(x + 93, y + 62, 75, 20, new TranslatableComponent(Constants.GUI_BUTTON_CANCEL), this::onCancelButtonClicked);
         addWidget(cancelButton);
     }
 
@@ -359,6 +361,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        narrationElementOutput.add(NarratedElementType.HINT, Component.translatable(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
+        narrationElementOutput.add(NarratedElementType.HINT, new TranslatableComponent(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
     }
 }

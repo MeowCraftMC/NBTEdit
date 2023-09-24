@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -22,8 +23,7 @@ public class RayTraceHelper {
             } else if (!player.getMainHandItem().isEmpty()) {
                 NBTEdit.getInstance().getNetworking().clientOpenGuiRequest(player.getMainHandItem());
             } else {
-                player.createCommandSourceStack().sendFailure(Component
-                        .translatable(Constants.MESSAGE_NOTHING_TO_EDIT)
+                player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NOTHING_TO_EDIT)
                         .withStyle(ChatFormatting.RED));
             }
         }

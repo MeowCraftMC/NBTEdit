@@ -5,8 +5,10 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -36,9 +38,9 @@ public class C2SItemStackEditingRequestPacket {
 
 		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
 				" requested to edit ItemStack named " + packet.itemStack.getDisplayName().getString() + ".");
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ITEM_STACK,
+		player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_ITEM_STACK,
 						packet.itemStack.getDisplayName().getString())
-				.withStyle(ChatFormatting.GREEN));
+				.withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, packet.itemStack);
 	}
 }

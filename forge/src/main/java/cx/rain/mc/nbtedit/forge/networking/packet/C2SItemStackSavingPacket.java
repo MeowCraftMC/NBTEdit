@@ -4,11 +4,11 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
@@ -37,33 +37,35 @@ public class C2SItemStackSavingPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
-        var server = player.getServer();
+    public void serverHandle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            var player = context.get().getSender();
+            var server = player.getServer();
 
-        server.execute(() -> {
-            try {
-                var item = ItemStack.of(compoundTag);
-                player.setItemInHand(InteractionHand.MAIN_HAND, item);
+            server.execute(() -> {
+                try {
+                    var item = ItemStack.of(compoundTag);
+                    player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
-                NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                        " successfully edited the tag of a ItemStack named "
-                        + itemStack.getDisplayName().getString() + ".");
-                NBTEdit.getInstance().getLogger().debug(compoundTag.getAsString());
+                    NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+                            " successfully edited the tag of a ItemStack named "
+                            + itemStack.getDisplayName().getString() + ".");
+                    NBTEdit.getInstance().getLogger().debug(compoundTag.getAsString());
 
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
-                        .withStyle(ChatFormatting.GREEN));
-            } catch (Exception ex) {
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                        .withStyle(ChatFormatting.RED));
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                            .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                } catch (Exception ex) {
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
 
-                NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
-                        " edited the tag of ItemStack named "
-                        + itemStack.getDisplayName().getString() +" and caused an exception!");
+                    NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
+                            " edited the tag of ItemStack named "
+                            + itemStack.getDisplayName().getString() +" and caused an exception!");
 
-                NBTEdit.getInstance().getLogger().error("NBT data: " + compoundTag.getAsString());
-                NBTEdit.getInstance().getLogger().error(new RuntimeException(ex).toString());
-            }
+                    NBTEdit.getInstance().getLogger().error("NBT data: " + compoundTag.getAsString());
+                    NBTEdit.getInstance().getLogger().error(new RuntimeException(ex).toString());
+                }
+            });
         });
     }
 }

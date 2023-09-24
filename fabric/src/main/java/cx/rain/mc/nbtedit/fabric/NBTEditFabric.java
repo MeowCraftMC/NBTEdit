@@ -10,7 +10,7 @@ import cx.rain.mc.nbtedit.fabric.command.NBTEditPermissionImpl;
 import cx.rain.mc.nbtedit.fabric.config.NBTEditConfigImpl;
 import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class NBTEditFabric implements ModInitializer, INBTEditPlatform {
@@ -36,8 +36,7 @@ public class NBTEditFabric implements ModInitializer, INBTEditPlatform {
 
     @Override
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) ->
-                dispatcher.register(NBTEditCommand.NBTEDIT)));
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(NBTEditCommand.NBTEDIT));
 
         nbtedit = new NBTEdit();
         nbtedit.init(this);

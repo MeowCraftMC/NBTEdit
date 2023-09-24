@@ -7,7 +7,7 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -48,64 +48,64 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId())
 				.encoder(S2CRayTracePacket::toBytes)
 				.decoder(S2CRayTracePacket::new)
-				.consumerMainThread(S2CRayTracePacket::clientHandleOnMain)
+				.consumer(S2CRayTracePacket::clientHandle)
 				.add();
 
 
 		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId())
 				.encoder(C2SEntityEditingRequestPacket::toBytes)
 				.decoder(C2SEntityEditingRequestPacket::new)
-				.consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain)
+				.consumer(C2SEntityEditingRequestPacket::serverHandle)
 				.add();
 
 		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId())
 				.encoder(C2SBlockEntityEditingRequestPacket::toBytes)
 				.decoder(C2SBlockEntityEditingRequestPacket::new)
-				.consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain)
+				.consumer(C2SBlockEntityEditingRequestPacket::serverHandle)
 				.add();
 
 		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId())
 				.encoder(C2SItemStackEditingRequestPacket::toBytes)
 				.decoder(C2SItemStackEditingRequestPacket::new)
-				.consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain)
+				.consumer(C2SItemStackEditingRequestPacket::serverHandle)
 				.add();
 
 
 		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId())
 				.encoder(S2COpenEntityEditingGuiPacket::toBytes)
 				.decoder(S2COpenEntityEditingGuiPacket::new)
-				.consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain)
+				.consumer(S2COpenEntityEditingGuiPacket::clientHandle)
 				.add();
 
 		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId())
 				.encoder(S2COpenBlockEntityEditingGuiPacket::toBytes)
 				.decoder(S2COpenBlockEntityEditingGuiPacket::new)
-				.consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain)
+				.consumer(S2COpenBlockEntityEditingGuiPacket::clientHandle)
 				.add();
 
 		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId())
 				.encoder(S2COpenItemStackEditingGuiPacket::toBytes)
 				.decoder(S2COpenItemStackEditingGuiPacket::new)
-				.consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain)
+				.consumer(S2COpenItemStackEditingGuiPacket::clientHandle)
 				.add();
 
 
 		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId())
 				.encoder(C2SEntitySavingPacket::toBytes)
 				.decoder(C2SEntitySavingPacket::new)
-				.consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain)
+				.consumer(C2SEntitySavingPacket::serverHandle)
 				.add();
 
 		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId())
 				.encoder(C2SBlockEntitySavingPacket::toBytes)
 				.decoder(C2SBlockEntitySavingPacket::new)
-				.consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain)
+				.consumer(C2SBlockEntitySavingPacket::serverHandle)
 				.add();
 
 		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId())
 				.encoder(C2SItemStackSavingPacket::toBytes)
 				.decoder(C2SItemStackSavingPacket::new)
-				.consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain)
+				.consumer(C2SItemStackSavingPacket::serverHandle)
 				.add();
 	}
 
@@ -135,8 +135,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 			if (entity instanceof Player && !NBTEdit.getInstance().getConfig().canEditOthers()) {
 				NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
 						" tried to use /nbtedit on a player. But config is not allow that.");
-				player.createCommandSourceStack().sendFailure(Component
-						.translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+				player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
 						.withStyle(ChatFormatting.RED));
 				return;
 			}
@@ -149,7 +148,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -165,11 +164,11 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 				CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
 						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			} else {
-				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
+				player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
 						.withStyle(ChatFormatting.RED));
 			}
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -184,7 +183,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -200,7 +199,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}

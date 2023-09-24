@@ -6,9 +6,11 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -41,8 +43,8 @@ public class C2SBlockEntityEditingRequestPacket {
 		NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
 				packet.pos.getX() + " " + packet.pos.getY() + " " + packet.pos.getZ() + ".");
 
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
-				packet.pos.getX(), packet.pos.getY(), packet.pos.getZ()).withStyle(ChatFormatting.GREEN));
+		player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
+				packet.pos.getX(), packet.pos.getY(), packet.pos.getZ()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 		NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, packet.pos);
 	}
 }

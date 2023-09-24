@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class OnNBTEditShortcut {
     @SubscribeEvent
-    public static void onKeyboardInput(InputEvent.Key event) {
+    public static void onKeyboardInput(InputEvent.KeyInputEvent event) {
         if (NBTEditKeyBindings.NBTEDIT_SHORTCUT.consumeClick()) {
             RayTraceHelper.doRayTrace();
         }

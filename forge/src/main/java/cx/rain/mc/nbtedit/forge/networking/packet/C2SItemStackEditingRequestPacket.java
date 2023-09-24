@@ -4,8 +4,10 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -28,13 +30,15 @@ public class C2SItemStackEditingRequestPacket {
 		buf.writeItem(itemStack);
 	}
 
-	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " requested to edit ItemStack named " + itemStack.getDisplayName().getString() + ".");
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ITEM_STACK,
-						itemStack.getDisplayName().getString())
-				.withStyle(ChatFormatting.GREEN));
-        NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, itemStack);
+	public void serverHandle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+			var player = context.get().getSender();
+			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
+					" requested to edit ItemStack named " + itemStack.getDisplayName().getString() + ".");
+			player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_ITEM_STACK,
+							itemStack.getDisplayName().getString())
+					.withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+			NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, itemStack);
+		});
 	}
 }

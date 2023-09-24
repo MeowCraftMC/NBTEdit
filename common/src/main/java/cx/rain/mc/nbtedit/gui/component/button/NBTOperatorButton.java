@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class NBTOperatorButton extends Button {
@@ -23,7 +24,7 @@ public class NBTOperatorButton extends Button {
     private NBTEditGui gui;
 
     public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed) {
-        this(id, x, y, parent, onPressed, Component.literal(NBTHelper.getNameByButton((byte) id)));
+        this(id, x, y, parent, onPressed, new TextComponent(NBTHelper.getNameByButton((byte) id)));
     }
 
     public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, Component title) {

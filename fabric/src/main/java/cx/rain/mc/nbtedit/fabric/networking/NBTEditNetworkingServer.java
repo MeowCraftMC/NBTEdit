@@ -10,6 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -37,8 +38,7 @@ public class NBTEditNetworkingServer {
 					&& !NBTEdit.getInstance().getConfig().canEditOthers()) {
 				NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
 						" tried to use /nbtedit on a player. But config is not allow that.");
-				player.createCommandSourceStack().sendFailure(Component
-						.translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+				player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
 						.withStyle(ChatFormatting.RED));
 				return;
 			}
@@ -55,7 +55,7 @@ public class NBTEditNetworkingServer {
 				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false).write());
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -69,11 +69,11 @@ public class NBTEditNetworkingServer {
 				var tag = blockEntity.saveWithFullMetadata();
 				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, new S2COpenBlockEntityEditingGuiPacket(pos, tag).write());
 			} else {
-				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
+				player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
 						.withStyle(ChatFormatting.RED));
 			}
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -87,7 +87,7 @@ public class NBTEditNetworkingServer {
 				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true).write());
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}
@@ -102,7 +102,7 @@ public class NBTEditNetworkingServer {
 				ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, new S2COpenItemStackEditingGuiPacket(stack, tag).write());
 			});
 		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+			player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
 					.withStyle(ChatFormatting.RED));
 		}
 	}

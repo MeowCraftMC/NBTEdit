@@ -31,9 +31,11 @@ public class S2COpenItemStackEditingGuiPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        NBTEdit.getInstance().getLogger().info("Editing ItemStack "
-                + itemStack.getDisplayName().getString() + "in hand.");
-        ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
+    public void clientHandle(Supplier<NetworkEvent.Context> context) {
+        context.get().enqueueWork(() -> {
+            NBTEdit.getInstance().getLogger().info("Editing ItemStack "
+                    + itemStack.getDisplayName().getString() + "in hand.");
+            ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
+        });
     }
 }

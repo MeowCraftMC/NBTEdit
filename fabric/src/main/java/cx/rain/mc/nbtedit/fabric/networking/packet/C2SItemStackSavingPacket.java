@@ -5,9 +5,11 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -51,11 +53,11 @@ public class C2SItemStackSavingPacket {
                         + packet.itemStack.getDisplayName().getString() + ".");
                 NBTEdit.getInstance().getLogger().debug(packet.compoundTag.getAsString());
 
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
-                        .withStyle(ChatFormatting.GREEN));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                        .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             } catch (Exception ex) {
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                        .withStyle(ChatFormatting.RED));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                        .withStyle(ChatFormatting.RED), Util.NIL_UUID);
 
                 NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
                         " edited the tag of ItemStack named "
