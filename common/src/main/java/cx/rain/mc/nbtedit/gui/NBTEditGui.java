@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -304,11 +305,22 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             }
 
             setFocused(focused);
+        } else {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
         }
     }
 
     private void paste() {
+        var focused = getFocused();
+
         if (focused != null) {
+            var tag = focused.getTag();
+            if (!(tag instanceof CompoundTag)
+                    && !(tag instanceof CollectionTag<?>)) {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+                return;
+            }
+
             var node = NBTEdit.getInstance().getClient().getClipboard();
             if (node != null) {
                 focused.setShowChildren(true);
@@ -328,6 +340,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 setFocused(node);
                 update(true);
             }
+        } else {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
         }
     }
 
@@ -591,28 +605,44 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         }
 
         if (keyCode == GLFW.GLFW_KEY_C && modifiers == GLFW.GLFW_MOD_CONTROL) {
-            copySelected();
-            updateButtons();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            if (getFocused() != null) {
+                copySelected();
+                updateButtons();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            } else {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+            }
         }
 
         if (keyCode == GLFW.GLFW_KEY_V && modifiers == GLFW.GLFW_MOD_CONTROL) {
-            paste();
-            updateButtons();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            if (getFocused() != null) {
+                paste();
+                updateButtons();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            } else {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+            }
         }
 
         if (keyCode == GLFW.GLFW_KEY_X && modifiers == GLFW.GLFW_MOD_CONTROL) {
-            copySelected();
-            deleteSelected();
-            updateButtons();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            if (getFocused() != null) {
+                copySelected();
+                deleteSelected();
+                updateButtons();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            } else {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+            }
         }
 
         if (keyCode == GLFW.GLFW_KEY_D && modifiers == GLFW.GLFW_MOD_CONTROL) {
-            deleteSelected();
-            updateButtons();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            if (getFocused() != null) {
+                deleteSelected();
+                updateButtons();
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1));
+            } else {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+            }
         }
 
         return false;

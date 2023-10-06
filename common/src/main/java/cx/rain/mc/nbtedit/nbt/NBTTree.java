@@ -174,7 +174,7 @@ public class NBTTree {
 
         public static final String TAG_NAME = "name";
         public static final String TAG_TYPE = "type";
-        public static final String TAG_LIST_TYPE = "type";
+        public static final String TAG_LIST_TYPE = "elementType";
         public static final String TAG_VALUE = "value";
 
         public static Node<Tag> fromString(String data) {

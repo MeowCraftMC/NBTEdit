@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
