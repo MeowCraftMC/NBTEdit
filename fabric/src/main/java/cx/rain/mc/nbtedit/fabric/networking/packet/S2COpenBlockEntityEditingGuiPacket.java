@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
@@ -44,10 +43,6 @@ public class S2COpenBlockEntityEditingGuiPacket implements FabricPacket {
         var blockPos = buf.readBlockPos();
         var compoundTag = buf.readNbt();
 
-        NBTEdit.getInstance().getLogger().info("Editing BlockEntity at XYZ " +
-                blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ() + ".");
-        client.execute(() -> {
-            ScreenHelper.showNBTEditScreen(blockPos, compoundTag);
-        });
+        client.execute(() -> ScreenHelper.showNBTEditScreen(blockPos, compoundTag));
     }
 }

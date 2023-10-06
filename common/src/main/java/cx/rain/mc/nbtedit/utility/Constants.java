@@ -7,6 +7,7 @@ public class Constants {
 
     public static final String MESSAGE_NOT_PLAYER = "message.not_a_player";
     public static final String MESSAGE_NO_PERMISSION = "message.no_permission";
+    public static final String MESSAGE_NOT_LOADED = "message.not_loaded";
     public static final String MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY = "message.target_is_not_block_entity";
     public static final String MESSAGE_NOTHING_TO_EDIT = "message.nothing_to_edit";
     public static final String MESSAGE_CANNOT_EDIT_OTHER_PLAYER = "message.cannot_edit_other_player";

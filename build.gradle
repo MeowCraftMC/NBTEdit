@@ -83,5 +83,7 @@ allprojects {
         filesMatching(resourcesToReplace) {
             expand replaceTokens
         }
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

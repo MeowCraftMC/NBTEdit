@@ -51,6 +51,11 @@ public class NBTEditConfigImpl implements INBTEditConfig {
         return config.canEditOthers;
     }
 
+    @Override
+    public boolean isDebug() {
+        return config.debug;
+    }
+
     public int getPermissionLevel() {
         return config.permissionLevel;
     }

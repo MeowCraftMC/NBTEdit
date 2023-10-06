@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface INBTEditNetworking {
     void serverRayTraceRequest(ServerPlayer player);
@@ -14,7 +15,7 @@ public interface INBTEditNetworking {
     void clientOpenGuiRequest(ItemStack stack);
 
     void serverOpenClientGui(ServerPlayer player, Entity entity);
-    void serverOpenClientGui(ServerPlayer player, BlockPos pos);
+    void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity);
     void serverOpenClientGui(ServerPlayer player);
     void serverOpenClientGui(ServerPlayer player, ItemStack stack);
 

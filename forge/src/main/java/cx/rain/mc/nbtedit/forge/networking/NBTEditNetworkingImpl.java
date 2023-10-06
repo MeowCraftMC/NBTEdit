@@ -3,16 +3,13 @@ package cx.rain.mc.nbtedit.forge.networking;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
 import cx.rain.mc.nbtedit.forge.networking.packet.*;
-import cx.rain.mc.nbtedit.utility.Constants;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -43,70 +40,19 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	}
 
 	private void registerMessages() {
-		NBTEdit.getInstance().getLogger().info("Register networking.");
+		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId()).encoder(S2CRayTracePacket::toBytes).decoder(S2CRayTracePacket::new).consumerMainThread(S2CRayTracePacket::clientHandleOnMain).add();
 
-		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId())
-				.encoder(S2CRayTracePacket::toBytes)
-				.decoder(S2CRayTracePacket::new)
-				.consumerMainThread(S2CRayTracePacket::clientHandleOnMain)
-				.add();
+		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId()).encoder(C2SEntityEditingRequestPacket::toBytes).decoder(C2SEntityEditingRequestPacket::new).consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId()).encoder(C2SBlockEntityEditingRequestPacket::toBytes).decoder(C2SBlockEntityEditingRequestPacket::new).consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId()).encoder(C2SItemStackEditingRequestPacket::toBytes).decoder(C2SItemStackEditingRequestPacket::new).consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain).add();
 
+		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId()).encoder(S2COpenEntityEditingGuiPacket::toBytes).decoder(S2COpenEntityEditingGuiPacket::new).consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId()).encoder(S2COpenBlockEntityEditingGuiPacket::toBytes).decoder(S2COpenBlockEntityEditingGuiPacket::new).consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId()).encoder(S2COpenItemStackEditingGuiPacket::toBytes).decoder(S2COpenItemStackEditingGuiPacket::new).consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain).add();
 
-		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId())
-				.encoder(C2SEntityEditingRequestPacket::toBytes)
-				.decoder(C2SEntityEditingRequestPacket::new)
-				.consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId())
-				.encoder(C2SBlockEntityEditingRequestPacket::toBytes)
-				.decoder(C2SBlockEntityEditingRequestPacket::new)
-				.consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId())
-				.encoder(C2SItemStackEditingRequestPacket::toBytes)
-				.decoder(C2SItemStackEditingRequestPacket::new)
-				.consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain)
-				.add();
-
-
-		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId())
-				.encoder(S2COpenEntityEditingGuiPacket::toBytes)
-				.decoder(S2COpenEntityEditingGuiPacket::new)
-				.consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId())
-				.encoder(S2COpenBlockEntityEditingGuiPacket::toBytes)
-				.decoder(S2COpenBlockEntityEditingGuiPacket::new)
-				.consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId())
-				.encoder(S2COpenItemStackEditingGuiPacket::toBytes)
-				.decoder(S2COpenItemStackEditingGuiPacket::new)
-				.consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain)
-				.add();
-
-
-		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId())
-				.encoder(C2SEntitySavingPacket::toBytes)
-				.decoder(C2SEntitySavingPacket::new)
-				.consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId())
-				.encoder(C2SBlockEntitySavingPacket::toBytes)
-				.decoder(C2SBlockEntitySavingPacket::new)
-				.consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain)
-				.add();
-
-		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId())
-				.encoder(C2SItemStackSavingPacket::toBytes)
-				.decoder(C2SItemStackSavingPacket::new)
-				.consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain)
-				.add();
+		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId()).encoder(C2SEntitySavingPacket::toBytes).decoder(C2SEntitySavingPacket::new).consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId()).encoder(C2SBlockEntitySavingPacket::toBytes).decoder(C2SBlockEntitySavingPacket::new).consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId()).encoder(C2SItemStackSavingPacket::toBytes).decoder(C2SItemStackSavingPacket::new).consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain).add();
 	}
 
 	@Override
@@ -131,78 +77,38 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
-		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
-			if (entity instanceof Player && !NBTEdit.getInstance().getConfig().canEditOthers()) {
-				NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-						" tried to use /nbtedit on a player. But config is not allow that.");
-				player.createCommandSourceStack().sendFailure(Component
-						.translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
-						.withStyle(ChatFormatting.RED));
-				return;
-			}
-
-			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-					" is editing entity " + entity.getUUID() + ".");
-			player.getServer().execute(() -> {
-				var tag = entity.serializeNBT();
-				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
-						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-			});
-		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
-					.withStyle(ChatFormatting.RED));
-		}
+		player.getServer().execute(() -> {
+			var tag = entity.serializeNBT();
+			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		});
 	}
 
 	@Override
-	public void serverOpenClientGui(ServerPlayer player, BlockPos pos) {
-		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
-			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-					" is editing block at XYZ " + pos.getX() + " " +	pos.getY() + " " + pos.getZ() + ".");
-			var blockEntity = player.serverLevel().getBlockEntity(pos);
-			if (blockEntity != null) {
-				var tag = blockEntity.serializeNBT();
-				CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
-						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-			} else {
-				player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
-						.withStyle(ChatFormatting.RED));
-			}
-		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
-					.withStyle(ChatFormatting.RED));
-		}
+	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
+		player.getServer().execute(() -> {
+			var tag = blockEntity.serializeNBT();
+			CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		});
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player) {
-		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
-			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " is editing itself.");
-			player.getServer().execute(() -> {
-				var tag = player.serializeNBT();
-				CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
-						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-			});
-		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
-					.withStyle(ChatFormatting.RED));
-		}
+		player.getServer().execute(() -> {
+			var tag = player.serializeNBT();
+			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		});
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
-		if (NBTEdit.getInstance().getPermission().hasPermission(player)) {
-			NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-					" is editing ItemStack named " + stack.getDisplayName().getString() + ".");
-			player.getServer().execute(() -> {
-				var tag = stack.serializeNBT();
-				CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
-						player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-			});
-		} else {
-			player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
-					.withStyle(ChatFormatting.RED));
-		}
+		player.getServer().execute(() -> {
+			var tag = stack.serializeNBT();
+			CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+		});
 	}
 
 	@Override

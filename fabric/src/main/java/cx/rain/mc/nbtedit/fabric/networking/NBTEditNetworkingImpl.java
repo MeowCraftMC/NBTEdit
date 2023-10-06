@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	public static final ResourceLocation S2C_RAY_TRACE_REQUEST_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "s2c_ray_trace_request");
@@ -71,8 +72,8 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	}
 
 	@Override
-	public void serverOpenClientGui(ServerPlayer player, BlockPos pos) {
-		server.serverOpenClientGui(player, pos);
+	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
+		server.serverOpenClientGui(player, pos, blockEntity);
 	}
 
 	@Override

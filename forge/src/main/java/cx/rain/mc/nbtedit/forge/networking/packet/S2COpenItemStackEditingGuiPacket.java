@@ -2,7 +2,6 @@ package cx.rain.mc.nbtedit.forge.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +13,7 @@ public class S2COpenItemStackEditingGuiPacket {
     private ItemStack itemStack;
     private CompoundTag compoundTag;
 
-    public S2COpenItemStackEditingGuiPacket(ByteBuf byteBuf) {
-        var buf = new FriendlyByteBuf(byteBuf);
+    public S2COpenItemStackEditingGuiPacket(FriendlyByteBuf buf) {
         itemStack = buf.readItem();
         compoundTag = buf.readNbt();
     }
@@ -25,15 +23,12 @@ public class S2COpenItemStackEditingGuiPacket {
         compoundTag = tag;
     }
 
-    public void toBytes(ByteBuf byteBuf) {
-        var buf = new FriendlyByteBuf(byteBuf);
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeItemStack(itemStack, true);
         buf.writeNbt(compoundTag);
     }
 
     public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        NBTEdit.getInstance().getLogger().info("Editing ItemStack "
-                + itemStack.getDisplayName().getString() + "in hand.");
         ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
     }
 }

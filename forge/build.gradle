@@ -13,6 +13,16 @@ loom {
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        runs {
+            data {
+                data()
+
+                programArgs "--all", "--mod", "nbtedit"
+                programArgs "--output", file('../common/src/generated/resources').absolutePath
+                programArgs "--existing", file('../common/src/main/resources').absolutePath
+            }
+        }
     }
 }
 

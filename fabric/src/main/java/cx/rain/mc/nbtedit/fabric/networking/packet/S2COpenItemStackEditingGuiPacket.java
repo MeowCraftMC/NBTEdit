@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
@@ -44,10 +43,6 @@ public class S2COpenItemStackEditingGuiPacket implements FabricPacket {
         var itemStack = buf.readItem();
         var compoundTag = buf.readNbt();
 
-        NBTEdit.getInstance().getLogger().info("Editing ItemStack "
-                + itemStack.getDisplayName().getString() + "in hand.");
-        client.execute(() -> {
-            ScreenHelper.showNBTEditScreen(itemStack, compoundTag);
-        });
+        client.execute(() -> ScreenHelper.showNBTEditScreen(itemStack, compoundTag));
     }
 }

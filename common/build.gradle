@@ -21,3 +21,11 @@ publishing {
     repositories {
     }
 }
+
+sourceSets {
+    main {
+        resources {
+            srcDir file('src/generated/resources')
+        }
+    }
+}

@@ -1,11 +1,7 @@
 package cx.rain.mc.nbtedit.forge.networking.packet;
 
-import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.utility.Constants;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.ChatFormatting;
+import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -18,23 +14,16 @@ public class C2SItemStackEditingRequestPacket {
 		itemStack = stack;
 	}
 
-	public C2SItemStackEditingRequestPacket(ByteBuf byteBuf) {
-		var buf = new FriendlyByteBuf(byteBuf);
+	public C2SItemStackEditingRequestPacket(FriendlyByteBuf buf) {
 		itemStack = buf.readItem();
 	}
 
-	public void toBytes(ByteBuf byteBuf) {
-		var buf = new FriendlyByteBuf(byteBuf);
+	public void toBytes(FriendlyByteBuf buf) {
 		buf.writeItem(itemStack);
 	}
 
 	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
         var player = context.get().getSender();
-        NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
-                " requested to edit ItemStack named " + itemStack.getDisplayName().getString() + ".");
-		player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ITEM_STACK,
-						itemStack.getDisplayName().getString())
-				.withStyle(ChatFormatting.GREEN));
-        NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, itemStack);
+		NBTEditEditingHelper.editItemStack(player, itemStack);
 	}
 }

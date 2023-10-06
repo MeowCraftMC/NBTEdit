@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.gui.component.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;

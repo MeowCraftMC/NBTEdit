@@ -43,9 +43,6 @@ public class NBTEditForge implements INBTEditPlatform {
     }
 
     private void setupClient(FMLClientSetupEvent event) {
-//        nbtedit.getLogger().info("Initializing client.");
-//        client = new NBTEditClient();
-//        nbtedit.getLogger().info("Client initialized.");
     }
 
     @Override

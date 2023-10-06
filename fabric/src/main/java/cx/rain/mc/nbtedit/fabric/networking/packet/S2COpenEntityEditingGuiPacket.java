@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
-import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
@@ -55,9 +54,6 @@ public class S2COpenEntityEditingGuiPacket implements FabricPacket {
         var compoundTag = buf.readNbt();
         var isSelf = buf.readBoolean();
 
-        NBTEdit.getInstance().getLogger().info("Editing entity with UUID " + entityUuid + ".");
-        client.execute(() -> {
-            ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
-        });
+        client.execute(() -> ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf));
     }
 }

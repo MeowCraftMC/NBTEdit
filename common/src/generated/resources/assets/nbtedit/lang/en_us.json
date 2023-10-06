@@ -22,6 +22,7 @@
   "message.editing.item_stack": "Editing ItemStack named %1$s.",
   "message.no_permission": "You have no permission to use NBTEdit.",
   "message.not_a_player": "Only players can use this command.",
+  "message.not_loaded": "Block pos was not loaded.",
   "message.nothing_to_edit": "There is no any target for editing.",
   "message.saved.successful": "Saved successfully!",
   "message.saving.failed.block_entity_not_exists": "Save failed. the BlockEntity is no longer exists.",

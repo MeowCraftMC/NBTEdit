@@ -1,10 +1,7 @@
 package cx.rain.mc.nbtedit.forge.networking.packet;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -18,8 +15,7 @@ public class S2COpenEntityEditingGuiPacket {
     protected CompoundTag compoundTag;
     protected boolean isSelf;
 
-    public S2COpenEntityEditingGuiPacket(ByteBuf byteBuf) {
-        var buf = new FriendlyByteBuf(byteBuf);
+    public S2COpenEntityEditingGuiPacket(FriendlyByteBuf buf) {
         entityUuid = buf.readUUID();
         entityId = buf.readInt();
         compoundTag = buf.readNbt();
@@ -33,8 +29,7 @@ public class S2COpenEntityEditingGuiPacket {
         isSelf = self;
     }
 
-    public void toBytes(ByteBuf byteBuf) {
-        var buf = new FriendlyByteBuf(byteBuf);
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(entityUuid);
         buf.writeInt(entityId);
         buf.writeNbt(compoundTag);
@@ -42,7 +37,6 @@ public class S2COpenEntityEditingGuiPacket {
     }
 
     public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        NBTEdit.getInstance().getLogger().info("Editing entity with UUID " + entityUuid + ".");
         ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
     }
 }
