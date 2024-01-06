@@ -2,7 +2,10 @@ package cx.rain.mc.nbtedit.fabric;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.NBTEditPlatform;
 import cx.rain.mc.nbtedit.fabric.NBTEditFabric;
+import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingClient;
+import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.fabricmc.api.ClientModInitializer;
@@ -20,7 +23,7 @@ public class NBTEditFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        NBTEditFabric.getInstance().networking.addClient();
+        ((NBTEditNetworkingImpl) NBTEditPlatform.getNetworking()).addClient();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (NBTEDIT_KEY.consumeClick()) {

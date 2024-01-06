@@ -42,9 +42,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     protected Button saveButton;
     protected Button cancelButton;
 
-    protected SpecialCharacterButton colorButton;
-    protected SpecialCharacterButton newLineButton;
-
     protected String nameError;
     protected String valueError;
 
@@ -62,8 +59,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public void init(int xLoc, int yLoc) {
         setX(getX() + xLoc);
         setY(getY() + yLoc);
-
-        // Todo: newline and color button.
 
         String name = (nameField == null) ? node.getName() : nameField.getValue();
         String value = (valueField == null) ? getValue(nbt) : valueField.getValue();
@@ -165,8 +160,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         if (valueError != null) {
             graphics.drawCenteredString(getMinecraft().font, nameError, getX() + width / 2, getY() + 32, 0xFF0000);
         }
-
-        // Todo: newline and color button.
     }
 
     @Override
@@ -196,7 +189,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Todo: qyl27: remove new line button and color button.
         for (var widget : widgets) {
             widget.setFocused(false);
         }
@@ -252,6 +244,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             case 6 -> ParseHelper.parseDouble(value);
             case 7 -> ParseHelper.parseByteArray(value);
             case 11 -> ParseHelper.parseIntArray(value);
+            case 12 -> ParseHelper.parseLongArray(value);
         }
     }
 
@@ -279,7 +272,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             }
             case Tag.TAG_BYTE_ARRAY -> {
                 var s = new StringBuilder();
-                for (byte b : ((ByteArrayTag) tag).getAsByteArray()) {
+                for (var b : ((ByteArrayTag) tag).getAsByteArray()) {
                     s.append(b).append(",");
                 }
                 return s.toString();
@@ -292,7 +285,14 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             }
             case Tag.TAG_INT_ARRAY -> {
                 var i = new StringBuilder();
-                for (int a : ((IntArrayTag) tag).getAsIntArray()) {
+                for (var a : ((IntArrayTag) tag).getAsIntArray()) {
+                    i.append(a).append(",");
+                }
+                return i.toString();
+            }
+            case Tag.TAG_LONG_ARRAY -> {
+                var i = new StringBuilder();
+                for (var a : ((LongArrayTag) tag).getAsLongArray()) {
                     i.append(a).append(",");
                 }
                 return i.toString();
@@ -330,6 +330,9 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
             if (tag instanceof IntArrayTag) {
                 node.setTag(new IntArrayTag(ParseHelper.parseIntArray(value)));
             }
+            if (tag instanceof LongArrayTag) {
+                node.setTag(new LongArrayTag(ParseHelper.parseLongArray(value)));
+            }
             if (tag instanceof StringTag) {
                 node.setTag(StringTag.valueOf(value));
             }
@@ -340,7 +343,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public void close() {
-
     }
 
     @Override

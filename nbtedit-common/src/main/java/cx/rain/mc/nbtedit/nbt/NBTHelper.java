@@ -1,7 +1,6 @@
 package cx.rain.mc.nbtedit.nbt;
 
 import com.google.common.base.Strings;
-import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.*;
 
 public class NBTHelper {
@@ -20,7 +19,7 @@ public class NBTHelper {
 		}
 
 		String s = tag.getAsString();
-		return Strings.isNullOrEmpty(name) ? "" + s : name + ": " + s + SECTION_SIGN + 'r';
+		return Strings.isNullOrEmpty(name) ? s : name + ": " + s + SECTION_SIGN + 'r';
 	}
 
 	public static String toString(Tag tag) {

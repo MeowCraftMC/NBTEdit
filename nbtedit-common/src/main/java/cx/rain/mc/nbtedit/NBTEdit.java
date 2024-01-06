@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit;
 
-import cx.rain.mc.nbtedit.api.INBTEditPlatform;
 import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
 import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
 import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
@@ -30,9 +29,7 @@ public class NBTEdit {
 
     private static NBTEdit INSTANCE;
 
-    private INBTEditPlatform platform;
-
-    private NBTEditClient client = new NBTEditClient();
+    private NBTEditClient client;
 
     private final Logger logger = LoggerFactory.getLogger(NAME);
 
@@ -40,10 +37,6 @@ public class NBTEdit {
         INSTANCE = this;
 
         logger.info("Loading NBTEdit ver: " + VERSION);
-    }
-
-    public void init(INBTEditPlatform platform) {
-        this.platform = platform;
     }
 
     public static NBTEdit getInstance() {
@@ -54,19 +47,23 @@ public class NBTEdit {
         return logger;
     }
 
-    public INBTEditNetworking getNetworking() {
-        return platform.getNetworking();
-    }
-
     public NBTEditClient getClient() {
+        if (client == null) {
+            client = new NBTEditClient();
+        }
+
         return client;
     }
 
+    public INBTEditNetworking getNetworking() {
+        return NBTEditPlatform.getNetworking();
+    }
+
     public INBTEditConfig getConfig() {
-        return platform.getConfig();
+        return NBTEditPlatform.getConfig();
     }
 
     public INBTEditCommandPermission getPermission() {
-        return platform.getPermission();
+        return NBTEditPlatform.getPermission();
     }
 }

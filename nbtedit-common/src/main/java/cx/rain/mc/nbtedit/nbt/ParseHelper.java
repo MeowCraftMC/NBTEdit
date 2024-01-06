@@ -6,7 +6,6 @@ public class ParseHelper {
         try {
             return Byte.parseByte(s);
         } catch (NumberFormatException e) {
-//            return 0x00;
             throw new NumberFormatException("Not a valid byte");
         }
     }
@@ -15,7 +14,6 @@ public class ParseHelper {
         try {
             return Short.parseShort(s);
         } catch (NumberFormatException e) {
-//            return (short) 0;
             throw new NumberFormatException("Not a valid short");
         }
     }
@@ -24,7 +22,6 @@ public class ParseHelper {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
-//            return 0;
             throw new NumberFormatException("Not a valid int");
         }
     }
@@ -33,7 +30,6 @@ public class ParseHelper {
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
-//            return 0;
             throw new NumberFormatException("Not a valid long");
         }
     }
@@ -42,7 +38,6 @@ public class ParseHelper {
         try {
             return Float.parseFloat(s);
         } catch (NumberFormatException e) {
-//            return 0;
             throw new NumberFormatException("Not a valid float");
         }
     }
@@ -51,7 +46,6 @@ public class ParseHelper {
         try {
             return Double.parseDouble(s);
         } catch (NumberFormatException e) {
-//            return 0;
             throw new NumberFormatException("Not a valid double");
         }
     }
@@ -65,7 +59,6 @@ public class ParseHelper {
             }
             return arr;
         } catch (NumberFormatException e) {
-//            return new byte[0];
             throw new NumberFormatException("Not a valid byte array");
         }
     }
@@ -79,7 +72,6 @@ public class ParseHelper {
             }
             return arr;
         } catch (NumberFormatException e) {
-//            return new int[0];
             throw new NumberFormatException("Not a valid int array");
         }
     }
@@ -93,7 +85,6 @@ public class ParseHelper {
             }
             return arr;
         } catch (NumberFormatException e) {
-//            return new int[0];
             throw new NumberFormatException("Not a valid long array");
         }
     }

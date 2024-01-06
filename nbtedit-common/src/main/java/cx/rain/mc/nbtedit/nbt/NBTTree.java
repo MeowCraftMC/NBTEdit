@@ -25,7 +25,6 @@ public class NBTTree {
         return rootNode;
     }
 
-    // Fixme: work, plz.
     private CompoundTag compoundNodeToTag(Node<?> node) {
         var tag = new CompoundTag();
         for (var child : node.getChildren()) {
