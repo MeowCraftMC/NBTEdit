@@ -1,6 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'com.modrinth.minotaur' version '2.+'
+    id 'me.shedaniel.unified-publishing' version '0.1.+'
 }
 
 architectury {
@@ -69,6 +69,36 @@ publishing {
             artifactId = project.name
             version = mavenVersion
             from components.java
+        }
+    }
+}
+
+unifiedPublishing {
+    project {
+        displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
+        version = mavenVersion
+        gameVersions = [project.minecraft_version]
+        gameLoaders = ['fabric']
+        releaseType = 'beta'
+        changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
+
+        mainPublication tasks.remapJar
+
+        relations {
+            depends {
+                curseforge = 'fabric-api'
+                modrinth = 'fabric-api'
+            }
+        }
+
+        curseforge {
+            token = System.getenv('CURSEFORGE_TOKEN')
+            id = '678133'
+        }
+
+        modrinth {
+            token = System.getenv('MODRINTH_TOKEN')
+            id = 'Vr2eDeCw'
         }
     }
 }
