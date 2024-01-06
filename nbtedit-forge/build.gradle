@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'io.github.themrmilchmann.curseforge-publish' version '0.5.0'
 }
 
 architectury {
@@ -8,7 +9,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = project(':common').loom.accessWidenerPath
+    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
 
     forge {
         convertAccessWideners = true
@@ -19,8 +20,8 @@ loom {
                 data()
 
                 programArgs "--all", "--mod", "nbtedit"
-                programArgs "--output", file('../common/src/generated/resources').absolutePath
-                programArgs "--existing", file('../common/src/main/resources').absolutePath
+                programArgs "--output", file('../nbtedit-common/src/generated/resources').absolutePath
+                programArgs "--existing", file('../nbtedit-common/src/main/resources').absolutePath
             }
         }
     }
@@ -34,23 +35,11 @@ configurations {
     developmentForge.extendsFrom common
 }
 
-repositories {
-    maven {
-        name = 'Curse maven'
-        url = 'https://cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
-
-    mavenCentral()
-}
-
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':common', configuration: 'transformProductionForge')) { transitive = false }
+    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
+    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
 }
 
 shadowJar {
@@ -64,15 +53,10 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveClassifier = 'forge'
-}
-
-jar {
-    archiveClassifier = 'dev'
 }
 
 sourcesJar {
-    def commonSources = project(':common').sourcesJar
+    def commonSources = project(':nbtedit-common').sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
 }
@@ -86,11 +70,9 @@ components.java {
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + '-' + project.name
+            artifactId = project.name
+            version = mavenVersion
             from components.java
         }
-    }
-
-    repositories {
     }
 }

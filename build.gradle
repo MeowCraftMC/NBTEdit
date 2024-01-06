@@ -1,14 +1,28 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.2-SNAPSHOT" apply false
+    id "architectury-plugin" version "${architect_plugin_version}"
+    id "dev.architectury.loom" version "${architectury_loom_version}" apply false
 }
 
-architectury {
-    minecraft = project.minecraft_version
+def ENV = System.getenv();
+
+var mavenVersion = project.mod_version
+if (!ENV.MOD_RELEASE) {
+    mavenVersion += '-SNAPSHOT'
+} else {
+    mavenVersion += '-RELEASE'
 }
+mavenVersion += "+mc${project.minecraft_version}"
+
+ext.mavenVersion = mavenVersion
 
 subprojects {
+    apply plugin: 'architectury-plugin'
     apply plugin: 'dev.architectury.loom'
+    apply plugin: 'maven-publish'
+
+    architectury {
+        minecraft = project.minecraft_version
+    }
 
     loom {
         silentMojangMappingsLicense()
@@ -21,40 +35,9 @@ subprojects {
             parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_version}@zip")
         }
     }
-}
-
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'architectury-plugin'
-    apply plugin: 'maven-publish'
-
-    group = 'cx.rain.mc.nbtedit'
-    archivesBaseName = project.archives_base_name
-
-    version = project.mod_version
-    if (System.getenv('GITHUB_SHA') != null) {
-        version += "-${System.getenv('GITHUB_SHA').substring(0, 7)}"
-    } else if (System.getenv('JITPACK') == 'true') {
-        version += "-${System.getenv('VERSION')}"
-    }
-
-    var release = false
-    if (release || (System.getenv("MOD_RELEASE") == 'true')) {
-        version += '-release'
-    } else {
-        version += '-dev'
-    }
-    project.version = version;
-
-    repositories {
-        maven {
-            name = 'ParchmentMC'
-            url = 'https://maven.parchmentmc.org'
-        }
-    }
 
     tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
+        options.encoding = 'UTF-8'
         options.release = 17
     }
 
@@ -85,5 +68,53 @@ allprojects {
         }
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    publish {
+        repositories {
+            mavenLocal()
+
+            maven {
+                name = 'YuluoMaven'
+
+                def releaseUrl = 'https://maven.yuluo.dev/repository/maven-releases/'
+                def snapshotUrl = 'https://maven.yuluo.dev/repository/maven-snapshots/'
+                url = ENV.MOD_RELEASE ? releaseUrl : snapshotUrl
+
+                credentials {
+                    username ENV.MOD_MAVEN_USER
+                    password ENV.MOD_MAVEN_PASS
+                }
+            }
+        }
+    }
+}
+
+allprojects {
+    group = 'cx.rain.mc.nbtedit'
+    version = project.mod_version
+
+    repositories {
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
+
+        repositories {
+            maven {
+                name = 'Mod Menu'
+                url = 'https://maven.terraformersmc.com/releases'
+            }
+        }
+
+        maven {
+            name = 'Curse maven'
+            url = 'https://cursemaven.com'
+            content {
+                includeGroup 'curse.maven'
+            }
+        }
+
+        mavenCentral()
     }
 }
