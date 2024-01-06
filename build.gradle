@@ -6,19 +6,17 @@ plugins {
 def ENV = System.getenv();
 
 var mavenVersion = project.mod_version
+mavenVersion += "+mc${project.minecraft_version}"
 if (!ENV.MOD_RELEASE) {
     mavenVersion += '-SNAPSHOT'
-} else {
-    mavenVersion += '-RELEASE'
 }
-mavenVersion += "+mc${project.minecraft_version}"
 
 ext.mavenVersion = mavenVersion
 
 subprojects {
+    apply plugin: 'java'
     apply plugin: 'architectury-plugin'
     apply plugin: 'dev.architectury.loom'
-    apply plugin: 'maven-publish'
 
     architectury {
         minecraft = project.minecraft_version
@@ -69,28 +67,11 @@ subprojects {
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
-
-    publish {
-        repositories {
-            mavenLocal()
-
-            maven {
-                name = 'YuluoMaven'
-
-                def releaseUrl = 'https://maven.yuluo.dev/repository/maven-releases/'
-                def snapshotUrl = 'https://maven.yuluo.dev/repository/maven-snapshots/'
-                url = ENV.MOD_RELEASE ? releaseUrl : snapshotUrl
-
-                credentials {
-                    username ENV.MOD_MAVEN_USER
-                    password ENV.MOD_MAVEN_PASS
-                }
-            }
-        }
-    }
 }
 
 allprojects {
+    apply plugin: 'maven-publish'
+
     group = 'cx.rain.mc.nbtedit'
     version = project.mod_version
 
@@ -116,5 +97,24 @@ allprojects {
         }
 
         mavenCentral()
+    }
+
+    publishing {
+        repositories {
+            mavenLocal()
+
+            maven {
+                name = 'YuluoMaven'
+
+                def releaseUrl = 'https://maven.yuluo.dev/repository/maven-releases/'
+                def snapshotUrl = 'https://maven.yuluo.dev/repository/maven-snapshots/'
+                url = ENV.MOD_RELEASE ? releaseUrl : snapshotUrl
+
+                credentials {
+                    username ENV.MOD_MAVEN_USER
+                    password ENV.MOD_MAVEN_PASS
+                }
+            }
+        }
     }
 }
