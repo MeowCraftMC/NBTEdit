@@ -8,6 +8,7 @@ import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.nbt.ParseHelper;
+import cx.rain.mc.nbtedit.utility.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -142,6 +143,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        RenderHelper.drawGrayBackground(graphics);
+
         graphics.blit(WINDOW_TEXTURE, getX(), getY(), 0, 0, width, height);
 
         if (!canEditName) {

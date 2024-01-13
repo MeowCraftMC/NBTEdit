@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -100,6 +101,11 @@ public class NBTEditScreen extends Screen {
         } else {
             super.render(graphics, -1, -1, partialTick);
         }
+    }
+
+    @Override
+    public void renderTransparentBackground(GuiGraphics graphics) {
+        RenderHelper.drawGrayBackground(graphics);
     }
 
     public Minecraft getMinecraft() {
