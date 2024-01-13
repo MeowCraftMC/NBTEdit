@@ -1,11 +1,10 @@
-package cx.rain.mc.nbtedit.forge.networking.packet;
+package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
 import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class C2SEntityEditingRequestPacket {
 	/**
@@ -35,7 +34,7 @@ public class C2SEntityEditingRequestPacket {
 		buf.writeBoolean(isSelf);
 	}
 
-	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+	public void serverHandleOnMain(NetworkEvent.Context context) {
         var player = context.getSender();
 		NBTEditEditingHelper.editEntity(player, entityUuid);
 	}

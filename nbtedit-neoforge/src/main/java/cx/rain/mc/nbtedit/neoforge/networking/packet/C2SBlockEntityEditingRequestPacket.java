@@ -1,10 +1,10 @@
-package cx.rain.mc.nbtedit.forge.networking.packet;
+package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
 import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class C2SBlockEntityEditingRequestPacket {
 	/**
@@ -24,7 +24,7 @@ public class C2SBlockEntityEditingRequestPacket {
 		buf.writeBlockPos(pos);
 	}
 
-	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+	public void serverHandleOnMain(NetworkEvent.Context context) {
 		ServerPlayer player = context.getSender();
 		NBTEditEditingHelper.editBlockEntity(player, pos);
 	}

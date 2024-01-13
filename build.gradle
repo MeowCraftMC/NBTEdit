@@ -55,9 +55,13 @@ subprojects {
                 fabric_api_version: fabric_api_version,
                 forge_loader_version: forge_loader_version,
                 forge_version: forge_version,
+                neoforge_loader_version: neoforge_loader_version,
+                neoforge_version: neoforge_version,
                 next_minecraft_version: next_minecraft_version,
                 next_forge_loader_version: next_forge_loader_version,
-                next_forge_version: next_forge_version
+                next_forge_version: next_forge_version,
+                next_neoforge_loader_version: next_neoforge_loader_version,
+                next_neoforge_version: next_neoforge_version
         ]
 
         inputs.properties replaceTokens
@@ -94,6 +98,11 @@ allprojects {
             content {
                 includeGroup 'curse.maven'
             }
+        }
+
+        maven {
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases/'
         }
 
         mavenCentral()

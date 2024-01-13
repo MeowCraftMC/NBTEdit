@@ -1,0 +1,33 @@
+modLoader="javafml"
+loaderVersion="[${neoforge_loader_version},${next_neoforge_loader_version})"
+license="GPLv3"
+issueTrackerURL="https://github.com/qyl27/NBTEdit/issues"
+
+[[mods]]
+modId="nbtedit"
+version="${mod_version}"
+displayName="${mod_full_name}"
+#updateJSONURL="https://change.me.example.invalid/updates.json"
+displayURL="https://github.com/qyl27/NBTEdit"
+logoFile="logo-neoforge.png"
+credits="DavidGoldman, MoeBoy76, Jay113355 and other contributers."
+authors="qyl27"
+displayTest="MATCH_VERSION"
+description='''
+A Minecraft mod allows you edit any NBT tags of the game content while in game. Such as TileEntities, Entities.
+It can help many map creator to make custom items or help many mod creator to debug.
+'''
+
+[[dependencies.nbtedit]]
+    modId="neoforge"
+    mandatory=true
+    versionRange="[${neoforge_version},${next_neoforge_version})"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.nbtedit]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${minecraft_version},${next_minecraft_version})"
+    ordering="NONE"
+    side="BOTH"

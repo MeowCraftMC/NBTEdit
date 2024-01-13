@@ -1,10 +1,10 @@
-package cx.rain.mc.nbtedit.forge.networking.packet;
+package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
 import cx.rain.mc.nbtedit.networking.NBTEditSavingHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class C2SItemStackSavingPacket {
     protected ItemStack itemStack;
@@ -26,7 +26,7 @@ public class C2SItemStackSavingPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+    public void serverHandleOnMain(NetworkEvent.Context context) {
         var player = context.getSender();
         NBTEditSavingHelper.saveItemStack(player, itemStack, compoundTag);
     }

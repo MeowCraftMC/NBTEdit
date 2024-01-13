@@ -1,8 +1,8 @@
-package cx.rain.mc.nbtedit.forge.networking.packet;
+package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
 import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class S2CRayTracePacket {
 	public S2CRayTracePacket() {
@@ -14,7 +14,7 @@ public class S2CRayTracePacket {
 	public void toBytes(FriendlyByteBuf buf) {
 	}
 
-	public void clientHandleOnMain(CustomPayloadEvent.Context context) {
+	public void clientHandleOnMain(NetworkEvent.Context context) {
 		RayTraceHelper.doRayTrace();
 	}
 }

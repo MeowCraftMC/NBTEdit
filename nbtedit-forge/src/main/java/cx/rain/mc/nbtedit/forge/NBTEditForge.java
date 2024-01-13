@@ -19,6 +19,8 @@ public class NBTEditForge {
     private final NBTEdit nbtedit;
 
     public NBTEditForge() {
+        NBTEditPlatformImpl.load();
+
         nbtedit = new NBTEdit();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NBTEditConfigImpl.CONFIG, "nbtedit.toml");

@@ -1,9 +1,9 @@
-package cx.rain.mc.nbtedit.forge.networking.packet;
+package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
 import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class C2SItemStackEditingRequestPacket {
 	private ItemStack itemStack;
@@ -20,7 +20,7 @@ public class C2SItemStackEditingRequestPacket {
 		buf.writeItem(itemStack);
 	}
 
-	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
+	public void serverHandleOnMain(NetworkEvent.Context context) {
         var player = context.getSender();
 		NBTEditEditingHelper.editItemStack(player, itemStack);
 	}

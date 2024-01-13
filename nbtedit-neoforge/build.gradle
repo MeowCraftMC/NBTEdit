@@ -5,11 +5,14 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    fabric()
+    neoForge()
 }
 
 loom {
     accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
+
+    neoForge {
+    }
 }
 
 configurations {
@@ -17,28 +20,18 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+    developmentNeoForge.extendsFrom common
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-
-    modRuntimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
+    neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
     common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionFabric')) { transitive = false }
-}
-
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('fabric.mod.json') {
-        expand 'version': project.version
-    }
+    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
 }
 
 shadowJar {
+    exclude 'fabric.mod.json'
     exclude 'architectury.common.json'
 
     configurations = [project.configurations.shadowCommon]
@@ -46,7 +39,6 @@ shadowJar {
 }
 
 remapJar {
-    injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
 }
@@ -65,7 +57,7 @@ components.java {
 
 publishing {
     publications {
-        mavenFabric(MavenPublication) {
+        mavenForge(MavenPublication) {
             artifactId = project.name
             version = mavenVersion
             from components.java
@@ -75,21 +67,14 @@ publishing {
 
 unifiedPublishing {
     project {
-        displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
+        displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
         version = mavenVersion
         gameVersions = [project.minecraft_version]
-        gameLoaders = ['fabric']
+        gameLoaders = ['neoforge']
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
 
         mainPublication tasks.remapJar
-
-        relations {
-            depends {
-                curseforge = 'fabric-api'
-                modrinth = 'fabric-api'
-            }
-        }
 
         curseforge {
             token = System.getenv('CURSEFORGE_TOKEN')
