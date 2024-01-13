@@ -72,6 +72,3 @@ http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-
 ## Bug report（Bug反馈/催更）
 Please go to the issues page.  
 请到 Issues 页面提出。
-
-## Update log（更新日志）
-See [the releases page](https://github.com/qyl27/NBTEdit/releases).
