@@ -1,0 +1,101 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'me.shedaniel.unified-publishing' version '0.1.+'
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+loom {
+    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        runs {
+            data {
+                data()
+
+                programArgs "--all", "--mod", "nbtedit"
+                programArgs "--output", file('../nbtedit-common/src/generated/resources').absolutePath
+                programArgs "--existing", file('../nbtedit-common/src/main/resources').absolutePath
+            }
+        }
+    }
+}
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+
+    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
+    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
+}
+
+shadowJar {
+    exclude 'fabric.mod.json'
+    exclude 'architectury.common.json'
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+}
+
+sourcesJar {
+    def commonSources = project(':nbtedit-common').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifactId = project.name
+            version = mavenVersion
+            from components.java
+        }
+    }
+}
+
+unifiedPublishing {
+    project {
+        displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
+        version = mavenVersion
+        gameVersions = [project.minecraft_version]
+        gameLoaders = ['forge']
+        releaseType = 'release'
+        changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
+
+        mainPublication tasks.remapJar
+
+        curseforge {
+            token = System.getenv('CURSEFORGE_TOKEN')
+            id = '678133'
+        }
+
+        modrinth {
+            token = System.getenv('MODRINTH_TOKEN')
+            id = 'Vr2eDeCw'
+        }
+    }
+}
