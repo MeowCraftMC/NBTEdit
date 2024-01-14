@@ -2,14 +2,19 @@
 A Minecraft mod allows you to edit any NBT tags of the game content with a GUI while in-game. Such as TileEntities, Entities. It may help map creators to make custom items or help mod creators to debug.  
 本模组可以用于在游戏内编辑物品、实体或方块的 NBT ，可能会对地图制作者制作自定义物品或模组开发者 Debug 有所帮助。
 
-**There was a fatal bug before NBTEdit 5.0.0, please update it immediately.**  
-**所有 NBTEdit 5.0.0 以前的版本都存在严重漏洞，请立即更新。**
+**Forge, NeoForge, Fabric, Quilt are supported!**  
+**Forge、NeoForge、Fabric、Quilt 均已支持！**
 
 ## Usage（食用方法）
 
 ### Shortcuts（快捷键）
 Press `N` (by default) to edit your target BlockEntity, Entity or ItemStack in main hand (if target is missing).  
 使用 `N` 键（默认情况下）打开编辑界面。编辑的目标为十字准星指向的方块实体或者实体，如果没有指向则编辑主手上的物品。  
+
+- `Ctrl` + `C` to Copy a node. （复制）  
+- `Ctrl` + `V` to Paste a node. （粘贴）  
+- `Ctrl` + `X` to Cut a node. （剪切）  
+- `Ctrl` + `D` to Delete a node. （删除）  
 
 ### Commands（命令）
 
