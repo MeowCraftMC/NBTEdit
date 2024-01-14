@@ -5,50 +5,52 @@ import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
 import cx.rain.mc.nbtedit.neoforge.networking.packet.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.PlayNetworkDirection;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IDirectionAwarePayloadHandlerBuilder;
 
+import java.util.function.Consumer;
+
+@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class NBTEditNetworkingImpl implements INBTEditNetworking {
-	private static SimpleChannel CHANNEL;
 
-	private static final ResourceLocation CHANNEL_RL = new ResourceLocation(NBTEdit.MODID, "editing");
+	public static final ResourceLocation C2S_BLOCK_ENTITY_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_block_entity_editing_request");
+	public static final ResourceLocation C2S_BLOCK_ENTITY_SAVING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_block_entity_saving_request");
+	public static final ResourceLocation C2S_ENTITY_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_entity_editing_request");
+	public static final ResourceLocation C2S_ENTITY_SAVING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_entity_saving_request");
+	public static final ResourceLocation C2S_ITEM_STACK_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_item_stack_editing_request");
+	public static final ResourceLocation C2S_ITEM_STACK_SAVING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_item_stack_saving_request");
 
-	private static int ID = 0;
+	public static final ResourceLocation S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "s2c_open_block_entity_editing");
+	public static final ResourceLocation S2C_OPEN_ENTITY_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "s2c_open_entity_editing");
+	public static final ResourceLocation S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "s2c_open_item_stack_editing");
+	public static final ResourceLocation S2C_RAY_TRACE_REQUEST_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "s2c_ray_trace_request");
+
+	@SubscribeEvent
+	public static void register(RegisterPayloadHandlerEvent event) {
+		var registrar = event.registrar(NBTEdit.MODID);
+
+		registrar.play(C2S_BLOCK_ENTITY_EDITING_PACKET_ID, C2SBlockEntityEditingRequestPacket::new, handler -> handler.server(C2SBlockEntityEditingRequestPacket::handle));
+		registrar.play(C2S_BLOCK_ENTITY_SAVING_PACKET_ID, C2SBlockEntitySavingPacket::new, handler -> handler.server(C2SBlockEntitySavingPacket::handle));
+		registrar.play(C2S_ENTITY_EDITING_PACKET_ID, C2SEntityEditingRequestPacket::new, handler -> handler.server(C2SEntityEditingRequestPacket::handle));
+		registrar.play(C2S_ENTITY_SAVING_PACKET_ID, C2SEntitySavingPacket::new, handler -> handler.server(C2SEntitySavingPacket::handle));
+		registrar.play(C2S_ITEM_STACK_EDITING_PACKET_ID, C2SItemStackEditingRequestPacket::new, handler -> handler.server(C2SItemStackEditingRequestPacket::handle));
+		registrar.play(C2S_ITEM_STACK_SAVING_PACKET_ID, C2SItemStackSavingPacket::new, handler -> handler.server(C2SItemStackSavingPacket::handle));
+
+		registrar.play(S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, S2COpenBlockEntityEditingGuiPacket::new, handler -> handler.client(S2COpenBlockEntityEditingGuiPacket::handle));
+		registrar.play(S2C_OPEN_ENTITY_EDITING_PACKET_ID, S2COpenEntityEditingGuiPacket::new, handler -> handler.client(S2COpenEntityEditingGuiPacket::handle));
+		registrar.play(S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, S2COpenItemStackEditingGuiPacket::new, handler -> handler.client(S2COpenItemStackEditingGuiPacket::handle));
+		registrar.play(S2C_RAY_TRACE_REQUEST_PACKET_ID, S2CRayTracePacket::new, handler -> handler.client(S2CRayTracePacket::handle));
+	}
 
 	public NBTEditNetworkingImpl() {
-		CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_RL,
-				() -> NBTEdit.VERSION,
-				(version) -> version.equals(NBTEdit.VERSION),
-				(version) -> version.equals(NBTEdit.VERSION)
-		);
-
-		registerMessages();
-	}
-
-	private static synchronized int nextId() {
-		return ID++;
-	}
-
-	private void registerMessages() {
-		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId()).encoder(S2CRayTracePacket::toBytes).decoder(S2CRayTracePacket::new).consumerMainThread(S2CRayTracePacket::clientHandleOnMain).add();
-
-		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId()).encoder(C2SEntityEditingRequestPacket::toBytes).decoder(C2SEntityEditingRequestPacket::new).consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId()).encoder(C2SBlockEntityEditingRequestPacket::toBytes).decoder(C2SBlockEntityEditingRequestPacket::new).consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId()).encoder(C2SItemStackEditingRequestPacket::toBytes).decoder(C2SItemStackEditingRequestPacket::new).consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain).add();
-
-		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId()).encoder(S2COpenEntityEditingGuiPacket::toBytes).decoder(S2COpenEntityEditingGuiPacket::new).consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain).add();
-		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId()).encoder(S2COpenBlockEntityEditingGuiPacket::toBytes).decoder(S2COpenBlockEntityEditingGuiPacket::new).consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain).add();
-		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId()).encoder(S2COpenItemStackEditingGuiPacket::toBytes).decoder(S2COpenItemStackEditingGuiPacket::new).consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain).add();
-
-		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId()).encoder(C2SEntitySavingPacket::toBytes).decoder(C2SEntitySavingPacket::new).consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId()).encoder(C2SBlockEntitySavingPacket::toBytes).decoder(C2SBlockEntitySavingPacket::new).consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId()).encoder(C2SItemStackSavingPacket::toBytes).decoder(C2SItemStackSavingPacket::new).consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain).add();
 	}
 
 	@Override
