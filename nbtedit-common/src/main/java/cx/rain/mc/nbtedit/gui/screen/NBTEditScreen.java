@@ -84,7 +84,7 @@ public class NBTEditScreen extends Screen {
             doClose();
         } else {
             gui.tick(false);
-            gui.update(false);
+
         }
 
         super.tick();

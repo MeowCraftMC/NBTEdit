@@ -48,5 +48,12 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(Constants.GUI_NARRATION_BUTTON_ADD, "添加按钮");
         add(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER, "插入特殊符号");
         add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "数值编辑子窗口");
+
+        add(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT, "【文本预览】");
+        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT, "文本预览：");
+        add(Constants.GUI_TOOLTIP_PREVIEW_ITEM, "【物品预览】");
+        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM, "物品预览：");
+        add(Constants.GUI_TOOLTIP_PREVIEW_UUID, "【UUID 预览】");
+        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID, "UUID 预览：");
     }
 }

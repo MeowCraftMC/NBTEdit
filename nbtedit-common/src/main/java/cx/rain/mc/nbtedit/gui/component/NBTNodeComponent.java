@@ -4,13 +4,24 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
+import cx.rain.mc.nbtedit.utility.Constants;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 public class NBTNodeComponent extends AbstractWidget {
     public static final ResourceLocation WIDGET_TEXTURE =
@@ -30,7 +41,7 @@ public class NBTNodeComponent extends AbstractWidget {
         gui = guiIn;
         node = nodeIn;
 
-        update();
+        init();
     }
 
     protected Minecraft getMinecraft() {
@@ -41,9 +52,11 @@ public class NBTNodeComponent extends AbstractWidget {
         return node;
     }
 
-    protected void update() {
+    protected void init() {
         text = NBTHelper.getNBTNameSpecial(node);
         width = minecraft.font.width(text) + 12;
+
+        setTooltipDelay(200);
     }
 
     public boolean isMouseInsideText(int mouseX, int mouseY) {
@@ -88,6 +101,16 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        updateTooltip();
+
+        if (shouldRenderTooltipNow() && item != null) {
+            graphics.renderItem(item, mouseX + 15, mouseY + 15);
+        }
+    }
+
+    @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
@@ -111,7 +134,7 @@ public class NBTNodeComponent extends AbstractWidget {
             }
         } else {
             if (isSpoilerHover) {
-                u = 18 + 16;
+                u = 18 + 18;
             }
         }
 
@@ -121,5 +144,85 @@ public class NBTNodeComponent extends AbstractWidget {
 
         graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
         graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+    }
+
+    private ItemStack item;
+
+    private void updateTooltip() {
+        var tag = node.getTag();
+        try {
+            if (tag instanceof StringTag stringTag) {
+                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+
+                var content = Component.Serializer.fromJson(stringTag.getAsString());
+
+                if (content != null && !content.getString().isBlank()) {
+                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+
+                    setTooltip(Tooltip.create(preview, previewNarration));
+                    return;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (tag instanceof CompoundTag compoundTag) {
+                var itemStack = ItemStack.of(compoundTag);
+                if (!itemStack.isEmpty()) {
+                    var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
+
+                    // Todo: Mixin render itemStack over the tooltip.
+//                    item = itemStack;
+//                    preview.append("\n\n");
+
+                    var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
+                    var content = Component.empty();
+                    for (int i = 0; i < lines.size(); i++) {
+                        content.append(lines.get(i));
+                        if (i == lines.size() - 1) {
+                            content.append("\n");
+                        }
+                    }
+
+                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+
+                    setTooltip(Tooltip.create(preview, previewNarration));
+                    return;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        try {
+            if (tag instanceof IntArrayTag intArrayTag) {
+                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
+                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
+
+                var content = NbtUtils.loadUUID(intArrayTag).toString();
+
+                preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+
+                setTooltip(Tooltip.create(preview, previewNarration));
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private boolean shouldRenderTooltipNow() {
+        if (getTooltip() == null) {
+            return false;
+        }
+
+        var bl = isHovered() || this.isFocused() && Minecraft.getInstance().getLastInputType().isKeyboard();
+
+        return bl
+                && ((Util.getMillis() - this.hoverOrFocusedStartTime - 1) > (long) this.tooltipMsDelay)
+                && Minecraft.getInstance().screen != null;
     }
 }

@@ -39,5 +39,10 @@ public class Constants {
     public static final String GUI_NARRATION_BUTTON_SPECIAL_CHARACTER = "gui.narration.button.special_character";
     public static final String GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR = "gui.narration.sub_window.value_editor";
 
-
+    public static final String GUI_TOOLTIP_PREVIEW_COMPONENT = "gui.tooltip.preview.component";
+    public static final String GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT = "gui.narration.tooltip.preview.component";
+    public static final String GUI_TOOLTIP_PREVIEW_ITEM = "gui.tooltip.preview.item";
+    public static final String GUI_NARRATION_TOOLTIP_PREVIEW_ITEM = "gui.narration.tooltip.preview.item";
+    public static final String GUI_TOOLTIP_PREVIEW_UUID = "gui.tooltip.preview.uuid";
+    public static final String GUI_NARRATION_TOOLTIP_PREVIEW_UUID = "gui.narration.tooltip.preview.uuid";
 }

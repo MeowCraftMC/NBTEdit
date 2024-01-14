@@ -148,10 +148,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             }
         }
 
-        for (var button : getButtons()) {
-            if (button.isActive()) {
-            }
-        }
+        updateButtons();
     }
 
     // </editor-fold>
