@@ -1,13 +1,18 @@
 package cx.rain.mc.nbtedit.neoforge.networking.packet;
 
+import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.neoforge.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class S2COpenEntityEditingGuiPacket {
+public class S2COpenEntityEditingGuiPacket implements CustomPacketPayload {
     protected UUID entityUuid;
     protected int entityId;
     protected CompoundTag compoundTag;
@@ -27,14 +32,22 @@ public class S2COpenEntityEditingGuiPacket {
         isSelf = self;
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUUID(entityUuid);
-        buf.writeInt(entityId);
-        buf.writeNbt(compoundTag);
-        buf.writeBoolean(isSelf);
+    public static void handle(S2COpenEntityEditingGuiPacket packet, PlayPayloadContext context) {
+        context.workHandler().submitAsync(() -> {
+            ScreenHelper.showNBTEditScreen(packet.entityUuid, packet.entityId, packet.compoundTag, packet.isSelf);
+        });
     }
 
-    public void clientHandleOnMain(NetworkEvent.Context context) {
-        ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
+    @Override
+    public void write(FriendlyByteBuf buffer) {
+        buffer.writeUUID(entityUuid);
+        buffer.writeInt(entityId);
+        buffer.writeNbt(compoundTag);
+        buffer.writeBoolean(isSelf);
+    }
+
+    @Override
+    public @NotNull ResourceLocation id() {
+        return NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID;
     }
 }
