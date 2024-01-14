@@ -21,7 +21,7 @@ public class S2COpenItemStackEditingGuiPacket {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeItemStack(itemStack, true);
+        buf.writeItem(itemStack);
         buf.writeNbt(compoundTag);
     }
 

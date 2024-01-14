@@ -2,8 +2,8 @@
 A Minecraft mod allows you to edit any NBT tags of the game content with a GUI while in-game. Such as TileEntities, Entities. It may help map creators to make custom items or help mod creators to debug.  
 本模组可以用于在游戏内编辑物品、实体或方块的 NBT ，可能会对地图制作者制作自定义物品或模组开发者 Debug 有所帮助。
 
-**Forge, NeoForge, Fabric, Quilt are supported!**  
-**Forge、NeoForge、Fabric、Quilt 均已支持！**
+**Forge, NeoForge, Fabric are supported!**  
+**Forge、NeoForge、Fabric 均已支持！**
 
 ## Usage（食用方法）
 

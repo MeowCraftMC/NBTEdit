@@ -101,7 +101,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
 		player.getServer().execute(() -> {
-			var tag = stack.serializeNBT();
+			var tag = stack.save(new CompoundTag());
 			CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
 					player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
 		});

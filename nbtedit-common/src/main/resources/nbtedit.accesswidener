@@ -5,6 +5,3 @@ accessible field net/minecraft/client/gui/Gui minecraft Lnet/minecraft/client/Mi
 accessible method net/minecraft/server/level/ServerPlayer initMenu (Lnet/minecraft/world/inventory/AbstractContainerMenu;)V
 
 accessible method net/minecraft/client/gui/components/Tooltip <init> (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;)V
-accessible field net/minecraft/client/gui/components/AbstractWidget tooltipMsDelay I
-accessible field net/minecraft/client/gui/components/AbstractWidget hoverOrFocusedStartTime J
-accessible field net/minecraft/client/gui/components/AbstractWidget wasHoveredOrFocused Z

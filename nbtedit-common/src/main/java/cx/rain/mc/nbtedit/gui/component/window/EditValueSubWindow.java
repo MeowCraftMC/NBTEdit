@@ -3,7 +3,6 @@ package cx.rain.mc.nbtedit.gui.component.window;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.gui.component.IWidgetHolder;
-import cx.rain.mc.nbtedit.gui.component.button.SpecialCharacterButton;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;

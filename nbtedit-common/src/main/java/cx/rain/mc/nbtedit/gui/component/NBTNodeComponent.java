@@ -56,7 +56,7 @@ public class NBTNodeComponent extends AbstractWidget {
         text = NBTHelper.getNBTNameSpecial(node);
         width = minecraft.font.width(text) + 12;
 
-        setTooltipDelay(200);
+        updateTooltip();
     }
 
     public boolean isMouseInsideText(int mouseX, int mouseY) {
@@ -73,10 +73,6 @@ public class NBTNodeComponent extends AbstractWidget {
 
     public boolean isTextClicked(int mouseX, int mouseY) {
         return isMouseInsideText(mouseX, mouseY);
-    }
-
-    public boolean isSpoilerClicked(int mouseX, int mouseY) {
-        return isMouseInsideSpoiler(mouseX, mouseY);
     }
 
     public boolean spoilerClicked(int mouseX, int mouseY) {
@@ -98,16 +94,6 @@ public class NBTNodeComponent extends AbstractWidget {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narration) {
         narration.add(NarratedElementType.TITLE, text);
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
-        updateTooltip();
-
-        if (shouldRenderTooltipNow() && item != null) {
-            graphics.renderItem(item, mouseX + 15, mouseY + 15);
-        }
     }
 
     @Override
@@ -145,8 +131,6 @@ public class NBTNodeComponent extends AbstractWidget {
         graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
         graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
-
-    private ItemStack item;
 
     private void updateTooltip() {
         var tag = node.getTag();
@@ -212,17 +196,7 @@ public class NBTNodeComponent extends AbstractWidget {
             }
         } catch (Exception ignored) {
         }
-    }
 
-    private boolean shouldRenderTooltipNow() {
-        if (getTooltip() == null) {
-            return false;
-        }
-
-        var bl = isHovered() || this.isFocused() && Minecraft.getInstance().getLastInputType().isKeyboard();
-
-        return bl
-                && ((Util.getMillis() - this.hoverOrFocusedStartTime - 1) > (long) this.tooltipMsDelay)
-                && Minecraft.getInstance().screen != null;
+        setTooltipDelay(200);
     }
 }
