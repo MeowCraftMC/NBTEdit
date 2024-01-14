@@ -183,7 +183,7 @@ public class NBTNodeComponent extends AbstractWidget {
                     var content = Component.empty();
                     for (int i = 0; i < lines.size(); i++) {
                         content.append(lines.get(i));
-                        if (i == lines.size() - 1) {
+                        if (i != lines.size() - 1) {
                             content.append("\n");
                         }
                     }
