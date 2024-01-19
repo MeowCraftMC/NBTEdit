@@ -20,7 +20,7 @@ public class NBTEditNetworkingHelper {
     }
 
     public static boolean checkPosLoaded(ServerPlayer player, BlockPos pos) {
-        var result = player.serverLevel().isLoaded(pos);
+        var result = player.getLevel().isLoaded(pos);
 
         if (!result) {
             player.sendSystemMessage(Component.translatable(Constants.MESSAGE_NOT_LOADED)

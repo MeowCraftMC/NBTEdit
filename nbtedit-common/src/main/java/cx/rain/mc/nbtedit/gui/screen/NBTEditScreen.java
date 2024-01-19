@@ -1,12 +1,12 @@
 package cx.rain.mc.nbtedit.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.RenderHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -91,21 +91,16 @@ public class NBTEditScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics, mouseX, mouseY, partialTick);
-        gui.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(getMinecraft().font, title, this.width / 2, 5, 16777215);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        RenderHelper.drawGrayBackground(poseStack);
+        gui.render(poseStack, mouseX, mouseY, partialTick);
+        drawCenteredString(poseStack, getMinecraft().font, title, this.width / 2, 5, 16777215);
 
         if (gui.hasWindow()) {
-            super.render(graphics, mouseX, mouseY, partialTick);
+            super.render(poseStack, mouseX, mouseY, partialTick);
         } else {
-            super.render(graphics, -1, -1, partialTick);
+            super.render(poseStack, -1, -1, partialTick);
         }
-    }
-
-    @Override
-    public void renderTransparentBackground(GuiGraphics graphics) {
-        RenderHelper.drawGrayBackground(graphics);
     }
 
     public Minecraft getMinecraft() {
@@ -182,12 +177,11 @@ public class NBTEditScreen extends Screen {
 
     // <editor-fold desc="Input processing.">
 
-
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        super.mouseScrolled(mouseX, mouseY, delta);
 
-        var offset = (int) verticalAmount;
+        var offset = (int) delta;
         if (offset != 0) {
             gui.shiftY((offset >= 1) ? 6 : -6);
         }

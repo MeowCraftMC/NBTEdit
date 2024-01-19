@@ -11,27 +11,25 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.*;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
  * Created by Jay113355 on 6/28/2016.
  * Edited by qyl27 on 2022.9.19.
  */
 public class NBTEditNetworkingImpl implements INBTEditNetworking {
-	public static final int CHANNEL_VERSION = 1;
+	public static final String CHANNEL_VERSION = "1";
 
 	private static SimpleChannel CHANNEL;
 
 	private static final ResourceLocation CHANNEL_RL = new ResourceLocation(NBTEdit.MODID, "editing");
 
-	private static final Channel.VersionTest CLIENT_VERSION_TEST = (status, version) -> status == Channel.VersionTest.Status.PRESENT;
-	private static final Channel.VersionTest SERVER_VERSION_TEST = (status, version) -> true;
-
 	private static int ID = 0;
 
 	public NBTEditNetworkingImpl() {
-		CHANNEL = ChannelBuilder.named(CHANNEL_RL)
-				.serverAcceptedVersions(SERVER_VERSION_TEST)
-				.clientAcceptedVersions(CLIENT_VERSION_TEST)
+		CHANNEL = NetworkRegistry.ChannelBuilder.named(CHANNEL_RL)
+				.serverAcceptedVersions(version -> version.equals(CHANNEL_VERSION))
+				.clientAcceptedVersions(version -> version.equals(CHANNEL_VERSION))
 				.simpleChannel();
 
 		registerMessages();
@@ -59,30 +57,30 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 
 	@Override
 	public void serverRayTraceRequest(ServerPlayer player) {
-		CHANNEL.send(new S2CRayTracePacket(), player.connection.getConnection());
+		CHANNEL.sendTo(new S2CRayTracePacket(), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	@Override
 	public void clientOpenGuiRequest(Entity entity, boolean self) {
-		CHANNEL.send(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
 	}
 
 	@Override
 	public void clientOpenGuiRequest(BlockPos pos) {
-		CHANNEL.send(new C2SBlockEntityEditingRequestPacket(pos), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SBlockEntityEditingRequestPacket(pos));
 	}
 
 	@Override
 	public void clientOpenGuiRequest(ItemStack stack) {
-		CHANNEL.send(new C2SItemStackEditingRequestPacket(stack), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SItemStackEditingRequestPacket(stack));
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
 		player.getServer().execute(() -> {
 			var tag = entity.serializeNBT();
-			CHANNEL.send(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
-					player.connection.getConnection());
+			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
 	}
 
@@ -90,8 +88,8 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
 		player.getServer().execute(() -> {
 			var tag = blockEntity.serializeNBT();
-			CHANNEL.send(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
-					player.connection.getConnection());
+			CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
 	}
 
@@ -99,8 +97,8 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	public void serverOpenClientGui(ServerPlayer player) {
 		player.getServer().execute(() -> {
 			var tag = player.serializeNBT();
-			CHANNEL.send(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
-					player.connection.getConnection());
+			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
 	}
 
@@ -108,23 +106,23 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
 		player.getServer().execute(() -> {
 			var tag = stack.serializeNBT();
-			CHANNEL.send(new S2COpenItemStackEditingGuiPacket(stack, tag),
-					player.connection.getConnection());
+			CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
+					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
 	}
 
 	@Override
 	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
-		CHANNEL.send(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
 	}
 
 	@Override
 	public void saveEditing(BlockPos pos, CompoundTag tag) {
-		CHANNEL.send(new C2SBlockEntitySavingPacket(pos, tag), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SBlockEntitySavingPacket(pos, tag));
 	}
 
 	@Override
 	public void saveEditing(ItemStack stack, CompoundTag tag) {
-		CHANNEL.send(new C2SItemStackSavingPacket(stack, tag), PacketDistributor.SERVER.noArg());
+		CHANNEL.send(PacketDistributor.SERVER.noArg(), new C2SItemStackSavingPacket(stack, tag));
 	}
 }

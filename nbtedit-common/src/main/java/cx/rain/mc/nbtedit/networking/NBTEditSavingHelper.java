@@ -27,7 +27,7 @@ public class NBTEditSavingHelper {
         }
 
         var server = player.getServer();
-        var level = player.serverLevel();
+        var level = player.getLevel();
         server.execute(() -> {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
@@ -84,7 +84,7 @@ public class NBTEditSavingHelper {
         }
 
         var server = player.getServer();
-        var level = player.serverLevel();
+        var level = player.getLevel();
         server.execute(() -> {
             var entity = level.getEntity(entityUuid);
 

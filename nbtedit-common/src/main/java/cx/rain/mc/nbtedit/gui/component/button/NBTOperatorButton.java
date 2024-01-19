@@ -1,10 +1,10 @@
 package cx.rain.mc.nbtedit.gui.component.button;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -37,13 +37,14 @@ public class NBTOperatorButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (isMouseInside(mouseX, mouseY)) {    // checks if the mouse is over the button
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80ffffff);   // draw a grayish background
+            fill(poseStack, getX(), getY(), getX() + width, getY() + height, 0x80ffffff);   // draw a grayish background
         }
 
         if (isActive()) {
-            graphics.blit(BUTTONS_TEXTURE, getX(), getY(), width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
+            RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
+            blit(poseStack, getX(), getY(), width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
         }
     }
 }

@@ -1,19 +1,18 @@
 package cx.rain.mc.nbtedit.gui.component;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
@@ -97,14 +96,14 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
         var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
         if (isSelected) {
-            graphics.fill(getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
+            fill(poseStack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
         }
 
         var w = 18;
@@ -124,12 +123,13 @@ public class NBTNodeComponent extends AbstractWidget {
             }
         }
 
+        RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
         if (node.hasChild()) {
-            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
+            blit(poseStack, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
         }
 
-        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
-        graphics.drawString(getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+        blit(poseStack, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
+        drawString(poseStack, getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
     }
 
     private void updateTooltip() {
@@ -158,10 +158,6 @@ public class NBTNodeComponent extends AbstractWidget {
                 if (!itemStack.isEmpty()) {
                     var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
                     var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
-
-                    // Todo: Mixin render itemStack over the tooltip.
-//                    item = itemStack;
-//                    preview.append("\n\n");
 
                     var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
                     var content = Component.empty();

@@ -3,7 +3,7 @@ plugins {
     id "dev.architectury.loom" version "${architectury_loom_version}" apply false
 }
 
-def ENV = System.getenv();
+def ENV = System.getenv()
 
 var mavenVersion = project.mod_version
 mavenVersion += "+mc${project.minecraft_version}"
@@ -56,13 +56,9 @@ subprojects {
                 fabric_api_version: fabric_api_version,
                 forge_loader_version: forge_loader_version,
                 forge_version: forge_version,
-                neoforge_loader_version: neoforge_loader_version,
-                neoforge_version: neoforge_version,
                 next_minecraft_version: next_minecraft_version,
                 next_forge_loader_version: next_forge_loader_version,
-                next_forge_version: next_forge_version,
-                next_neoforge_loader_version: next_neoforge_loader_version,
-                next_neoforge_version: next_neoforge_version
+                next_forge_version: next_forge_version
         ]
 
         inputs.properties replaceTokens
