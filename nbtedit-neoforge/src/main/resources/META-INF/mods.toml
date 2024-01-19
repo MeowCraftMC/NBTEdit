@@ -20,14 +20,14 @@ It can help many map creator to make custom items or help many mod creator to de
 
 [[dependencies.nbtedit]]
     modId="neoforge"
-    mandatory=true
+    type="required"
     versionRange="[${neoforge_version},${next_neoforge_version})"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbtedit]]
     modId="minecraft"
-    mandatory=true
+    type="required"
     versionRange="[${minecraft_version},${next_minecraft_version})"
     ordering="NONE"
     side="BOTH"
