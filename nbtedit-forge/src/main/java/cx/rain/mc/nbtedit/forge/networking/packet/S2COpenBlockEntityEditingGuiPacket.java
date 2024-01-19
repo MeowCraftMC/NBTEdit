@@ -4,7 +4,9 @@ import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class S2COpenBlockEntityEditingGuiPacket {
     private BlockPos blockPos;
@@ -25,7 +27,7 @@ public class S2COpenBlockEntityEditingGuiPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void clientHandleOnMain(CustomPayloadEvent.Context context) {
+    public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
         ScreenHelper.showNBTEditScreen(blockPos, compoundTag);
     }
 }

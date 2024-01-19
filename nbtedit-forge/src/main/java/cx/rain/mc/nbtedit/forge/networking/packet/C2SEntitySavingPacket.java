@@ -3,9 +3,10 @@ package cx.rain.mc.nbtedit.forge.networking.packet;
 import cx.rain.mc.nbtedit.networking.NBTEditSavingHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class C2SEntitySavingPacket {
 	/**
@@ -41,8 +42,8 @@ public class C2SEntitySavingPacket {
 		buf.writeBoolean(isSelf);
 	}
 
-	public void serverHandleOnMain(CustomPayloadEvent.Context context) {
-		var player = context.getSender();
+	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
+		var player = context.get().getSender();
 		NBTEditSavingHelper.saveEntity(player, entityUuid, compoundTag);
 	}
 }

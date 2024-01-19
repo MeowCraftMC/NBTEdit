@@ -4,7 +4,9 @@ import cx.rain.mc.nbtedit.networking.NBTEditSavingHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 public class C2SItemStackSavingPacket {
     protected ItemStack itemStack;
@@ -26,8 +28,8 @@ public class C2SItemStackSavingPacket {
         buf.writeNbt(compoundTag);
     }
 
-    public void serverHandleOnMain(CustomPayloadEvent.Context context) {
-        var player = context.getSender();
+    public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
+        var player = context.get().getSender();
         NBTEditSavingHelper.saveItemStack(player, itemStack, compoundTag);
     }
 }

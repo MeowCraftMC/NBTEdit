@@ -3,9 +3,10 @@ package cx.rain.mc.nbtedit.forge.networking.packet;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class S2COpenEntityEditingGuiPacket {
     protected UUID entityUuid;
@@ -34,7 +35,7 @@ public class S2COpenEntityEditingGuiPacket {
         buf.writeBoolean(isSelf);
     }
 
-    public void clientHandleOnMain(CustomPayloadEvent.Context context) {
+    public void clientHandleOnMain(Supplier<NetworkEvent.Context> context) {
         ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf);
     }
 }

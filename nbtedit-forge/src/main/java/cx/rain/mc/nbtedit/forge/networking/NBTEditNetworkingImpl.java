@@ -28,6 +28,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 
 	public NBTEditNetworkingImpl() {
 		CHANNEL = NetworkRegistry.ChannelBuilder.named(CHANNEL_RL)
+				.networkProtocolVersion(() -> CHANNEL_VERSION)
 				.serverAcceptedVersions(version -> version.equals(CHANNEL_VERSION))
 				.clientAcceptedVersions(version -> version.equals(CHANNEL_VERSION))
 				.simpleChannel();
