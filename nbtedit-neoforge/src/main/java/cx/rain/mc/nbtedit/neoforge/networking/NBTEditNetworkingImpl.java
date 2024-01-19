@@ -3,9 +3,9 @@ package cx.rain.mc.nbtedit.neoforge.networking;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
 import cx.rain.mc.nbtedit.neoforge.networking.packet.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -14,11 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IDirectionAwarePayloadHandlerBuilder;
 
-import java.util.function.Consumer;
-
-@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NBTEditNetworkingImpl implements INBTEditNetworking {
 
 	public static final ResourceLocation C2S_BLOCK_ENTITY_EDITING_PACKET_ID = new ResourceLocation(NBTEdit.MODID, "c2s_block_entity_editing_request");
@@ -55,72 +52,78 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 
 	@Override
 	public void serverRayTraceRequest(ServerPlayer player) {
-		CHANNEL.sendTo(new S2CRayTracePacket(), player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
+		player.connection.send(new S2CRayTracePacket());
 	}
 
 	@Override
 	public void clientOpenGuiRequest(Entity entity, boolean self) {
-		CHANNEL.sendToServer(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
+		}
 	}
 
 	@Override
 	public void clientOpenGuiRequest(BlockPos pos) {
-		CHANNEL.sendToServer(new C2SBlockEntityEditingRequestPacket(pos));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SBlockEntityEditingRequestPacket(pos));
+		}
 	}
 
 	@Override
 	public void clientOpenGuiRequest(ItemStack stack) {
-		CHANNEL.sendToServer(new C2SItemStackEditingRequestPacket(stack));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SItemStackEditingRequestPacket(stack));
+		}
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
-		player.getServer().execute(() -> {
-			var tag = entity.serializeNBT();
-			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
-					player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
-		});
+		var tag = entity.serializeNBT();
+		player.connection.send(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false));
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
-		player.getServer().execute(() -> {
-			var tag = blockEntity.serializeNBT();
-			CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
-					player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
-		});
+		var tag = blockEntity.serializeNBT();
+		player.connection.send(new S2COpenBlockEntityEditingGuiPacket(pos, tag));
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player) {
-		player.getServer().execute(() -> {
-			var tag = player.serializeNBT();
-			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
-					player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
-		});
+		var tag = player.serializeNBT();
+		player.connection.send(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true));
 	}
 
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
-		player.getServer().execute(() -> {
-			var tag = stack.save(new CompoundTag());
-			CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
-					player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT);
-		});
+		var tag = stack.save(new CompoundTag());
+		player.connection.send(new S2COpenItemStackEditingGuiPacket(stack, tag));
 	}
 
 	@Override
 	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
-		CHANNEL.sendToServer(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
+		}
 	}
 
 	@Override
 	public void saveEditing(BlockPos pos, CompoundTag tag) {
-		CHANNEL.sendToServer(new C2SBlockEntitySavingPacket(pos, tag));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SBlockEntitySavingPacket(pos, tag));
+		}
 	}
 
 	@Override
 	public void saveEditing(ItemStack stack, CompoundTag tag) {
-		CHANNEL.sendToServer(new C2SItemStackSavingPacket(stack, tag));
+		var connection = Minecraft.getInstance().getConnection();
+		if (connection != null) {
+			connection.send(new C2SItemStackSavingPacket(stack, tag));
+		}
 	}
 }
