@@ -1,17 +1,15 @@
 package cx.rain.mc.nbtedit.fabric.networking.packet;
 
-import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
 import cx.rain.mc.nbtedit.networking.NBTEditSavingHelper;
-import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.item.ItemStack;
 
-public class C2SItemStackSavingPacket implements FabricPacket {
-    public static final PacketType<C2SItemStackSavingPacket> PACKET_TYPE = PacketType.create(NBTEditNetworkingImpl.C2S_ITEM_STACK_SAVING_PACKET_ID, C2SItemStackSavingPacket::new);
+public class C2SItemStackSavingPacket {
 
     protected ItemStack itemStack;
 
@@ -27,19 +25,15 @@ public class C2SItemStackSavingPacket implements FabricPacket {
         compoundTag = tag;
     }
 
-    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeItem(itemStack);
         buf.writeNbt(compoundTag);
     }
 
-    @Override
-    public PacketType<?> getType() {
-        return PACKET_TYPE;
-    }
-
-    public static void serverHandle(C2SItemStackSavingPacket packet,
-                                   ServerPlayer player, PacketSender responseSender) {
+    public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
+                                    ServerGamePacketListenerImpl serverGamePacketListener,
+                                    FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
+        var packet = new C2SItemStackSavingPacket(friendlyByteBuf);
         NBTEditSavingHelper.saveItemStack(player, packet.itemStack, packet.compoundTag);
     }
 }

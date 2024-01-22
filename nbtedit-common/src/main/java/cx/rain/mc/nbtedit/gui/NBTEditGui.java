@@ -447,7 +447,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         var index = getIndexOf(focused);
         if (index != -1) {
             var component = nodes.get(index);
-            shiftY((bottom + START_Y + 1) / 2 - (component.getY() + component.getHeight()));
+            shiftY((bottom + START_Y + 1) / 2 - (component.y + component.getHeight()));
         }
     }
 
@@ -574,7 +574,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             if (node.spoilerClicked(mouseX, mouseY)) { // Check hide/show children buttons
                 shouldUpdate = true;
                 if (node.shouldShowChildren()) {
-                    heightOffset = (START_Y + 1) - (node.getY()) + heightOffset;
+                    heightOffset = (START_Y + 1) - (node.y) + heightOffset;
                 }
                 break;
             }

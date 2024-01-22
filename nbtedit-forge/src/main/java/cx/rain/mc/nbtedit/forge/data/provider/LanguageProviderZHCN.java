@@ -2,12 +2,12 @@ package cx.rain.mc.nbtedit.forge.data.provider;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class LanguageProviderZHCN extends LanguageProvider {
-    public LanguageProviderZHCN(PackOutput packOutput) {
-        super(packOutput, NBTEdit.MODID, "zh_cn");
+    public LanguageProviderZHCN(DataGenerator gen) {
+        super(gen, NBTEdit.MODID, "zh_cn");
     }
 
     @Override

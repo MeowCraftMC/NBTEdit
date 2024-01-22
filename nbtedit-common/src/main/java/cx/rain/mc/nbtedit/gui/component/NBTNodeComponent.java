@@ -7,10 +7,11 @@ import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.RenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +32,8 @@ public class NBTNodeComponent extends AbstractWidget {
     protected NBTEditGui gui;
 
     private final Minecraft minecraft = Minecraft.getInstance();
+
+    private Button.OnTooltip tooltip;
 
     public NBTNodeComponent(int x, int y, Component textIn, NBTEditGui guiIn, NBTTree.Node<?> nodeIn) {
         super(x, y, 0, Minecraft.getInstance().font.lineHeight, textIn);
@@ -59,11 +62,11 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public boolean isMouseInsideText(int mouseX, int mouseY) {
-        return mouseX >= getX() && mouseY >= getY() && mouseX < width + getX() && mouseY < height + getY();
+        return mouseX >= x && mouseY >= y && mouseX < width + x && mouseY < height + y;
     }
 
     public boolean isMouseInsideSpoiler(int mouseX, int mouseY) {
-        return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + height;
+        return mouseX >= x - 9 && mouseY >= y && mouseX < x && mouseY < y + height;
     }
 
     public boolean shouldShowChildren() {
@@ -83,27 +86,36 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     public void shiftY(int offsetY) {
-        setY(getY() + offsetY);
+        y += offsetY;
     }
 
     public boolean shouldRender(int top, int bottom) {
-        return getY() + height >= top && getY() <= bottom;
+        return y + height >= top && y <= bottom;
     }
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput narration) {
-        narration.add(NarratedElementType.TITLE, text);
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+        narrationElementOutput.add(NarratedElementType.TITLE, text);
+
+        tooltip.narrateTooltip((component) -> {
+            narrationElementOutput.add(NarratedElementType.HINT, component);
+        });
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderToolTip(PoseStack poseStack, int mouseX, int mouseY) {
+        tooltip.onTooltip(null, poseStack, mouseX, mouseY);
+    }
+
+    @Override
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var isSelected = gui.getFocused() == node;
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
         var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
         if (isSelected) {
-            fill(poseStack, getX() + 11, getY(), getX() + width, getY() + height, Integer.MIN_VALUE);
+            fill(poseStack, x + 11, y, x + width, y + height, Integer.MIN_VALUE);
         }
 
         var w = 18;
@@ -125,11 +137,11 @@ public class NBTNodeComponent extends AbstractWidget {
 
         RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
         if (node.hasChild()) {
-            blit(poseStack, getX() - 9, getY(), 9, height, u, 16, w, h, 512, 512);
+            blit(poseStack, x - 9, y, 9, height, u, 16, w, h, 512, 512);
         }
 
-        blit(poseStack, getX() + 1, getY(), 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
-        drawString(poseStack, getMinecraft().font, text, getX() + 11, getY() + (this.height - 8) / 2, color);
+        blit(poseStack, x + 1, y, 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
+        drawString(poseStack, getMinecraft().font, text, x + 11, y + (this.height - 8) / 2, color);
     }
 
     private void updateTooltip() {
@@ -145,7 +157,7 @@ public class NBTNodeComponent extends AbstractWidget {
                     preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
                     previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
 
-                    setTooltip(Tooltip.create(preview, previewNarration));
+                    tooltip = RenderHelper.getTooltip(preview, previewNarration);
                     return;
                 }
             }
@@ -159,7 +171,7 @@ public class NBTNodeComponent extends AbstractWidget {
                     var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
                     var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
 
-                    var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
+                    var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.Default.ADVANCED);
                     var content = Component.empty();
                     for (int i = 0; i < lines.size(); i++) {
                         content.append(lines.get(i));
@@ -171,7 +183,7 @@ public class NBTNodeComponent extends AbstractWidget {
                     preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
                     previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
 
-                    setTooltip(Tooltip.create(preview, previewNarration));
+                    tooltip = RenderHelper.getTooltip(preview, previewNarration);
                     return;
                 }
             }
@@ -188,11 +200,9 @@ public class NBTNodeComponent extends AbstractWidget {
                 preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
                 previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
 
-                setTooltip(Tooltip.create(preview, previewNarration));
+                tooltip = RenderHelper.getTooltip(preview, previewNarration);
             }
         } catch (Exception ignored) {
         }
-
-        setTooltipDelay(200);
     }
 }

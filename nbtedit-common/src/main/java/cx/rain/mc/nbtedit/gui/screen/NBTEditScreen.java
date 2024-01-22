@@ -67,15 +67,10 @@ public class NBTEditScreen extends Screen {
 
         gui.init(width, height, height - 35);
 
-        addRenderableWidget(Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked)
-                .pos(width / 4 - 100, height - 27)
-                .size(200, 20)
-                .build());
 
-        addRenderableWidget(Button.builder(Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked)
-                .pos(width * 3 / 4 - 100, height - 27)
-                .size(200, 20)
-                .build());
+        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
+
+        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
     }
 
     @Override

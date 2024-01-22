@@ -3,5 +3,3 @@ accessible field net/minecraft/nbt/CompoundTag tags Ljava/util/Map;
 accessible field net/minecraft/nbt/ListTag list Ljava/util/List;
 accessible field net/minecraft/client/gui/Gui minecraft Lnet/minecraft/client/Minecraft;
 accessible method net/minecraft/server/level/ServerPlayer initMenu (Lnet/minecraft/world/inventory/AbstractContainerMenu;)V
-
-accessible method net/minecraft/client/gui/components/Tooltip <init> (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;)V
