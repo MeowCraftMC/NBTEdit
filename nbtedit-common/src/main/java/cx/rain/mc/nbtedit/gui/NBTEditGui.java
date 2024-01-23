@@ -12,6 +12,7 @@ import cx.rain.mc.nbtedit.gui.component.NBTNodeComponent;
 import cx.rain.mc.nbtedit.gui.component.button.NBTOperatorButton;
 import cx.rain.mc.nbtedit.gui.component.window.ISubWindowHolder;
 import cx.rain.mc.nbtedit.gui.component.window.SubWindowComponent;
+import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;
@@ -26,6 +27,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
@@ -34,6 +37,8 @@ import java.util.List;
 
 public class NBTEditGui extends Gui implements ISubWindowHolder {
     protected List<NBTNodeComponent> nodes = new ArrayList<>();
+
+    public final NBTEditScreen screen;
 
     protected int width;
     protected int height;
@@ -47,9 +52,10 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     protected int yClick = -1;
 
-    public NBTEditGui(NBTTree treeIn) {
-        super(Minecraft.getInstance(), Minecraft.getInstance().getItemRenderer());
+    public NBTEditGui(NBTTree treeIn, NBTEditScreen screen) {
+        super(Minecraft.getInstance());
 
+        this.screen = screen;
         tree = treeIn;
 
         addButtons();
@@ -178,27 +184,27 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         int yLoc = 4;
 
         copyButton = new NBTOperatorButton(17, xLoc, yLoc, this, this::onCopyButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_COPY))); // Copy Button.
+                componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_COPY))); // Copy Button.
         addButton(copyButton);
 
         xLoc += 15;
         cutButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onCutButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_CUT))); // Cut Button.
+                componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_CUT))); // Cut Button.
         addButton(cutButton);
 
         xLoc += 15;
         pasteButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onPasteButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_PASTE))); // Paste Button.
+                componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_PASTE))); // Paste Button.
         addButton(pasteButton);
 
         xLoc += 45;
         editButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onEditButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_EDIT))); // Edit Button.
+                componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_EDIT))); // Edit Button.
         addButton(editButton);
 
         xLoc += 15;
         deleteButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onDeleteButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_DELETE))); // Delete Button.
+                componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_DELETE))); // Delete Button.
         addButton(deleteButton);
 
         // Add nbt type buttons.
@@ -206,7 +212,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         yLoc = 17;
         for (var i = 1; i < 13; i++) {
             var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
-                    componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_ADD)));
+                    componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_ADD)));
             addButtons[i - 1] = button;
             addButton(button);
             xLoc += 9;
@@ -425,7 +431,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     private void addNodes(NBTTree.Node<?> root, int startX) {
         nodes.add(new NBTNodeComponent(startX, y,
-                Component.literal(NBTHelper.getNBTNameSpecial(root)), this, root));
+                new TextComponent(NBTHelper.getNBTNameSpecial(root)), this, root));
 
         startX += X_GAP;
         y += Y_GAP;

@@ -40,12 +40,12 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(Constants.GUI_BUTTON_QUIT, "退出");
         add(Constants.GUI_BUTTON_CANCEL, "取消");
 
-        add(Constants.GUI_NARRATION_BUTTON_COPY, "复制按钮");
-        add(Constants.GUI_NARRATION_BUTTON_PASTE, "粘贴按钮");
-        add(Constants.GUI_NARRATION_BUTTON_CUT, "剪切按钮");
-        add(Constants.GUI_NARRATION_BUTTON_EDIT, "编辑按钮");
-        add(Constants.GUI_NARRATION_BUTTON_DELETE, "删除按钮");
-        add(Constants.GUI_NARRATION_BUTTON_ADD, "添加按钮");
+        add(Constants.GUI_NARRATION_BUTTON_COPY, "复制");
+        add(Constants.GUI_NARRATION_BUTTON_PASTE, "粘贴");
+        add(Constants.GUI_NARRATION_BUTTON_CUT, "剪切");
+        add(Constants.GUI_NARRATION_BUTTON_EDIT, "编辑");
+        add(Constants.GUI_NARRATION_BUTTON_DELETE, "删除");
+        add(Constants.GUI_NARRATION_BUTTON_ADD, "添加");
         add(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER, "插入特殊符号");
         add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "数值编辑子窗口");
 

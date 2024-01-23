@@ -11,6 +11,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.Commands.argument;
@@ -30,12 +31,12 @@ public class NBTEditCommand {
             .then(literal("hand")
                     .executes(NBTEditCommand::onItemHand));
 
-    private static int onUse(final CommandContext<CommandSourceStack> context) {
+    private static int onUse(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!ensurePlayer(context)) {
             return 0;
         }
 
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getPlayerOrException();
         NBTEdit.getInstance().getNetworking().serverRayTraceRequest(player);
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " issued command /nbtedit.");
@@ -47,7 +48,7 @@ public class NBTEditCommand {
             return 0;
         }
 
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getPlayerOrException();
         var entity = EntityArgument.getEntity(context, "entity");
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
@@ -61,7 +62,7 @@ public class NBTEditCommand {
             return 0;
         }
 
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getPlayerOrException();
         var pos = BlockPosArgument.getLoadedBlockPos(context, "block");
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
@@ -71,12 +72,12 @@ public class NBTEditCommand {
         return 1;
     }
 
-    private static int onEntityMe(final CommandContext<CommandSourceStack> context) {
+    private static int onEntityMe(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!ensurePlayer(context)) {
             return 0;
         }
 
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getPlayerOrException();
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit to edit itself.");
@@ -84,12 +85,12 @@ public class NBTEditCommand {
         return 1;
     }
 
-    private static int onItemHand(final CommandContext<CommandSourceStack> context) {
+    private static int onItemHand(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         if (!ensurePlayer(context)) {
             return 0;
         }
 
-        var player = context.getSource().getPlayer();
+        var player = context.getSource().getPlayerOrException();
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                 " issued command /nbtedit to edit hand.");
 
@@ -103,7 +104,7 @@ public class NBTEditCommand {
         if (source.getEntity() instanceof ServerPlayer) {
             return true;
         } else {
-            source.sendFailure(Component.translatable(Constants.MESSAGE_NOT_PLAYER).withStyle(ChatFormatting.RED));
+            source.sendFailure(new TranslatableComponent(Constants.MESSAGE_NOT_PLAYER).withStyle(ChatFormatting.RED));
             return false;
         }
     }

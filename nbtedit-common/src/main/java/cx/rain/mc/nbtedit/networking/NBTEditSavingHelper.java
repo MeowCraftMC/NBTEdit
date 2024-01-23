@@ -3,9 +3,11 @@ package cx.rain.mc.nbtedit.networking;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -49,11 +51,11 @@ public class NBTEditSavingHelper {
                         NBTEdit.getInstance().getLogger().debug(tag.getAsString());
                     }
 
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
-                            .withStyle(ChatFormatting.GREEN));
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                            .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
                 } catch (Exception ex) {
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                            .withStyle(ChatFormatting.RED));
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
 
                     NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
                             " edited the tag of BlockEntity at XYZ " +
@@ -72,8 +74,8 @@ public class NBTEditSavingHelper {
                         pos.getX() + " " +
                         pos.getY() + " " +
                         pos.getZ() + ".");
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS)
-                        .withStyle(ChatFormatting.RED));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS)
+                        .withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         });
     }
@@ -94,9 +96,9 @@ public class NBTEditSavingHelper {
                         && !NBTEditNetworkingHelper.canEditOthers()) {
                     NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                             " tried to use /nbtedit on a player. But server config is not allow that.");
-                    player.createCommandSourceStack().sendFailure(Component
-                            .translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
-                            .withStyle(ChatFormatting.RED));
+                    player.createCommandSourceStack().sendFailure(
+                            new TranslatableComponent(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+                                    .withStyle(ChatFormatting.RED));
                     return;
                 }
 
@@ -138,11 +140,11 @@ public class NBTEditSavingHelper {
                         targetPlayer.setPos(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());
                     }
 
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
-                            .withStyle(ChatFormatting.GREEN));
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                            .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
                 } catch (Exception ex) {
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                            .withStyle(ChatFormatting.RED));
+                    player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
 
                     NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
                             " edited the tag of entity " + entityUuid + " and caused an exception!");
@@ -155,8 +157,8 @@ public class NBTEditSavingHelper {
             } else {
                 NBTEdit.getInstance().getLogger().info("Player " + player.getName() +
                         " tried to edit a non-existent entity " + entityUuid + ".");
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
-                        .withStyle(ChatFormatting.RED));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
+                        .withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         });
     }
@@ -177,11 +179,11 @@ public class NBTEditSavingHelper {
                     NBTEdit.getInstance().getLogger().debug(tag.getAsString());
                 }
 
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
-                        .withStyle(ChatFormatting.GREEN));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                        .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             } catch (Exception ex) {
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
-                        .withStyle(ChatFormatting.RED));
+                player.sendMessage(new TranslatableComponent(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                        .withStyle(ChatFormatting.RED), Util.NIL_UUID);
 
                 NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
                         " edited the tag of ItemStack named "

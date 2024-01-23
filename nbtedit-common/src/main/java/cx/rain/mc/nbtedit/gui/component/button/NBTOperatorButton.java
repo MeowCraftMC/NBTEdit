@@ -12,6 +12,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
@@ -23,13 +24,10 @@ public class NBTOperatorButton extends Button {
 
     protected int buttonId;
 
-    private final NBTEditGui gui;
-
     public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, Function<Supplier<MutableComponent>, Component> createNarration) {
-        super(x, y, 9, 9, Component.literal(NBTHelper.getNameByButton((byte) id)), onPressed, RenderHelper.getTooltip(createNarration.apply(Component::empty)));
+        super(x, y, 9, 9, new TextComponent(NBTHelper.getNameByButton((byte) id)), onPressed, RenderHelper.getTooltip(parent.screen, createNarration.apply(() -> new TextComponent(""))));
 
         buttonId = id;
-        gui = parent;
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
@@ -49,6 +47,10 @@ public class NBTOperatorButton extends Button {
         if (isActive()) {
             RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
             blit(poseStack, x, y, width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
+        }
+
+        if (isMouseInside(mouseX, mouseY)) {
+            renderToolTip(poseStack, mouseX, mouseY);
         }
     }
 

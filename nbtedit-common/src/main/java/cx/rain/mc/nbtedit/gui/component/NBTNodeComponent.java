@@ -19,6 +19,8 @@ import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -104,7 +106,9 @@ public class NBTNodeComponent extends AbstractWidget {
 
     @Override
     public void renderToolTip(PoseStack poseStack, int mouseX, int mouseY) {
-        tooltip.onTooltip(null, poseStack, mouseX, mouseY);
+        if (tooltip != null) {
+            tooltip.onTooltip(null, poseStack, mouseX, mouseY);
+        }
     }
 
     @Override
@@ -142,22 +146,26 @@ public class NBTNodeComponent extends AbstractWidget {
 
         blit(poseStack, x + 1, y, 9, height, (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
         drawString(poseStack, getMinecraft().font, text, x + 11, y + (this.height - 8) / 2, color);
+
+        if (isMouseInsideSpoiler(mouseX, mouseY) || isMouseInsideText(mouseX, mouseY)) {
+            renderToolTip(poseStack, mouseX, mouseY);
+        }
     }
 
     private void updateTooltip() {
         var tag = node.getTag();
         try {
             if (tag instanceof StringTag stringTag) {
-                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
 
                 var content = Component.Serializer.fromJson(stringTag.getAsString());
 
                 if (content != null && !content.getString().isBlank()) {
-                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                    preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
+                    previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                    tooltip = RenderHelper.getTooltip(preview, previewNarration);
+                    tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
                     return;
                 }
             }
@@ -168,11 +176,11 @@ public class NBTNodeComponent extends AbstractWidget {
             if (tag instanceof CompoundTag compoundTag) {
                 var itemStack = ItemStack.of(compoundTag);
                 if (!itemStack.isEmpty()) {
-                    var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
-                    var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
 
                     var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.Default.ADVANCED);
-                    var content = Component.empty();
+                    var content = new TextComponent("");
                     for (int i = 0; i < lines.size(); i++) {
                         content.append(lines.get(i));
                         if (i != lines.size() - 1) {
@@ -180,10 +188,10 @@ public class NBTNodeComponent extends AbstractWidget {
                         }
                     }
 
-                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                    preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
+                    previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                    tooltip = RenderHelper.getTooltip(preview, previewNarration);
+                    tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
                     return;
                 }
             }
@@ -192,15 +200,15 @@ public class NBTNodeComponent extends AbstractWidget {
 
         try {
             if (tag instanceof IntArrayTag intArrayTag) {
-                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
+                var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
+                var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
 
                 var content = NbtUtils.loadUUID(intArrayTag).toString();
 
-                preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
+                preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
+                previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                tooltip = RenderHelper.getTooltip(preview, previewNarration);
+                tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
             }
         } catch (Exception ignored) {
         }

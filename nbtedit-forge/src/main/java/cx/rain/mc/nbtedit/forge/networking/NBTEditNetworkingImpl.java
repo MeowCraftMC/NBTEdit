@@ -41,19 +41,19 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	}
 
 	private void registerMessages() {
-		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId()).encoder(S2CRayTracePacket::toBytes).decoder(S2CRayTracePacket::new).consumerMainThread(S2CRayTracePacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2CRayTracePacket.class, nextId()).encoder(S2CRayTracePacket::toBytes).decoder(S2CRayTracePacket::new).consumer(S2CRayTracePacket::clientHandleOnMain).add();
 
-		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId()).encoder(C2SEntityEditingRequestPacket::toBytes).decoder(C2SEntityEditingRequestPacket::new).consumerMainThread(C2SEntityEditingRequestPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId()).encoder(C2SBlockEntityEditingRequestPacket::toBytes).decoder(C2SBlockEntityEditingRequestPacket::new).consumerMainThread(C2SBlockEntityEditingRequestPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId()).encoder(C2SItemStackEditingRequestPacket::toBytes).decoder(C2SItemStackEditingRequestPacket::new).consumerMainThread(C2SItemStackEditingRequestPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SEntityEditingRequestPacket.class, nextId()).encoder(C2SEntityEditingRequestPacket::toBytes).decoder(C2SEntityEditingRequestPacket::new).consumer(C2SEntityEditingRequestPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SBlockEntityEditingRequestPacket.class, nextId()).encoder(C2SBlockEntityEditingRequestPacket::toBytes).decoder(C2SBlockEntityEditingRequestPacket::new).consumer(C2SBlockEntityEditingRequestPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SItemStackEditingRequestPacket.class, nextId()).encoder(C2SItemStackEditingRequestPacket::toBytes).decoder(C2SItemStackEditingRequestPacket::new).consumer(C2SItemStackEditingRequestPacket::serverHandleOnMain).add();
 
-		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId()).encoder(S2COpenEntityEditingGuiPacket::toBytes).decoder(S2COpenEntityEditingGuiPacket::new).consumerMainThread(S2COpenEntityEditingGuiPacket::clientHandleOnMain).add();
-		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId()).encoder(S2COpenBlockEntityEditingGuiPacket::toBytes).decoder(S2COpenBlockEntityEditingGuiPacket::new).consumerMainThread(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain).add();
-		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId()).encoder(S2COpenItemStackEditingGuiPacket::toBytes).decoder(S2COpenItemStackEditingGuiPacket::new).consumerMainThread(S2COpenItemStackEditingGuiPacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2COpenEntityEditingGuiPacket.class, nextId()).encoder(S2COpenEntityEditingGuiPacket::toBytes).decoder(S2COpenEntityEditingGuiPacket::new).consumer(S2COpenEntityEditingGuiPacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2COpenBlockEntityEditingGuiPacket.class, nextId()).encoder(S2COpenBlockEntityEditingGuiPacket::toBytes).decoder(S2COpenBlockEntityEditingGuiPacket::new).consumer(S2COpenBlockEntityEditingGuiPacket::clientHandleOnMain).add();
+		CHANNEL.messageBuilder(S2COpenItemStackEditingGuiPacket.class, nextId()).encoder(S2COpenItemStackEditingGuiPacket::toBytes).decoder(S2COpenItemStackEditingGuiPacket::new).consumer(S2COpenItemStackEditingGuiPacket::clientHandleOnMain).add();
 
-		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId()).encoder(C2SEntitySavingPacket::toBytes).decoder(C2SEntitySavingPacket::new).consumerMainThread(C2SEntitySavingPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId()).encoder(C2SBlockEntitySavingPacket::toBytes).decoder(C2SBlockEntitySavingPacket::new).consumerMainThread(C2SBlockEntitySavingPacket::serverHandleOnMain).add();
-		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId()).encoder(C2SItemStackSavingPacket::toBytes).decoder(C2SItemStackSavingPacket::new).consumerMainThread(C2SItemStackSavingPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SEntitySavingPacket.class, nextId()).encoder(C2SEntitySavingPacket::toBytes).decoder(C2SEntitySavingPacket::new).consumer(C2SEntitySavingPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SBlockEntitySavingPacket.class, nextId()).encoder(C2SBlockEntitySavingPacket::toBytes).decoder(C2SBlockEntitySavingPacket::new).consumer(C2SBlockEntitySavingPacket::serverHandleOnMain).add();
+		CHANNEL.messageBuilder(C2SItemStackSavingPacket.class, nextId()).encoder(C2SItemStackSavingPacket::toBytes).decoder(C2SItemStackSavingPacket::new).consumer(C2SItemStackSavingPacket::serverHandleOnMain).add();
 	}
 
 	@Override

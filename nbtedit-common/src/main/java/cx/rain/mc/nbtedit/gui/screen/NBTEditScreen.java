@@ -12,6 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -30,33 +31,33 @@ public class NBTEditScreen extends Screen {
     protected NBTEditGui gui;
 
     public NBTEditScreen(UUID uuid, int id, CompoundTag tag, boolean self) {
-        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_ENTITY, uuid));
+        super(new TranslatableComponent(Constants.GUI_TITLE_NBTEDIT_ENTITY, uuid));
         minecraft = Minecraft.getInstance();
 
         entityUuid = uuid;
         entityId = id;
         isSelf = self;
 
-        gui = new NBTEditGui(NBTTree.root(tag));
+        gui = new NBTEditGui(NBTTree.root(tag), this);
     }
 
     public NBTEditScreen(BlockPos pos, CompoundTag tag) {
-        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY,
+        super(new TranslatableComponent(Constants.GUI_TITLE_NBTEDIT_BLOCK_ENTITY,
                 pos.getX(), pos.getY(), pos.getZ()));
         minecraft = Minecraft.getInstance();
 
         blockPos = pos;
 
-        gui = new NBTEditGui(NBTTree.root(tag));
+        gui = new NBTEditGui(NBTTree.root(tag), this);
     }
 
     public NBTEditScreen(ItemStack itemStack, CompoundTag tag) {
-        super(Component.translatable(Constants.GUI_TITLE_NBTEDIT_ITEM_STACK, itemStack.getDisplayName().getString()));
+        super(new TranslatableComponent(Constants.GUI_TITLE_NBTEDIT_ITEM_STACK, itemStack.getDisplayName().getString()));
         minecraft = Minecraft.getInstance();
 
         this.itemStack = itemStack;
 
-        gui = new NBTEditGui(NBTTree.root(tag));
+        gui = new NBTEditGui(NBTTree.root(tag), this);
     }
 
     @Override
@@ -68,9 +69,9 @@ public class NBTEditScreen extends Screen {
         gui.init(width, height, height - 35);
 
 
-        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
+        addRenderableWidget(new Button(width / 4 - 100, height - 27, 200, 20, new TranslatableComponent(Constants.GUI_BUTTON_SAVE), this::onSaveClicked));
 
-        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, Component.translatable(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
+        addRenderableWidget(new Button(width * 3 / 4 - 100, height - 27, 200, 20, new TranslatableComponent(Constants.GUI_BUTTON_QUIT), this::onQuitClicked));
     }
 
     @Override

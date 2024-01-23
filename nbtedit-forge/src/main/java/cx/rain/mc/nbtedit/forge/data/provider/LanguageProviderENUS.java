@@ -40,12 +40,12 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(Constants.GUI_BUTTON_QUIT, "Quit");
         add(Constants.GUI_BUTTON_CANCEL, "Cancel");
 
-        add(Constants.GUI_NARRATION_BUTTON_COPY, "Copy Button");
-        add(Constants.GUI_NARRATION_BUTTON_PASTE, "Paste Button");
-        add(Constants.GUI_NARRATION_BUTTON_CUT, "Cut Button");
-        add(Constants.GUI_NARRATION_BUTTON_EDIT, "Edit Button");
-        add(Constants.GUI_NARRATION_BUTTON_DELETE, "Delete Button");
-        add(Constants.GUI_NARRATION_BUTTON_ADD, "Add Button");
+        add(Constants.GUI_NARRATION_BUTTON_COPY, "Copy");
+        add(Constants.GUI_NARRATION_BUTTON_PASTE, "Paste");
+        add(Constants.GUI_NARRATION_BUTTON_CUT, "Cut");
+        add(Constants.GUI_NARRATION_BUTTON_EDIT, "Edit");
+        add(Constants.GUI_NARRATION_BUTTON_DELETE, "Delete");
+        add(Constants.GUI_NARRATION_BUTTON_ADD, "Add");
         add(Constants.GUI_NARRATION_BUTTON_SPECIAL_CHARACTER, "Insert Special Character");
         add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "Value Editor Sub-Window");
 

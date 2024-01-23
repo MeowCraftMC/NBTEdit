@@ -3,8 +3,10 @@ package cx.rain.mc.nbtedit.networking;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,13 +29,13 @@ public class NBTEditEditingHelper {
 
             var blockEntity = player.getLevel().getBlockEntity(pos);
             if (blockEntity == null) {
-                player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
+                player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
                         .withStyle(ChatFormatting.RED));
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
-                    pos.getX(), pos.getY(), pos.getZ()).withStyle(ChatFormatting.GREEN));
+            player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_BLOCK_ENTITY,
+                    pos.getX(), pos.getY(), pos.getZ()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, pos, blockEntity);
         });
     }
@@ -53,14 +55,14 @@ public class NBTEditEditingHelper {
                     && !NBTEdit.getInstance().getConfig().canEditOthers()) {
                 NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                         " tried to use /nbtedit on a player. But config is not allow that.");
-                player.createCommandSourceStack().sendFailure(Component
-                        .translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
-                        .withStyle(ChatFormatting.RED));
+                player.createCommandSourceStack().sendFailure(
+                        new TranslatableComponent(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+                                .withStyle(ChatFormatting.RED));
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ENTITY, entityUuid)
-                    .withStyle(ChatFormatting.GREEN));
+            player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_ENTITY, entityUuid)
+                    .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 
             if (player == entity) {
                 NBTEdit.getInstance().getNetworking().serverOpenClientGui(player);
@@ -79,8 +81,8 @@ public class NBTEditEditingHelper {
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_EDITING_ITEM_STACK,
-                    stack.getDisplayName().getString()).withStyle(ChatFormatting.GREEN));
+            player.sendMessage(new TranslatableComponent(Constants.MESSAGE_EDITING_ITEM_STACK,
+                    stack.getDisplayName().getString()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
             NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                     " is editing ItemStack named " + stack.getDisplayName().getString() + ".");
             NBTEdit.getInstance().getNetworking().serverOpenClientGui(player, stack);

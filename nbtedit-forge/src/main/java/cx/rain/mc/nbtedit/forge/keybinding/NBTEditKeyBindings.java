@@ -5,11 +5,12 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -19,8 +20,8 @@ public class NBTEditKeyBindings {
             GLFW.GLFW_KEY_N, Constants.KEY_CATEGORY);
 
     @SubscribeEvent
-    public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+    public static void onRegisterKeyMappings(FMLClientSetupEvent event) {
         NBTEdit.getInstance().getLogger().info("Register key binding.");
-        event.register(NBTEDIT_SHORTCUT);
+        ClientRegistry.registerKeyBinding(NBTEDIT_SHORTCUT);
     }
 }

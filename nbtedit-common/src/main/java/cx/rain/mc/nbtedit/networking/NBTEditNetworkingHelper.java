@@ -3,8 +3,10 @@ package cx.rain.mc.nbtedit.networking;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class NBTEditNetworkingHelper {
@@ -12,8 +14,8 @@ public class NBTEditNetworkingHelper {
         var result = NBTEdit.getInstance().getPermission().hasPermission(player);
 
         if (!result) {
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
-                    .withStyle(ChatFormatting.RED));
+            player.sendMessage(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
+                    .withStyle(ChatFormatting.RED), Util.NIL_UUID);
         }
 
         return result;
@@ -23,8 +25,8 @@ public class NBTEditNetworkingHelper {
         var result = player.getLevel().isLoaded(pos);
 
         if (!result) {
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_NOT_LOADED)
-                    .withStyle(ChatFormatting.RED));
+            player.sendMessage(new TranslatableComponent(Constants.MESSAGE_NOT_LOADED)
+                    .withStyle(ChatFormatting.RED), Util.NIL_UUID);
         }
 
         return result;
