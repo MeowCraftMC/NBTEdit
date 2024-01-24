@@ -25,7 +25,7 @@ public class NBTEditEditingHelper {
             NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
                     pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
 
-            var blockEntity = player.getLevel().getBlockEntity(pos);
+            var blockEntity = player.serverLevel().getBlockEntity(pos);
             if (blockEntity == null) {
                 player.createCommandSourceStack().sendFailure(Component.translatable(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
                         .withStyle(ChatFormatting.RED));
@@ -44,7 +44,7 @@ public class NBTEditEditingHelper {
                 return;
             }
 
-            var entity = player.getLevel().getEntity(entityUuid);
+            var entity = player.serverLevel().getEntity(entityUuid);
 
             assert entity != null;  // XXX: qyl27: will it work?
 
