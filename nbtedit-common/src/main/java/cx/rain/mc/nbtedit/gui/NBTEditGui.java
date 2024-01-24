@@ -750,10 +750,10 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     public void renderDirtBackground(PoseStack poseStack, int xLoc, int yLoc, int width, int height) {
-        RenderSystem.clearColor(0.25F, 0.25F, 0.25F, 1);
+        RenderSystem.color4f(0.25F, 0.25F, 0.25F, 1);
         Minecraft.getInstance().getTextureManager().bind(Screen.BACKGROUND_LOCATION);
         blit(poseStack, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
-        RenderSystem.clearColor(1, 1, 1, 1);
+        RenderSystem.color4f(1, 1, 1, 1);
     }
 
     // </editor-fold>
