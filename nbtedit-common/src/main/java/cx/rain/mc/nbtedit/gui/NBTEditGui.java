@@ -204,8 +204,11 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         xLoc = 18;
         yLoc = 17;
         for (var i = 1; i < 13; i++) {
+            int id = i;
             var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
-                    componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_ADD)));
+                    componentSupplier -> componentSupplier.get()
+                            .append(Component.translatable(Constants.GUI_NARRATION_BUTTON_ADD,
+                                    Component.literal(NBTHelper.getNameByButton((byte) id)))));
             addButtons[i - 1] = button;
             addButton(button);
             xLoc += 9;
