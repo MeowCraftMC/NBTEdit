@@ -3,7 +3,7 @@ package cx.rain.mc.nbtedit.forge.networking.packet;
 import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 import java.util.function.Supplier;

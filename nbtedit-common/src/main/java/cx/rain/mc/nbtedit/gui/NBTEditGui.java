@@ -146,8 +146,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     @Override
-    public void tick(boolean pause) {
-        super.tick(pause);
+    public void tick() {
+        super.tick();
 
         if (hasWindow()) {
             for (var window : getWindows()) {

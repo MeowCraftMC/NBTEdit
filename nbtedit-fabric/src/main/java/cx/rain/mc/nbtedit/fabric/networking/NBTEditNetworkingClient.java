@@ -3,7 +3,6 @@ package cx.rain.mc.nbtedit.fabric.networking;
 import cx.rain.mc.nbtedit.fabric.networking.packet.*;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,12 +11,11 @@ import net.minecraft.world.item.ItemStack;
 
 public class NBTEditNetworkingClient {
 	public NBTEditNetworkingClient() {
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ENTITY_EDITING_PACKET_ID, C2SEntityEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ENTITY_SAVING_PACKET_ID, C2SEntitySavingPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_EDITING_PACKET_ID, C2SBlockEntityEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_BLOCK_ENTITY_SAVING_PACKET_ID, C2SBlockEntitySavingPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ITEM_STACK_EDITING_PACKET_ID, C2SItemStackEditingRequestPacket::serverHandle);
-		ServerPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.C2S_ITEM_STACK_SAVING_PACKET_ID, C2SItemStackSavingPacket::serverHandle);
+		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_RAY_TRACE_REQUEST_PACKET_ID, S2CRayTracePacket::clientHandle);
+
+		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, S2COpenBlockEntityEditingGuiPacket::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, S2COpenEntityEditingGuiPacket::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, S2COpenItemStackEditingGuiPacket::clientHandle);
 	}
 
 	public void clientOpenGuiRequest(Entity entity, boolean self) {

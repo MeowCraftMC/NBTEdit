@@ -79,7 +79,7 @@ public class NBTEditScreen extends Screen {
         if (!getMinecraft().player.isAlive()) {
             doClose();
         } else {
-            gui.tick(false);
+            gui.tick();
 
         }
 
