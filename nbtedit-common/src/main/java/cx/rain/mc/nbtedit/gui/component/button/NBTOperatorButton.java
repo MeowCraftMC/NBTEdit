@@ -1,16 +1,12 @@
 package cx.rain.mc.nbtedit.gui.component.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.gui.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.RenderHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,14 +20,17 @@ public class NBTOperatorButton extends Button {
 
     protected int buttonId;
 
-    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, Function<Supplier<MutableComponent>, Component> createNarration) {
+    private MutableComponent narration;
+
+    public NBTOperatorButton(int id, int x, int y, NBTEditGui parent, OnPress onPressed, Function<Supplier<MutableComponent>, MutableComponent> createNarration) {
         super(x, y, 9, 9, new TextComponent(NBTHelper.getNameByButton((byte) id)), onPressed, RenderHelper.getTooltip(parent.screen, createNarration.apply(() -> new TextComponent(""))));
 
         buttonId = id;
+        narration = createNarration.apply(() -> new TextComponent(""));
     }
 
     public boolean isMouseInside(int mouseX, int mouseY) {
-        return isActive() && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 
     public byte getButtonId() {
@@ -44,9 +43,10 @@ public class NBTOperatorButton extends Button {
             fill(poseStack, x, y, x + width, y + height, 0x80ffffff);   // draw a grayish background
         }
 
-        if (isActive()) {
-            RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
-            blit(poseStack, x, y, width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); //Draw the texture
+        if (isMouseInside(mouseX, mouseY)) {
+//            RenderSystem.setShaderTexture(0, BUTTONS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bind(BUTTONS_TEXTURE);
+            blit(poseStack, x, y, width, height, (buttonId - 1) * 16, 0, 16, 16, 512, 512); // Draw the texture
         }
 
         if (isMouseInside(mouseX, mouseY)) {
@@ -55,7 +55,7 @@ public class NBTOperatorButton extends Button {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        this.onTooltip.narrateTooltip((component) -> narrationElementOutput.add(NarratedElementType.HINT, component));
+    protected MutableComponent createNarrationMessage() {
+        return narration;
     }
 }

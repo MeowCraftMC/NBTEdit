@@ -6,17 +6,11 @@ import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class RenderHelper {
 
@@ -25,10 +19,10 @@ public class RenderHelper {
         var y = Minecraft.getInstance().getWindow().getHeight();
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+//        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferBuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
         fillGradient(poseStack.last().pose(), bufferBuilder, 0, 0, x, y, 0, -1072689136, -804253680);
         tesselator.end();
         RenderSystem.disableBlend();
@@ -50,21 +44,9 @@ public class RenderHelper {
     }
 
     public static Button.OnTooltip getTooltip(Screen screen, Component component) {
-        return getTooltip(screen, component, component);
-    }
-
-    public static Button.OnTooltip getTooltip(Screen screen, Component component, Component narration) {
-        return new Button.OnTooltip() {
-            @Override
-            public void onTooltip(Button button, PoseStack poseStack, int mouseX, int mouseY) {
-                var components = Minecraft.getInstance().font.split(component, 400);
-                screen.renderTooltip(poseStack, components, mouseX, mouseY);
-            }
-
-            @Override
-            public void narrateTooltip(Consumer<Component> contents) {
-                contents.accept(narration);
-            }
+        return (button, poseStack, mouseX, mouseY) -> {
+            var components = Minecraft.getInstance().font.split(component, 400);
+            screen.renderTooltip(poseStack, components, mouseX, mouseY);
         };
     }
 }

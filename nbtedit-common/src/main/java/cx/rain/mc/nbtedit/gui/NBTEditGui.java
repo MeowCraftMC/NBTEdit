@@ -19,6 +19,7 @@ import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.utility.SortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -694,8 +695,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     private void renderScrollBar(PoseStack poseStack, int mouseX, int mouseY) {
         if (heightDiff > 0) {
-            if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(),
-                    InputConstants.MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS) { // XXX: bad implementation, it should use AbstractScrollWidget instead.
+            if (GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), 0) == GLFW.GLFW_PRESS) { // XXX: bad implementation, it should use AbstractScrollWidget instead.
                 if (yClick == -1) {
                     if (mouseX >= width - 20 && mouseX < width && mouseY >= START_Y - 1 && mouseY < bottom) {
                         yClick = mouseY;
@@ -750,10 +750,10 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     public void renderDirtBackground(PoseStack poseStack, int xLoc, int yLoc, int width, int height) {
-        RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
-        RenderSystem.setShaderTexture(0, Screen.BACKGROUND_LOCATION);
+//        RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
+        Minecraft.getInstance().getTextureManager().bind(Screen.BACKGROUND_LOCATION);
         blit(poseStack, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     // </editor-fold>

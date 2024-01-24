@@ -14,10 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -48,6 +46,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     protected String nameError;
     protected String valueError;
 
+    private MutableComponent narration;
+
     public EditValueSubWindow(NBTEditGui parent, NBTTree.Node<?> nodeIn,
                               boolean canEditNameIn, boolean canEditValueIn) {
         super(0, 0, 178, 93, new TextComponent("NBTEdit sub-window"), parent);
@@ -57,6 +57,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         nbt = nodeIn.getTag();
         canEditName = canEditNameIn;
         canEditValue = canEditValueIn;
+
+        narration = new TextComponent("NBTEdit sub-window");
     }
 
     public void init(int xLoc, int yLoc) {
@@ -141,7 +143,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         RenderHelper.drawGrayBackground(poseStack);
 
-        RenderSystem.setShaderTexture(0, WINDOW_TEXTURE);
+        getMinecraft().getTextureManager().bind(WINDOW_TEXTURE);
         blit(poseStack, x, y, 0, 0, width, height);
 
         if (!canEditName) {
@@ -205,8 +207,8 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        narrationElementOutput.add(NarratedElementType.HINT, new TranslatableComponent(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR));
+    protected MutableComponent createNarrationMessage() {
+        return narration;
     }
 
     private void isValidInput() {
@@ -252,47 +254,51 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     private static String getValue(Tag tag) {
         switch (tag.getId()) {
-            case Tag.TAG_BYTE -> {
+            case 1 -> {
                 var byteTag = (ByteTag) tag;
                 return Integer.toString(byteTag.getAsInt());
             }
-            case Tag.TAG_SHORT -> {
+            case 2 -> {
                 var shortTag = (ShortTag) tag;
                 return Integer.toString(shortTag.getAsInt());
             }
-            case Tag.TAG_LONG -> {
+            case 3 -> {
+                var intTag = (IntTag) tag;
+                return Integer.toString(intTag.getAsInt());
+            }
+            case 4 -> {
                 var longTag = (LongTag) tag;
                 return Long.toString(longTag.getAsLong());
             }
-            case Tag.TAG_FLOAT -> {
+            case 5 -> {
                 var floatTag = (FloatTag) tag;
                 return Float.toString(floatTag.getAsFloat());
             }
-            case Tag.TAG_DOUBLE -> {
+            case 6 -> {
                 var doubleTag = (DoubleTag) tag;
                 return Double.toString(doubleTag.getAsDouble());
             }
-            case Tag.TAG_BYTE_ARRAY -> {
+            case 7 -> {
                 var s = new StringBuilder();
                 for (var b : ((ByteArrayTag) tag).getAsByteArray()) {
                     s.append(b).append(",");
                 }
                 return s.toString();
             }
-            case Tag.TAG_LIST -> {
-                return "TagList";
-            }
-            case Tag.TAG_COMPOUND -> {
-                return "TagCompound";
-            }
-            case Tag.TAG_INT_ARRAY -> {
+            case 8 -> {
                 var i = new StringBuilder();
                 for (var a : ((IntArrayTag) tag).getAsIntArray()) {
                     i.append(a).append(",");
                 }
                 return i.toString();
             }
-            case Tag.TAG_LONG_ARRAY -> {
+            case 9 -> {
+                return "TagList";
+            }
+            case 10 -> {
+                return "TagCompound";
+            }
+            case 11 -> {
                 var i = new StringBuilder();
                 for (var a : ((LongArrayTag) tag).getAsLongArray()) {
                     i.append(a).append(",");

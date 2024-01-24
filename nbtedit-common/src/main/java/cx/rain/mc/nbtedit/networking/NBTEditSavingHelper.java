@@ -34,7 +34,7 @@ public class NBTEditSavingHelper {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 try {
-                    blockEntity.load(tag);
+                    blockEntity.load(blockEntity.getBlockState(), tag);
                     blockEntity.setChanged();	// Ensure changes gets saved to disk later on. (qyl27: In MCP it is markDirty.)
                     if (blockEntity.hasLevel() && blockEntity.getLevel() instanceof ServerLevel) {
                         ((ServerLevel) blockEntity.getLevel()).getChunkSource().blockChanged(pos);	// Broadcast changes.
@@ -123,7 +123,7 @@ public class NBTEditSavingHelper {
                         // Consider swapping to an event driven system, where classes can register to
                         // receive entity edit events and provide feedback/send packets as necessary.
                         var targetPlayer = (ServerPlayer) entity;
-                        targetPlayer.initMenu(targetPlayer.inventoryMenu);
+                        targetPlayer.initMenu();
                         var gameMode = targetPlayer.gameMode.getGameModeForPlayer();
                         if (prevGameMode != gameMode) {
                             targetPlayer.setGameMode(gameMode);

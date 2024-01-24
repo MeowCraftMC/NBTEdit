@@ -12,13 +12,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +35,8 @@ public class NBTNodeComponent extends AbstractWidget {
     private final Minecraft minecraft = Minecraft.getInstance();
 
     private Button.OnTooltip tooltip;
+
+    private MutableComponent narration = new TextComponent("");
 
     public NBTNodeComponent(int x, int y, Component textIn, NBTEditGui guiIn, NBTTree.Node<?> nodeIn) {
         super(x, y, 0, Minecraft.getInstance().font.lineHeight, textIn);
@@ -96,12 +97,8 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-        narrationElementOutput.add(NarratedElementType.TITLE, text);
-
-        tooltip.narrateTooltip((component) -> {
-            narrationElementOutput.add(NarratedElementType.HINT, component);
-        });
+    protected MutableComponent createNarrationMessage() {
+        return narration;
     }
 
     @Override
@@ -139,7 +136,7 @@ public class NBTNodeComponent extends AbstractWidget {
             }
         }
 
-        RenderSystem.setShaderTexture(0, WIDGET_TEXTURE);
+        getMinecraft().getTextureManager().bind(WIDGET_TEXTURE);
         if (node.hasChild()) {
             blit(poseStack, x - 9, y, 9, height, u, 16, w, h, 512, 512);
         }
@@ -165,7 +162,8 @@ public class NBTNodeComponent extends AbstractWidget {
                     preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
                     previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                    tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
+                    tooltip = RenderHelper.getTooltip(gui.screen, preview);
+                    narration = previewNarration;
                     return;
                 }
             }
@@ -191,7 +189,8 @@ public class NBTNodeComponent extends AbstractWidget {
                     preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
                     previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                    tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
+                    tooltip = RenderHelper.getTooltip(gui.screen, preview);
+                    narration = previewNarration;
                     return;
                 }
             }
@@ -208,7 +207,8 @@ public class NBTNodeComponent extends AbstractWidget {
                 preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
                 previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
-                tooltip = RenderHelper.getTooltip(gui.screen, preview, previewNarration);
+                tooltip = RenderHelper.getTooltip(gui.screen, preview);
+                narration = previewNarration;
             }
         } catch (Exception ignored) {
         }
