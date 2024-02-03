@@ -27,6 +27,8 @@ public class NBTEditForge {
         bus.addListener(this::setup);
         bus.addListener(this::setupClient);
 
+        NBTEditPlatformImpl.register();
+
         nbtedit.getLogger().info("NBTEdit loaded!");
     }
 

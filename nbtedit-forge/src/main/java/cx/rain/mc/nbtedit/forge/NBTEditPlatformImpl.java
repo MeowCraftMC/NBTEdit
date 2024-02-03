@@ -12,6 +12,9 @@ public class NBTEditPlatformImpl {
     private static final NBTEditConfigImpl CONFIG = new NBTEditConfigImpl();
     private static final NBTEditPermissionImpl PERMISSION = new NBTEditPermissionImpl();
 
+    public static void register() {
+    }
+
     public static INBTEditNetworking getNetworking() {
         return NETWORKING;
     }
