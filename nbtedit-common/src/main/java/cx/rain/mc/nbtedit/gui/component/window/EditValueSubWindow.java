@@ -70,11 +70,12 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         valueField = new EditBox(getMinecraft().font, getX() + 46, getY() + 44, 116, 15, Component.literal("Value"));
         addWidget(valueField);
 
+        nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
         nameField.setEditable(canEditName);
         nameField.setBordered(false);
 
-        valueField.setMaxLength(256);
+        valueField.setMaxLength(Integer.MAX_VALUE);
         valueField.setValue(value);
         valueField.setEditable(canEditValue);
         valueField.setBordered(false);
@@ -113,16 +114,6 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         nameField.mouseClicked(button.getX(), button.getY(), 0);
         valueField.mouseClicked(button.getX(), button.getY(), 0);
         quit();
-    }
-
-    protected void onNewLineButtonClicked(Button button) {
-        valueField.insertText("\n");
-        isValidInput();
-    }
-
-    protected void onColorButtonClicked(Button button) {
-        valueField.insertText("" + NBTHelper.SECTION_SIGN);
-        isValidInput();
     }
 
     private void save() {
