@@ -76,7 +76,7 @@ publishing {
 unifiedPublishing {
     project {
         displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
-        version = mavenVersion
+        version = publishVersion
         gameVersions = [project.minecraft_version]
         gameLoaders = ['fabric']
         releaseType = 'beta'
