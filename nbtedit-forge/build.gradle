@@ -80,7 +80,7 @@ publishing {
 unifiedPublishing {
     project {
         displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
-        version = mavenVersion
+        version = publishVersion
         gameVersions = [project.minecraft_version]
         gameLoaders = ['forge']
         releaseType = 'release'
