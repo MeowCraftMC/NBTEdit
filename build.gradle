@@ -88,11 +88,9 @@ allprojects {
             url = 'https://maven.parchmentmc.org'
         }
 
-        repositories {
-            maven {
-                name = 'Mod Menu'
-                url = 'https://maven.terraformersmc.com/releases'
-            }
+        maven {
+            name = 'Mod Menu'
+            url = 'https://maven.terraformersmc.com/releases'
         }
 
         maven {
