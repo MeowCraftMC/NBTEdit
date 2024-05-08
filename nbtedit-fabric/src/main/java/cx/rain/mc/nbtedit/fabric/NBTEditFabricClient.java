@@ -15,7 +15,7 @@ import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
 public class NBTEditFabricClient implements ClientModInitializer {
-    private static KeyMapping NBTEDIT_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+    private static final KeyMapping NBTEDIT_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             Constants.KEY_NBTEDIT_SHORTCUT,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_N,
@@ -23,7 +23,7 @@ public class NBTEditFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ((NBTEditNetworkingImpl) NBTEditPlatform.getNetworking()).addClient();
+        ((NBTEditNetworkingImpl) NBTEditPlatformImpl.getInstance().getNetworking()).addClient();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (NBTEDIT_KEY.consumeClick()) {

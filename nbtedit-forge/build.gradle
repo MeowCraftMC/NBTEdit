@@ -1,71 +1,104 @@
 plugins {
+    id 'java'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'me.shedaniel.unified-publishing' version '0.1.+'
 }
 
-architectury {
-    platformSetupLoomIde()
-    forge()
-}
+minecraft {
+    mappings channel: 'parchment', version: "${rootProject.parchment_version}-${rootProject.parchment_minecraft_version}"
 
-loom {
-    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
+    runs {
+        configureEach {
+//            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+            property 'fml.earlyprogresswindow', 'false'
+            ideaModule "${rootProject.name}.${project.name}.main"
 
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
-        runs {
-            data {
-                data()
-
-                programArgs "--all", "--mod", "nbtedit"
-                programArgs "--output", file('../nbtedit-common/src/generated/resources').absolutePath
-                programArgs "--existing", file('../nbtedit-common/src/main/resources').absolutePath
+            mods {
+                nbtedit {
+                    source sourceSets.main
+                    source project(':nbtedit-common').sourceSets.main
+                }
             }
+        }
+
+        client {
+            taskName = 'ForgeClient'
+            workingDirectory file('run/client')
+            property 'forge.enabledGameTestNamespaces', 'nbtedit'
+        }
+
+        server {
+            taskName = 'ForgeServer'
+            workingDirectory file('run/server')
+            property 'forge.enabledGameTestNamespaces', 'nbtedit'
+            args '--nogui'
+        }
+
+        gameTestServer {
+            taskName = 'ForgeGameTest'
+            property 'forge.enabledGameTestNamespaces', 'nbtedit'
+        }
+
+        data {
+            taskName = 'ForgeData'
+            workingDirectory file('run/data')
+
+            args '--mod', 'nbtedit',
+                    '--all',
+                    '--output', file('../nbtedit-common/src/generated/resources'),
+                    '--existing', file('../nbtedit-common/src/main/resources')
         }
     }
 }
 
+repositories {
+    maven {
+        name = 'MinecraftForge'
+        url = 'https://files.minecraftforge.net/maven/'
+    }
+}
+
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    shade
+    implementation.extendsFrom shade
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    minecraft "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    minecraftLibrary project(':nbtedit-common')
+    shade project(':nbtedit-common')
+}
+
+jar {
+    finalizedBy(shadowJar)
+    getFinalizedBy().println()
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+reobf {
+    shadowJar {}
 }
 
 shadowJar {
-    exclude 'fabric.mod.json'
-    exclude 'architectury.common.json'
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = 'dev-shadow'
+    configurations = [project.configurations.shade]
+//    dependencies {
+//        include project(':nbtedit-common')
+//    }
+    finalizedBy 'reobfShadowJar'
 }
 
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-}
-
-sourcesJar {
-    def commonSources = project(':nbtedit-common').sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
+//tasks.register('reobfJar', net.minecraftforge.gradle.userdev.task.RenameJarInPlace) {
+//    input.set shadowJar.archiveFile
+//    dependsOn shadowJar
+//}
 
 publishing {
     publications {
@@ -86,7 +119,7 @@ unifiedPublishing {
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
 
-        mainPublication tasks.remapJar
+        mainPublication shadowJar
 
         curseforge {
             token = System.getenv('CURSEFORGE_TOKEN')

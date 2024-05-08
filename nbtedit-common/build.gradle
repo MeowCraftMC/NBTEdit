@@ -1,13 +1,16 @@
-architectury {
-    common(rootProject.enabled_platforms.split(','))
+plugins {
+    id 'java'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/nbtedit.accesswidener")
+minecraft {
+    version rootProject.minecraft_version
+
+    accessWideners 'src/main/resources/nbtedit.accesswidener'
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
 }
 
 sourceSets {

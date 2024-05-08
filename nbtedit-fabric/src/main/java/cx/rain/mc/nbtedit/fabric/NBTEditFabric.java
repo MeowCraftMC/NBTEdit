@@ -23,6 +23,6 @@ public class NBTEditFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) ->
                 dispatcher.register(NBTEditCommand.NBTEDIT)));
 
-        nbtedit = new NBTEdit();
+        nbtedit = new NBTEdit(new NBTEditPlatformImpl());
     }
 }

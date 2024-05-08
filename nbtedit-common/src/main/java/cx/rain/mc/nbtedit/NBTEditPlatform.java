@@ -3,21 +3,21 @@ package cx.rain.mc.nbtedit;
 import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
 import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
 import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 
-public class NBTEditPlatform {
-    @ExpectPlatform
-    public static INBTEditNetworking getNetworking() {
-        throw new RuntimeException();
+public abstract class NBTEditPlatform {
+    private static NBTEditPlatform INSTANCE;
+
+    static void setInstance(NBTEditPlatform platform) {
+        INSTANCE = platform;
     }
 
-    @ExpectPlatform
-    public static INBTEditConfig getConfig() {
-        throw new RuntimeException();
+    public static NBTEditPlatform getInstance() {
+        return INSTANCE;
     }
 
-    @ExpectPlatform
-    public static INBTEditCommandPermission getPermission() {
-        throw new RuntimeException();
-    }
+    public abstract INBTEditNetworking getNetworking();
+
+    public abstract INBTEditConfig getConfig();
+
+    public abstract INBTEditCommandPermission getPermission();
 }

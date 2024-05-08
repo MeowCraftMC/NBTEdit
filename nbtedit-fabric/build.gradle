@@ -1,66 +1,56 @@
 plugins {
+    id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'me.shedaniel.unified-publishing' version '0.1.+'
 }
 
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
 loom {
-    accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
-}
+    runs {
+        client {
+            client()
+            configName = "Fabric Client"
+            ideConfigGenerated = true
+            runDir = 'run/client'
+        }
 
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+        server {
+            server()
+            configName = "Fabric Server"
+            ideConfigGenerated = true
+            runDir = 'run/server'
+        }
+    }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-
-    modRuntimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
-
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionFabric')) { transitive = false }
-}
-
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('fabric.mod.json') {
-        expand 'version': project.version
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${rootProject.parchment_minecraft_version}:${rootProject.parchment_version}@zip")
     }
+
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    modRuntimeOnly ("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") {
+        exclude group: 'net.fabricmc'
+        exclude group: 'net.fabricmc.fabric-api'
+    }
+
+    api project(':nbtedit-common')
 }
+
+jar.finalizedBy(shadowJar)
 
 shadowJar {
-    exclude 'architectury.common.json'
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = 'dev-shadow'
+    dependencies {
+        include project(':nbtedit-common')
+    }
 }
 
 remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
-}
-
-sourcesJar {
-    def commonSources = project(':nbtedit-common').sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
 }
 
 publishing {

@@ -19,20 +19,17 @@ public class NBTEditForge {
     private final NBTEdit nbtedit;
 
     public NBTEditForge() {
-        NBTEditPlatformImpl.load();
-
-        nbtedit = new NBTEdit();
+        nbtedit = new NBTEdit(new NBTEditPlatformImpl());
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NBTEditConfigImpl.CONFIG, "nbtedit.toml");
 
         final var bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
         bus.addListener(this::setupClient);
-
-        nbtedit.getLogger().info("NBTEdit loaded!");
     }
 
     private void setup(FMLCommonSetupEvent event) {
+        nbtedit.getLogger().info("NBTEdit loaded!");
     }
 
     private void setupClient(FMLClientSetupEvent event) {

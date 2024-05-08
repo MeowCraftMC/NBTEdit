@@ -33,10 +33,11 @@ public class NBTEdit {
 
     private final Logger logger = LoggerFactory.getLogger(NAME);
 
-    public NBTEdit() {
+    public NBTEdit(NBTEditPlatform platform) {
         INSTANCE = this;
 
-        logger.info("Loading NBTEdit ver: " + VERSION);
+        NBTEditPlatform.setInstance(platform);
+        logger.info("Loading NBTEdit ver: {}", VERSION);
     }
 
     public static NBTEdit getInstance() {
@@ -56,14 +57,14 @@ public class NBTEdit {
     }
 
     public INBTEditNetworking getNetworking() {
-        return NBTEditPlatform.getNetworking();
+        return NBTEditPlatform.getInstance().getNetworking();
     }
 
     public INBTEditConfig getConfig() {
-        return NBTEditPlatform.getConfig();
+        return NBTEditPlatform.getInstance().getConfig();
     }
 
     public INBTEditCommandPermission getPermission() {
-        return NBTEditPlatform.getPermission();
+        return NBTEditPlatform.getInstance().getPermission();
     }
 }
