@@ -27,7 +27,7 @@ public class C2SItemStackEditingRequestPacket {
 	public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
 									ServerGamePacketListenerImpl serverGamePacketListener,
 									FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
-		var packet = new C2SItemStackEditingRequestPacket(friendlyByteBuf);
+		C2SItemStackEditingRequestPacket packet = new C2SItemStackEditingRequestPacket(friendlyByteBuf);
 		NBTEditEditingHelper.editItemStack(player, packet.itemStack);
 	}
 }

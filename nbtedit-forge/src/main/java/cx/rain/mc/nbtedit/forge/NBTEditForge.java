@@ -7,6 +7,7 @@ import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
 import cx.rain.mc.nbtedit.forge.command.NBTEditPermissionImpl;
 import cx.rain.mc.nbtedit.forge.config.NBTEditConfigImpl;
 import cx.rain.mc.nbtedit.forge.networking.NBTEditNetworkingImpl;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -25,7 +26,7 @@ public class NBTEditForge {
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NBTEditConfigImpl.CONFIG, "nbtedit.toml");
 
-        final var bus = FMLJavaModLoadingContext.get().getModEventBus();
+        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
         bus.addListener(this::setupClient);
 

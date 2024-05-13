@@ -10,7 +10,7 @@ public class NBTEditConfigImpl implements INBTEditConfig {
     public static ForgeConfigSpec.BooleanValue DEBUG;
 
     static {
-        var builder = new ForgeConfigSpec.Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         builder.comment("General settings.")
                 .push("general");

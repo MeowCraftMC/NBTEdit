@@ -48,7 +48,7 @@ public class C2SEntitySavingPacket {
 	public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
 									ServerGamePacketListenerImpl serverGamePacketListener,
 									FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
-		var packet = new C2SEntitySavingPacket(friendlyByteBuf);
+		C2SEntitySavingPacket packet = new C2SEntitySavingPacket(friendlyByteBuf);
 		NBTEditSavingHelper.saveEntity(player, packet.entityUuid, packet.compoundTag);
 	}
 }

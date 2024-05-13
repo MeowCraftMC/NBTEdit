@@ -1,7 +1,9 @@
 package cx.rain.mc.nbtedit.forge.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.command.NBTEditCommand;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -10,7 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 public class NBTEditCommandRegister {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
-        var dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(NBTEditCommand.NBTEDIT);
     }
 }

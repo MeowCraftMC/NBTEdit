@@ -8,8 +8,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.UUID;
 
@@ -27,7 +29,7 @@ public class NBTEditEditingHelper {
             NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " requested BlockEntity at " +
                     pos.getX() + " " + pos.getY() + " " + pos.getZ() + ".");
 
-            var blockEntity = player.getLevel().getBlockEntity(pos);
+            BlockEntity blockEntity = player.getLevel().getBlockEntity(pos);
             if (blockEntity == null) {
                 player.createCommandSourceStack().sendFailure(new TranslatableComponent(Constants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY)
                         .withStyle(ChatFormatting.RED));
@@ -46,7 +48,7 @@ public class NBTEditEditingHelper {
                 return;
             }
 
-            var entity = player.getLevel().getEntity(entityUuid);
+            Entity entity = player.getLevel().getEntity(entityUuid);
 
             assert entity != null;  // XXX: qyl27: will it work?
 

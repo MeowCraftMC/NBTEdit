@@ -189,13 +189,13 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (var widget : widgets) {
+        for (AbstractWidget widget : widgets) {
             if (widget.isFocused()) {
                 widget.changeFocus(false);
             }
         }
 
-        for (var widget : widgets) {
+        for (AbstractWidget widget : widgets) {
             if (widget.isMouseOver(mouseX, mouseY)) {
                 if (!widget.isFocused()) {
                     widget.changeFocus(true);
@@ -229,7 +229,7 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
     }
 
     private boolean isNameValid() {
-        for (var n : node.getParent().getChildren()) {
+        for (NBTTree.Node<?> n : node.getParent().getChildren()) {
             Tag base = n.getTag();
             if (base != nbt && n.getName().equals(nameField.getValue())) {
                 return false;
@@ -240,74 +240,80 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
 
     private static void isValueValid(String value, byte type) throws NumberFormatException {
         switch (type) {
-            case 1 -> ParseHelper.parseByte(value);
-            case 2 -> ParseHelper.parseShort(value);
-            case 3 -> ParseHelper.parseInt(value);
-            case 4 -> ParseHelper.parseLong(value);
-            case 5 -> ParseHelper.parseFloat(value);
-            case 6 -> ParseHelper.parseDouble(value);
-            case 7 -> ParseHelper.parseByteArray(value);
-            case 11 -> ParseHelper.parseIntArray(value);
-            case 12 -> ParseHelper.parseLongArray(value);
+            case 1:
+                ParseHelper.parseByte(value);
+                break;
+            case 2:
+                ParseHelper.parseShort(value);
+                break;
+            case 3:
+                ParseHelper.parseInt(value);
+                break;
+            case 4:
+                ParseHelper.parseLong(value);
+                break;
+            case 5:
+                ParseHelper.parseFloat(value);
+                break;
+            case 6:
+                ParseHelper.parseDouble(value);
+                break;
+            case 7:
+                ParseHelper.parseByteArray(value);
+                break;
+            case 11:
+                ParseHelper.parseIntArray(value);
+                break;
+            case 12:
+                ParseHelper.parseLongArray(value);
+                break;
         }
     }
 
     private static String getValue(Tag tag) {
         switch (tag.getId()) {
-            case 1 -> {
-                var byteTag = (ByteTag) tag;
+            case 1:
+                ByteTag byteTag = (ByteTag) tag;
                 return Integer.toString(byteTag.getAsInt());
-            }
-            case 2 -> {
-                var shortTag = (ShortTag) tag;
+            case 2:
+                ShortTag shortTag = (ShortTag) tag;
                 return Integer.toString(shortTag.getAsInt());
-            }
-            case 3 -> {
-                var intTag = (IntTag) tag;
+            case 3:
+                IntTag intTag = (IntTag) tag;
                 return Integer.toString(intTag.getAsInt());
-            }
-            case 4 -> {
-                var longTag = (LongTag) tag;
+            case 4:
+                LongTag longTag = (LongTag) tag;
                 return Long.toString(longTag.getAsLong());
-            }
-            case 5 -> {
-                var floatTag = (FloatTag) tag;
+            case 5:
+                FloatTag floatTag = (FloatTag) tag;
                 return Float.toString(floatTag.getAsFloat());
-            }
-            case 6 -> {
-                var doubleTag = (DoubleTag) tag;
+            case 6:
+                DoubleTag doubleTag = (DoubleTag) tag;
                 return Double.toString(doubleTag.getAsDouble());
-            }
-            case 7 -> {
-                var s = new StringBuilder();
-                for (var b : ((ByteArrayTag) tag).getAsByteArray()) {
+            case 7:
+                StringBuilder s = new StringBuilder();
+                for (byte b : ((ByteArrayTag) tag).getAsByteArray()) {
                     s.append(b).append(",");
                 }
                 return s.toString();
-            }
-            case 8 -> {
-                var i = new StringBuilder();
-                for (var a : ((IntArrayTag) tag).getAsIntArray()) {
+            case 8:
+                StringBuilder i = new StringBuilder();
+                for (int a : ((IntArrayTag) tag).getAsIntArray()) {
                     i.append(a).append(",");
                 }
                 return i.toString();
-            }
-            case 9 -> {
+            case 9:
                 return "TagList";
-            }
-            case 10 -> {
+            case 10:
                 return "TagCompound";
-            }
-            case 11 -> {
-                var i = new StringBuilder();
-                for (var a : ((LongArrayTag) tag).getAsLongArray()) {
-                    i.append(a).append(",");
+            case 11:
+                StringBuilder l = new StringBuilder();
+                for (long a : ((LongArrayTag) tag).getAsLongArray()) {
+                    l.append(a).append(",");
                 }
-                return i.toString();
-            }
-            default -> {
+                return l.toString();
+            default:
                 return NBTHelper.toString(tag);
-            }
         }
     }
 

@@ -30,8 +30,8 @@ public class S2COpenItemStackEditingGuiPacket {
 
     public static void clientHandle(Minecraft client, ClientPacketListener handler,
                                     FriendlyByteBuf buf, PacketSender responseSender) {
-        var itemStack = buf.readItem();
-        var compoundTag = buf.readNbt();
+        ItemStack itemStack = buf.readItem();
+        CompoundTag compoundTag = buf.readNbt();
 
         client.execute(() -> ScreenHelper.showNBTEditScreen(itemStack, compoundTag));
     }

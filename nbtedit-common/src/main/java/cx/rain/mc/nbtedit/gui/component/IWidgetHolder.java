@@ -14,8 +14,9 @@ public interface IWidgetHolder {
     void clearWidgets();
 
     default void renderWidgets(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        for (var widget : getWidgets()) {
-            if (widget instanceof Button button) {
+        for (AbstractWidget widget : getWidgets()) {
+            if (widget instanceof Button) {
+                Button button = (Button) widget;
                 button.render(poseStack, mouseX, mouseY, partialTicks);
             } else {
                 widget.render(poseStack, mouseX, mouseY, partialTicks);

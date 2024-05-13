@@ -16,8 +16,8 @@ public class NBTEdit {
     public static final String VERSION;
 
     static {
-        var properties = new Properties();
-        var version = "";
+        Properties properties = new Properties();
+        String version = "";
         try {
             properties.load(NBTEdit.class.getResourceAsStream("/build.properties"));
             version = properties.getProperty("mod_version");

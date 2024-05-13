@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.forge.networking.packet;
 
 import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -23,7 +24,7 @@ public class C2SItemStackEditingRequestPacket {
 	}
 
 	public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
+		ServerPlayer player = context.get().getSender();
 		NBTEditEditingHelper.editItemStack(player, itemStack);
 	}
 }

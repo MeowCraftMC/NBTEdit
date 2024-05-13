@@ -99,7 +99,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     // <editor-fold desc="Updates.">
 
     public void update(NBTTree.Node<?> node) {
-        var parent = node.getParent();
+        NBTTree.Node<?> parent = node.getParent();
         Collections.sort(parent.getChildren(), SortHelper.get());
         update(true);
     }
@@ -107,7 +107,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     public void updateFromRoot(NBTTree.Node<?> node, boolean circular) {
         Collections.sort(node.getChildren(), SortHelper.get());
         if (circular) {
-            for (var child : node.getChildren()) {
+            for (NBTTree.Node<?> child : node.getChildren()) {
                 updateFromRoot(child, true);
             }
         }
@@ -134,7 +134,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                 heightOffset = 0;
             }
 
-            for (var node : nodes) {
+            for (NBTNodeComponent node : nodes) {
                 node.shiftY(heightOffset);
             }
 
@@ -151,7 +151,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         super.tick();
 
         if (hasWindow()) {
-            for (var window : getWindows()) {
+            for (SubWindowComponent window : getWindows()) {
                 window.tick();
             }
         }
@@ -211,8 +211,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         // Add nbt type buttons.
         xLoc = 18;
         yLoc = 17;
-        for (var i = 1; i < 13; i++) {
-            var button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
+        for (int i = 1; i < 13; i++) {
+            NBTOperatorButton button = new NBTOperatorButton(i, xLoc, yLoc, this, this::onAddButtonsClick,
                     componentSupplier -> componentSupplier.get().append(new TranslatableComponent(Constants.GUI_NARRATION_BUTTON_ADD)));
             addButtons[i - 1] = button;
             addButton(button);
@@ -223,7 +223,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onEditButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton operatorButton) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton operatorButton = (NBTOperatorButton) button;
             if (operatorButton.getButtonId() == 13) {  // 但愿人没事。
                 doEditSelected();
             }
@@ -232,7 +233,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onDeleteButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton operatorButton) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton operatorButton = (NBTOperatorButton) button;
             if (operatorButton.getButtonId() == 14) {
                 deleteSelected();
             }
@@ -241,7 +243,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onPasteButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton nbtOperator = (NBTOperatorButton) button;
             if (nbtOperator.getButtonId() == 15) {
                 paste();
             }
@@ -250,7 +253,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onCutButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton nbtOperator = (NBTOperatorButton) button;
             if (nbtOperator.getButtonId() == 16) {
                 copySelected();
                 deleteSelected();
@@ -260,7 +264,8 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onCopyButtonClick(Button button) {
-        if (button instanceof NBTOperatorButton nbtOperator) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton nbtOperator = (NBTOperatorButton) button;
             if (nbtOperator.getButtonId() == 17) {
                 copySelected();
             }
@@ -269,19 +274,20 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     protected void onAddButtonsClick(Button button) {
-        if (button instanceof NBTOperatorButton operatorButton) {
+        if (button instanceof NBTOperatorButton) {
+            NBTOperatorButton operatorButton = (NBTOperatorButton) button;
             if (operatorButton.getButtonId() >= 0 && operatorButton.getButtonId() <= 12) {
                 if (getFocused() != null) {
                     getFocused().setShowChildren(true);
 
                     if (getFocused().getTag() instanceof ListTag) {
-                        var tag = NBTHelper.newTag((operatorButton.getButtonId()));
+                        Tag tag = NBTHelper.newTag((operatorButton.getButtonId()));
                         if (tag != null) {
-                            var newChild = getFocused().newChild("", tag);
+                            NBTTree.Node<Tag> newChild = getFocused().newChild("", tag);
                             setFocused(newChild);
                         }
                     } else {
-                        var typeId = operatorButton.getButtonId();
+                        byte typeId = operatorButton.getButtonId();
                         setFocused(insertOnFocus(newName(getFocused(), typeId), NBTHelper.newTag(typeId)));
                     }
                     update(true);
@@ -292,20 +298,22 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     public void doEditSelected() {
-        var base = getFocused().getTag();
-        var parent = getFocused().getParent().getTag();
-        var editor = new EditValueSubWindow(this, getFocused(), !(parent instanceof ListTag),
+        Tag base = getFocused().getTag();
+        Tag parent = getFocused().getParent().getTag();
+        EditValueSubWindow editor = new EditValueSubWindow(this, getFocused(), !(parent instanceof ListTag),
                 !(base instanceof CompoundTag || base instanceof ListTag));
         editor.init((width - EditValueSubWindow.WIDTH) / 2, (height - EditValueSubWindow.HEIGHT) / 2);
         addWindow(editor);
     }
 
     private void copySelected() {
-        var node = getFocused();
+        NBTTree.Node<?> node = getFocused();
         if (node != null) {
-            if (node.getTag() instanceof ListTag list) {
+            if (node.getTag() instanceof ListTag) {
+                ListTag list = (ListTag) node.getTag();
                 NBTEdit.getInstance().getClient().setClipboard(NBTTree.Node.root(list));
-            } else if (node.getTag() instanceof CompoundTag compound) {
+            } else if (node.getTag() instanceof CompoundTag) {
+                CompoundTag compound = (CompoundTag) node.getTag();
                 NBTEdit.getInstance().getClient().setClipboard(NBTTree.Node.root(compound));
             } else {
                 NBTEdit.getInstance().getClient().setClipboard(focused);
@@ -318,17 +326,17 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private void paste() {
-        var focused = getFocused();
+        NBTTree.Node<?> focused = getFocused();
 
         if (focused != null) {
-            var tag = focused.getTag();
+            Tag tag = focused.getTag();
             if (!(tag instanceof CompoundTag)
                     && !(tag instanceof CollectionTag<?>)) {
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 return;
             }
 
-            var node = NBTEdit.getInstance().getClient().getClipboard();
+            NBTTree.Node<?> node = NBTEdit.getInstance().getClient().getClipboard();
             if (node != null) {
                 focused.setShowChildren(true);
 
@@ -336,7 +344,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
                     String name = "Paste";
                     List<NBTTree.Node<Tag>> children = focused.getChildren();
                     for (int i = 0; i < children.size(); i++) {
-                        var child = children.get(i);
+                        NBTTree.Node<?> child = children.get(i);
                         if (!isNameValid(name, child)) {
                             child.setName("Child" + i);
                         }
@@ -353,9 +361,9 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     public void deleteSelected() {
-        var prevFocused = getFocused();
+        NBTTree.Node<?> prevFocused = getFocused();
         if (prevFocused != null) {
-            var parent = prevFocused.getParent();
+            NBTTree.Node<?> parent = prevFocused.getParent();
             parent.removeChild(prevFocused);
             shiftFocus(true);
             if (focused == prevFocused) {
@@ -366,7 +374,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private void updateButtons() {
-        var nodeToFocus = getFocused();
+        NBTTree.Node<?> nodeToFocus = getFocused();
         if (nodeToFocus == null) {
             inactiveAllButtons();
         } else if (nodeToFocus.getTag() instanceof CompoundTag) {
@@ -377,7 +385,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             pasteButton.active = NBTEdit.getInstance().getClient().getClipboard() != null;
         } else if (nodeToFocus.getTag() instanceof ListTag) {
             if (nodeToFocus.hasChild()) {
-                var elementType = nodeToFocus.getChildren().get(0).getTag().getId();
+                byte elementType = nodeToFocus.getChildren().get(0).getTag().getId();
                 inactiveAllButtons();
 
                 addButtons[elementType - 1].active = true;
@@ -403,7 +411,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private void activeAllButtons() {
-        for (var button : addButtons) {
+        for (Button button : addButtons) {
             button.active = true;
         }
 
@@ -415,7 +423,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private void inactiveAllButtons() {
-        for (var button : addButtons) {
+        for (Button button : addButtons) {
             button.active = false;
         }
 
@@ -438,7 +446,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         y += Y_GAP;
 
         if (root.shouldShowChildren()) {
-            for (var child : root.getChildren()) {
+            for (NBTTree.Node<?> child : root.getChildren()) {
                 addNodes(child, startX);
             }
         }
@@ -451,9 +459,9 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private void shiftToFocus(NBTTree.Node<?> focused) {
-        var index = getIndexOf(focused);
+        int index = getIndexOf(focused);
         if (index != -1) {
-            var component = nodes.get(index);
+            NBTNodeComponent component = nodes.get(index);
             shiftY((bottom + START_Y + 1) / 2 - (component.y + component.getHeight()));
         }
     }
@@ -470,7 +478,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private int getIndexOf(NBTTree.Node<?> focused) {
-        for (var i = 0; i < nodes.size(); i++) {
+        for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).getNode() == focused) {
                 return i;
             }
@@ -492,7 +500,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             difference = -heightDiff;
         }
 
-        for (var node : nodes) {
+        for (NBTNodeComponent node : nodes) {
             node.shiftY(difference - heightOffset);
         }
 
@@ -500,7 +508,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private boolean checkValidFocus(NBTTree.Node<?> focused) {
-        for (var node : nodes) { // Check all nodes.
+        for (NBTNodeComponent node : nodes) { // Check all nodes.
             if (node.getNode() == focused) {
                 setFocused(focused);
                 return true;
@@ -538,7 +546,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private boolean isNameValid(String name, NBTTree.Node<?> parent) {
-        for (var node : parent.getChildren()) {
+        for (NBTTree.Node<?> node : parent.getChildren()) {
             if (node.getName().equals(name)) {
                 return false;
             }
@@ -547,7 +555,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     }
 
     private String newName(NBTTree.Node<?> parent, byte typeId) {
-        var typeName = NBTHelper.getNameByButton(typeId);
+        String typeName = NBTHelper.getNameByButton(typeId);
         if (!parent.hasChild()) {
             return typeName + "1";
         }
@@ -569,15 +577,15 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
             return getActiveWindow().mouseClicked(mouseX, mouseY, partialTick);
         }
 
-        for (var button : getButtons()) {
+        for (Button button : getButtons()) {
             if (button.isMouseOver(mouseX, mouseY)) {
                 button.mouseClicked(mouseX, mouseY, partialTick);
             }
         }
 
-        var shouldUpdate = false;
+        boolean shouldUpdate = false;
 
-        for (var node : nodes) {
+        for (NBTNodeComponent node : nodes) {
             if (node.spoilerClicked(mouseX, mouseY)) { // Check hide/show children buttons
                 shouldUpdate = true;
                 if (node.shouldShowChildren()) {
@@ -589,7 +597,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
         if (mouseY >= START_Y && mouseX <= width - 175) { //Check actual nodes, remove focus if nothing clicked
             NBTTree.Node<?> newFocus = null;
-            for (var node : nodes) {
+            for (NBTNodeComponent node : nodes) {
                 if (node.isTextClicked(mouseX, mouseY)) {
                     newFocus = node.getNode();
                     break;
@@ -667,22 +675,22 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     // <editor-fold desc="Render.">
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        var prevMouseX = mouseX;
-        var prevMouseY = mouseY;
+        int prevMouseX = mouseX;
+        int prevMouseY = mouseY;
 
         if (hasWindow()) {
             prevMouseX = -1;
             prevMouseY = -1;
         }
 
-        for (var node : nodes) {
+        for (NBTNodeComponent node : nodes) {
             if (node.shouldRender(START_Y - 1, bottom)) {
                 node.render(poseStack, prevMouseX, prevMouseY, partialTick);
             }
         }
 
         renderBackground(poseStack);
-        for (var button : buttons) {
+        for (Button button : buttons) {
             button.render(poseStack, prevMouseX, prevMouseY, partialTick);
         }
 
@@ -766,7 +774,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     @Override
     public List<SubWindowComponent> getWindows() {
-        var list = ImmutableList.<SubWindowComponent>builder();
+        ImmutableList.Builder<SubWindowComponent> list = ImmutableList.builder();
         list.addAll(subWindows).addAll(mutexSubWindows.values());
         return list.build();
     }
@@ -824,7 +832,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
         window.close();
         if (isMutexWindow(window)) {
-            var name = mutexSubWindows.inverse().get(window);
+            String name = mutexSubWindows.inverse().get(window);
             mutexSubWindows.remove(name);
         } else {
             subWindows.remove(window);
@@ -833,14 +841,14 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     @Override
     public void closeAll() {
-        for (var window : subWindows) {
+        for (SubWindowComponent window : subWindows) {
             window.close();
         }
     }
 
     @Override
     public void focus(SubWindowComponent window) {
-        for (var w : getWindows()) {
+        for (SubWindowComponent w : getWindows()) {
            w.inactive();
         }
 

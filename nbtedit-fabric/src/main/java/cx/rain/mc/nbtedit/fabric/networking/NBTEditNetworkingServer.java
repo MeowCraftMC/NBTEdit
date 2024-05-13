@@ -24,15 +24,15 @@ public class NBTEditNetworkingServer {
 	}
 
 	public void serverRayTraceRequest(ServerPlayer player) {
-		var buf = new FriendlyByteBuf(Unpooled.buffer());
+		FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 		new S2CRayTracePacket().write(buf);
 		ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_RAY_TRACE_REQUEST_PACKET_ID, buf);
 	}
 
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
 		player.getServer().execute(() -> {
-			var buf = new FriendlyByteBuf(Unpooled.buffer());
-			var tag = new CompoundTag();
+			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+			CompoundTag tag = new CompoundTag();
 			if (entity instanceof Player) {
 				entity.saveWithoutId(tag);
 			} else {
@@ -45,8 +45,8 @@ public class NBTEditNetworkingServer {
 
 	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
 		player.getServer().execute(() -> {
-			var buf = new FriendlyByteBuf(Unpooled.buffer());
-			var tag = blockEntity.save(new CompoundTag());
+			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+			CompoundTag tag = blockEntity.save(new CompoundTag());
 			new S2COpenBlockEntityEditingGuiPacket(pos, tag).write(buf);
 			ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, buf);
 		});
@@ -54,8 +54,8 @@ public class NBTEditNetworkingServer {
 
 	public void serverOpenClientGui(ServerPlayer player) {
 		player.getServer().execute(() -> {
-			var buf = new FriendlyByteBuf(Unpooled.buffer());
-			var tag = new CompoundTag();
+			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+			CompoundTag tag = new CompoundTag();
 			player.saveWithoutId(tag);
 			new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true).write(buf);
 			ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, buf);
@@ -64,8 +64,8 @@ public class NBTEditNetworkingServer {
 
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
 		player.getServer().execute(() -> {
-			var buf = new FriendlyByteBuf(Unpooled.buffer());
-			var tag = new CompoundTag();
+			FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+			CompoundTag tag = new CompoundTag();
 			stack.save(tag);
 			new S2COpenItemStackEditingGuiPacket(stack, tag).write(buf);
 			ServerPlayNetworking.send(player, NBTEditNetworkingImpl.S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, buf);

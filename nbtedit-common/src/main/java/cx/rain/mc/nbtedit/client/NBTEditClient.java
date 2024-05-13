@@ -9,12 +9,12 @@ public class NBTEditClient {
     }
 
     public NBTTree.Node<Tag> getClipboard() {
-        var data = Minecraft.getInstance().keyboardHandler.getClipboard();
+        String data = Minecraft.getInstance().keyboardHandler.getClipboard();
         return NBTTree.Node.fromString(data);
     }
 
     public void setClipboard(NBTTree.Node<?> node) {
-        var data = node.asString();
+        String data = node.asString();
         Minecraft.getInstance().keyboardHandler.setClipboard(data);
     }
 }

@@ -39,10 +39,10 @@ public class S2COpenEntityEditingGuiPacket {
 
     public static void clientHandle(Minecraft client, ClientPacketListener handler,
                                    FriendlyByteBuf buf, PacketSender responseSender) {
-        var entityUuid = buf.readUUID();
-        var entityId = buf.readInt();
-        var compoundTag = buf.readNbt();
-        var isSelf = buf.readBoolean();
+        UUID entityUuid = buf.readUUID();
+        int entityId = buf.readInt();
+        CompoundTag compoundTag = buf.readNbt();
+        boolean isSelf = buf.readBoolean();
 
         client.execute(() -> ScreenHelper.showNBTEditScreen(entityUuid, entityId, compoundTag, isSelf));
     }

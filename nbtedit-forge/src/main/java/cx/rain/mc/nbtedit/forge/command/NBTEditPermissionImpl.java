@@ -19,7 +19,8 @@ public class NBTEditPermissionImpl implements INBTEditCommandPermission {
 
     @Override
     public boolean hasPermission(final CommandSourceStack source) {
-        if (source.getEntity() instanceof Player player) {
+        if (source.getEntity() instanceof Player) {
+            Player player = (Player) source.getEntity();
             return PermissionAPI.hasPermission(player, PERMISSION_USE);
         } else {
             return true;

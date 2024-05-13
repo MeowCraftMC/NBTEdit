@@ -81,7 +81,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, Entity entity) {
 		player.getServer().execute(() -> {
-			var tag = entity.serializeNBT();
+			CompoundTag tag = entity.serializeNBT();
 			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(entity.getUUID(), entity.getId(), tag, false),
 					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
@@ -90,7 +90,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity) {
 		player.getServer().execute(() -> {
-			var tag = blockEntity.serializeNBT();
+			CompoundTag tag = blockEntity.serializeNBT();
 			CHANNEL.sendTo(new S2COpenBlockEntityEditingGuiPacket(pos, tag),
 					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
@@ -99,7 +99,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	@Override
 	public void serverOpenClientGui(ServerPlayer player) {
 		player.getServer().execute(() -> {
-			var tag = player.serializeNBT();
+			CompoundTag tag = player.serializeNBT();
 			CHANNEL.sendTo(new S2COpenEntityEditingGuiPacket(player.getUUID(), player.getId(), tag, true),
 					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});
@@ -108,7 +108,7 @@ public class NBTEditNetworkingImpl implements INBTEditNetworking {
 	@Override
 	public void serverOpenClientGui(ServerPlayer player, ItemStack stack) {
 		player.getServer().execute(() -> {
-			var tag = stack.serializeNBT();
+			CompoundTag tag = stack.serializeNBT();
 			CHANNEL.sendTo(new S2COpenItemStackEditingGuiPacket(stack, tag),
 					player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 		});

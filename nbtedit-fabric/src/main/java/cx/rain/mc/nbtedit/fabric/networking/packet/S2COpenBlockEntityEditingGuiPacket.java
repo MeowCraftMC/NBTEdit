@@ -30,8 +30,8 @@ public class S2COpenBlockEntityEditingGuiPacket {
 
     public static void clientHandle(Minecraft client, ClientPacketListener handler,
                                     FriendlyByteBuf buf, PacketSender responseSender) {
-        var blockPos = buf.readBlockPos();
-        var compoundTag = buf.readNbt();
+        BlockPos blockPos = buf.readBlockPos();
+        CompoundTag compoundTag = buf.readNbt();
 
         client.execute(() -> ScreenHelper.showNBTEditScreen(blockPos, compoundTag));
     }

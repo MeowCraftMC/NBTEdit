@@ -9,14 +9,16 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.FormattedCharSequence;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class RenderHelper {
 
     public static void drawGrayBackground(PoseStack poseStack) {
-        var x = Minecraft.getInstance().getWindow().getWidth();
-        var y = Minecraft.getInstance().getWindow().getHeight();
+        int x = Minecraft.getInstance().getWindow().getWidth();
+        int y = Minecraft.getInstance().getWindow().getHeight();
 
         RenderSystem.enableBlend();
 //        RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -45,7 +47,7 @@ public class RenderHelper {
 
     public static Button.OnTooltip getTooltip(Screen screen, Component component) {
         return (button, poseStack, mouseX, mouseY) -> {
-            var components = Minecraft.getInstance().font.split(component, 400);
+            List<FormattedCharSequence> components = Minecraft.getInstance().font.split(component, 400);
             screen.renderTooltip(poseStack, components, mouseX, mouseY);
         };
     }

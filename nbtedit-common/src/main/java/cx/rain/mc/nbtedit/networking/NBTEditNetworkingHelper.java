@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class NBTEditNetworkingHelper {
     public static boolean checkPermission(ServerPlayer player) {
-        var result = NBTEdit.getInstance().getPermission().hasPermission(player);
+        boolean result = NBTEdit.getInstance().getPermission().hasPermission(player);
 
         if (!result) {
             player.sendMessage(new TranslatableComponent(Constants.MESSAGE_NO_PERMISSION)
@@ -22,7 +22,7 @@ public class NBTEditNetworkingHelper {
     }
 
     public static boolean checkPosLoaded(ServerPlayer player, BlockPos pos) {
-        var result = player.getLevel().isLoaded(pos);
+        boolean result = player.getLevel().isLoaded(pos);
 
         if (!result) {
             player.sendMessage(new TranslatableComponent(Constants.MESSAGE_NOT_LOADED)

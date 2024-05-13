@@ -33,7 +33,7 @@ public class C2SItemStackSavingPacket {
     public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
                                     ServerGamePacketListenerImpl serverGamePacketListener,
                                     FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
-        var packet = new C2SItemStackSavingPacket(friendlyByteBuf);
+        C2SItemStackSavingPacket packet = new C2SItemStackSavingPacket(friendlyByteBuf);
         NBTEditSavingHelper.saveItemStack(player, packet.itemStack, packet.compoundTag);
     }
 }

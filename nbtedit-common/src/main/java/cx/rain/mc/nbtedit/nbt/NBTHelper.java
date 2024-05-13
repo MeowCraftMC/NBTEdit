@@ -27,63 +27,63 @@ public class NBTHelper {
 	}
 
 	public static Tag newTag(byte type) {
-		return switch (type) {
-			case 0 -> EndTag.INSTANCE;
-			case 1 -> ByteTag.valueOf((byte) 0);
-			case 2 -> ShortTag.valueOf((short) 0);
-			case 3 -> IntTag.valueOf(0);
-			case 4 -> LongTag.valueOf(0);
-			case 5 -> FloatTag.valueOf(0.0f);
-			case 6 -> DoubleTag.valueOf(0.0);
-			case 7 -> new ByteArrayTag(new byte[0]);
-			case 8 -> StringTag.valueOf("");
-			case 9 -> new ListTag();
-			case 10 -> new CompoundTag();
-			case 11 -> new IntArrayTag(new int[0]);
-			case 12 -> new LongArrayTag(new long[0]);
-			default -> null;
-		};
+		switch (type) {
+			case 0: return EndTag.INSTANCE;
+			case 1: return ByteTag.valueOf((byte) 0);
+			case 2: return ShortTag.valueOf((short) 0);
+			case 3: return IntTag.valueOf(0);
+			case 4: return LongTag.valueOf(0);
+			case 5: return FloatTag.valueOf(0.0f);
+			case 6: return DoubleTag.valueOf(0.0);
+			case 7: return new ByteArrayTag(new byte[0]);
+			case 8: return StringTag.valueOf("");
+			case 9: return new ListTag();
+			case 10: return new CompoundTag();
+			case 11: return new IntArrayTag(new int[0]);
+			case 12: return new LongArrayTag(new long[0]);
+			default: return null;
+		}
 	}
 
 	public static Tag of(byte type, int value) {
-		return switch (type) {
-			case 0 -> EndTag.INSTANCE;
-			case 1 -> ByteTag.valueOf((byte) value);
-			case 2 -> ShortTag.valueOf((short) value);
-			case 3 -> IntTag.valueOf(value);
-			case 4 -> LongTag.valueOf(value);
-			case 5 -> FloatTag.valueOf(value);
-			case 6 -> DoubleTag.valueOf(value);
-			case 7 -> new ByteArrayTag(new byte[0]);
-			case 8 -> StringTag.valueOf("");
-			case 9 -> new ListTag();
-			case 10 -> new CompoundTag();
-			case 11 -> new IntArrayTag(new int[0]);
-			case 12 -> new LongArrayTag(new long[0]);
-			default -> null;
-		};
+		switch (type) {
+			case 0: return EndTag.INSTANCE;
+			case 1: return ByteTag.valueOf((byte) value);
+			case 2: return ShortTag.valueOf((short) value);
+			case 3: return IntTag.valueOf(value);
+			case 4: return LongTag.valueOf(value);
+			case 5: return FloatTag.valueOf(value);
+			case 6: return DoubleTag.valueOf(value);
+			case 7: return new ByteArrayTag(new byte[0]);
+			case 8: return StringTag.valueOf("");
+			case 9: return new ListTag();
+			case 10: return new CompoundTag();
+			case 11: return new IntArrayTag(new int[0]);
+			case 12: return new LongArrayTag(new long[0]);
+			default: return null;
+		}
 	}
 
 	public static String getNameByButton(byte id) {
-		return switch (id) {
-			case 1 -> "Byte";
-			case 2 -> "Short";
-			case 3 -> "Int";
-			case 4 -> "Long";
-			case 5 -> "Float";
-			case 6 -> "Double";
-			case 7 -> "ByteArray";
-			case 8 -> "String";
-			case 9 -> "List";
-			case 10 -> "Compound";
-			case 11 -> "IntArray";
-			case 12 -> "LongArray";
-			case 13 -> "Edit";
-			case 14 -> "Delete";
-			case 15 -> "Paste";
-			case 16 -> "Cut";
-			case 17 -> "Copy";
-			default -> "Unknown";
-		};
+		switch (id) {
+			case 1: return "Byte";
+			case 2: return "Short";
+			case 3: return "Int";
+			case 4: return "Long";
+			case 5: return "Float";
+			case 6: return "Double";
+			case 7: return "ByteArray";
+			case 8: return "String";
+			case 9: return "List";
+			case 10: return "Compound";
+			case 11: return "IntArray";
+			case 12: return "LongArray";
+			case 13: return "Edit";
+			case 14: return "Delete";
+			case 15: return "Paste";
+			case 16: return "Cut";
+			case 17: return "Copy";
+			default: return "Unknown";
+		}
 	}
 }

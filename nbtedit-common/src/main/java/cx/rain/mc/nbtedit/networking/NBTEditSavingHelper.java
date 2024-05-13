@@ -10,11 +10,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundSetHealthPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.UUID;
 
@@ -28,10 +31,10 @@ public class NBTEditSavingHelper {
             return;
         }
 
-        var server = player.getServer();
-        var level = player.getLevel();
+        MinecraftServer server = player.getServer();
+        ServerLevel level = player.getLevel();
         server.execute(() -> {
-            var blockEntity = level.getBlockEntity(pos);
+            BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 try {
                     blockEntity.load(blockEntity.getBlockState(), tag);
@@ -85,10 +88,10 @@ public class NBTEditSavingHelper {
             return;
         }
 
-        var server = player.getServer();
-        var level = player.getLevel();
+        MinecraftServer server = player.getServer();
+        ServerLevel level = player.getLevel();
         server.execute(() -> {
-            var entity = level.getEntity(entityUuid);
+            Entity entity = level.getEntity(entityUuid);
 
             if (entity != null) {
                 if (entity instanceof ServerPlayer
@@ -122,9 +125,9 @@ public class NBTEditSavingHelper {
                         // This is fairly hacky.
                         // Consider swapping to an event driven system, where classes can register to
                         // receive entity edit events and provide feedback/send packets as necessary.
-                        var targetPlayer = (ServerPlayer) entity;
+                        ServerPlayer targetPlayer = (ServerPlayer) entity;
                         targetPlayer.initMenu();
-                        var gameMode = targetPlayer.gameMode.getGameModeForPlayer();
+                        GameType gameMode = targetPlayer.gameMode.getGameModeForPlayer();
                         if (prevGameMode != gameMode) {
                             targetPlayer.setGameMode(gameMode);
                         }
@@ -164,11 +167,11 @@ public class NBTEditSavingHelper {
     }
 
     public static void saveItemStack(ServerPlayer player, ItemStack itemStack, CompoundTag tag) {
-        var server = player.getServer();
+        MinecraftServer server = player.getServer();
 
         server.execute(() -> {
             try {
-                var item = ItemStack.of(tag);
+                ItemStack item = ItemStack.of(tag);
                 player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
                 NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +

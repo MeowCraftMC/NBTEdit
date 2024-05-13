@@ -12,10 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -23,6 +20,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+
+import java.util.List;
 
 public class NBTNodeComponent extends AbstractWidget {
     public static final ResourceLocation WIDGET_TEXTURE =
@@ -110,18 +109,18 @@ public class NBTNodeComponent extends AbstractWidget {
 
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        var isSelected = gui.getFocused() == node;
-        var isTextHover = isMouseInsideText(mouseX, mouseY);
-        var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
-        var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
+        boolean isSelected = gui.getFocused() == node;
+        boolean isTextHover = isMouseInsideText(mouseX, mouseY);
+        boolean isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
+        int color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
 
         if (isSelected) {
             fill(poseStack, x + 11, y, x + width, y + height, Integer.MIN_VALUE);
         }
 
-        var w = 18;
-        var h = 16;
-        var u = 0;
+        int w = 18;
+        int h = 16;
+        int u = 0;
         if (node.shouldShowChildren()) {
             w = 16;
             h = 18;
@@ -150,15 +149,16 @@ public class NBTNodeComponent extends AbstractWidget {
     }
 
     private void updateTooltip() {
-        var tag = node.getTag();
+        Tag tag = node.getTag();
         try {
-            if (tag instanceof StringTag stringTag) {
-                var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
-                var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+            if (tag instanceof StringTag) {
+                StringTag stringTag = (StringTag) tag;
+                MutableComponent preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                MutableComponent previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
 
-                var content = Component.Serializer.fromJson(stringTag.getAsString());
+                MutableComponent content = Component.Serializer.fromJson(stringTag.getAsString());
 
-                if (content != null && !content.getString().isBlank()) {
+                if (content != null && !content.getString().trim().isEmpty()) {
                     preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
                     previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
 
@@ -171,14 +171,15 @@ public class NBTNodeComponent extends AbstractWidget {
         }
 
         try {
-            if (tag instanceof CompoundTag compoundTag) {
-                var itemStack = ItemStack.of(compoundTag);
+            if (tag instanceof CompoundTag) {
+                CompoundTag compoundTag = (CompoundTag) tag;
+                ItemStack itemStack = ItemStack.of(compoundTag);
                 if (!itemStack.isEmpty()) {
-                    var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
-                    var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    MutableComponent preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    MutableComponent previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
 
-                    var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.Default.ADVANCED);
-                    var content = new TextComponent("");
+                    List<Component> lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.Default.ADVANCED);
+                    MutableComponent content = new TextComponent("");
                     for (int i = 0; i < lines.size(); i++) {
                         content.append(lines.get(i));
                         if (i != lines.size() - 1) {
@@ -198,11 +199,12 @@ public class NBTNodeComponent extends AbstractWidget {
         }
 
         try {
-            if (tag instanceof IntArrayTag intArrayTag) {
-                var preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
-                var previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
+            if (tag instanceof IntArrayTag) {
+                IntArrayTag intArrayTag = (IntArrayTag) tag;
+                MutableComponent preview = new TranslatableComponent(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
+                MutableComponent previewNarration = new TranslatableComponent(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
 
-                var content = NbtUtils.loadUUID(intArrayTag).toString();
+                String content = NbtUtils.loadUUID(intArrayTag).toString();
 
                 preview.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));
                 previewNarration.append(new TextComponent("").withStyle(ChatFormatting.RESET).append(content));

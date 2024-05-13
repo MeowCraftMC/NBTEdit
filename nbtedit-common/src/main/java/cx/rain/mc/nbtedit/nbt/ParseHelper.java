@@ -52,8 +52,8 @@ public class ParseHelper {
 
     public static byte[] parseByteArray(String s) throws NumberFormatException {
         try {
-            var input = s.split(",");
-            var arr = new byte[input.length];
+            String[] input = s.split(",");
+            byte[] arr = new byte[input.length];
             for (int i = 0; i < input.length; ++i) {
                 arr[i] = parseByte(input[i]);
             }
@@ -65,8 +65,8 @@ public class ParseHelper {
 
     public static int[] parseIntArray(String s) throws NumberFormatException {
         try {
-            var input = s.split(",");
-            var arr = new int[input.length];
+            String[] input = s.split(",");
+            int[] arr = new int[input.length];
             for (int i = 0; i < input.length; ++i) {
                 arr[i] = parseInt(input[i]);
             }
@@ -78,8 +78,8 @@ public class ParseHelper {
 
     public static long[] parseLongArray(String s) throws NumberFormatException {
         try {
-            var input = s.split(",");
-            var arr = new long[input.length];
+            String[] input = s.split(",");
+            long[] arr = new long[input.length];
             for (int i = 0; i < input.length; ++i) {
                 arr[i] = parseInt(input[i]);
             }

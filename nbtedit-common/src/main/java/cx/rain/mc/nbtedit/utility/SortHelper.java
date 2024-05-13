@@ -3,6 +3,7 @@ package cx.rain.mc.nbtedit.utility;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import java.util.Comparator;
 
@@ -22,10 +23,10 @@ public class SortHelper implements Comparator<NBTTree.Node<?>> {
 
 	@Override
 	public int compare(NBTTree.Node<?> a, NBTTree.Node<?> b) {
-		var name1 = a.getName();
-		var name2 = b.getName();
-		var tag1 = a.getTag();
-		var tag2 = b.getTag();
+		String name1 = a.getName();
+		String name2 = b.getName();
+		Tag tag1 = a.getTag();
+		Tag tag2 = b.getTag();
 		if (tag1 instanceof CompoundTag || tag1 instanceof ListTag) {
 			if (tag2 instanceof CompoundTag || tag2 instanceof ListTag) {
 				int difference = tag1.getId() - tag2.getId();

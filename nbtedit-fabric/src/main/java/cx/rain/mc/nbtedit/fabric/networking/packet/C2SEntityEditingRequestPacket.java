@@ -41,7 +41,7 @@ public class C2SEntityEditingRequestPacket {
 	public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
 									ServerGamePacketListenerImpl serverGamePacketListener,
 									FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
-		var packet = new C2SEntityEditingRequestPacket(friendlyByteBuf);
+		C2SEntityEditingRequestPacket packet = new C2SEntityEditingRequestPacket(friendlyByteBuf);
 		NBTEditEditingHelper.editEntity(player, packet.entityUuid);
 	}
 }

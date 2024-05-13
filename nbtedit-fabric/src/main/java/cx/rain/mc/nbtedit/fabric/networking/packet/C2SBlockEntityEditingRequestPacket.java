@@ -30,7 +30,7 @@ public class C2SBlockEntityEditingRequestPacket {
 	public static void serverHandle(MinecraftServer minecraftServer, ServerPlayer player,
 									ServerGamePacketListenerImpl serverGamePacketListener,
 									FriendlyByteBuf friendlyByteBuf, PacketSender packetSender) {
-		var packet = new C2SBlockEntityEditingRequestPacket(friendlyByteBuf);
+		C2SBlockEntityEditingRequestPacket packet = new C2SBlockEntityEditingRequestPacket(friendlyByteBuf);
 		NBTEditEditingHelper.editBlockEntity(player, packet.pos);
 	}
 }

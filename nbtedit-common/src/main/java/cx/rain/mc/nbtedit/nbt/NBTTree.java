@@ -5,6 +5,7 @@ import net.minecraft.nbt.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class NBTTree {
     private final Node<CompoundTag> rootNode;  // qyl27: We believe the parent must be Compound.
@@ -26,10 +27,10 @@ public class NBTTree {
     }
 
     private CompoundTag compoundNodeToTag(Node<?> node) {
-        var tag = new CompoundTag();
-        for (var child : node.getChildren()) {
-            var name = child.getName();
-            var childTag = child.getTag();
+        CompoundTag tag = new CompoundTag();
+        for (Node<Tag> child : node.getChildren()) {
+            String name = child.getName();
+            Tag childTag = child.getTag();
 
             if (childTag instanceof CompoundTag) {
                 tag.put(name, compoundNodeToTag(child));
@@ -43,9 +44,9 @@ public class NBTTree {
     }
 
     private ListTag listNodeToTag(Node<?> node) {
-        var tag = new ListTag();
-        for (var child : node.getChildren()) {
-            var childTag = child.getTag();
+        ListTag tag = new ListTag();
+        for (Node<Tag> child : node.getChildren()) {
+            Tag childTag = child.getTag();
 
             if (childTag instanceof CompoundTag) {
                 tag.add(compoundNodeToTag(child));
@@ -99,14 +100,16 @@ public class NBTTree {
         }
 
         private void walkThough(Tag tag) {
-            if (tag instanceof CompoundTag compound) {
-                for (var entry : compound.tags.entrySet()) {
+            if (tag instanceof CompoundTag) {
+                CompoundTag compound = (CompoundTag) tag;
+                for (Map.Entry<String, Tag> entry : compound.tags.entrySet()) {
                     newChild(entry.getKey(), entry.getValue());
                 }
             }
 
-            if (tag instanceof ListTag list) {
-                for (var item : list.list) {
+            if (tag instanceof ListTag) {
+                ListTag list = (ListTag) tag;
+                for (Tag item : list.list) {
                     newChild(item);
                 }
             }
@@ -121,7 +124,7 @@ public class NBTTree {
         }
 
         public Node<Tag> newChild(String name, Tag tag) {
-            var newChild = new Node<>(name, tag, this);
+            Node<Tag> newChild = new Node<>(name, tag, this);
             children.add(newChild);
             return newChild;
         }
@@ -178,24 +181,50 @@ public class NBTTree {
 
         public static Node<Tag> fromString(String data) {
             try {
-                var tag = TagParser.parseTag(data);
-                var name = tag.getString(TAG_NAME);
-                var type = tag.getByte(TAG_TYPE);
+                CompoundTag tag = TagParser.parseTag(data);
+                String name = tag.getString(TAG_NAME);
+                byte type = tag.getByte(TAG_TYPE);
 
-                Tag t = switch (type) {
-                    case 1 -> ByteTag.valueOf(tag.getByte(TAG_VALUE));
-                    case 2 -> ShortTag.valueOf(tag.getShort(TAG_VALUE));
-                    case 3 -> IntTag.valueOf(tag.getInt(TAG_VALUE));
-                    case 4 -> LongTag.valueOf(tag.getLong(TAG_VALUE));
-                    case 5 -> FloatTag.valueOf(tag.getFloat(TAG_VALUE));
-                    case 6 -> DoubleTag.valueOf(tag.getDouble(TAG_VALUE));
-                    case 7 -> new ByteArrayTag(tag.getByteArray(TAG_VALUE));
-                    case 8 -> StringTag.valueOf(tag.getString(TAG_VALUE));
-                    case 9 -> tag.getList(TAG_VALUE, tag.getByte(TAG_LIST_TYPE));
-                    case 10 -> tag.getCompound(TAG_VALUE);
-                    case 11 -> new IntArrayTag(tag.getIntArray(TAG_VALUE));
-                    case 12 -> new LongArrayTag(tag.getLongArray(TAG_VALUE));
-                    default -> throw new IllegalStateException("Unexpected value: " + type);
+                Tag t;
+                switch (type) {
+                    case 1:
+                        t = ByteTag.valueOf(tag.getByte(TAG_VALUE));
+                        break;
+                    case 2:
+                        t = ShortTag.valueOf(tag.getShort(TAG_VALUE));
+                        break;
+                    case 3:
+                        t = IntTag.valueOf(tag.getInt(TAG_VALUE));
+                        break;
+                    case 4:
+                        t = LongTag.valueOf(tag.getLong(TAG_VALUE));
+                        break;
+                    case 5:
+                        t = FloatTag.valueOf(tag.getFloat(TAG_VALUE));
+                        break;
+                    case 6:
+                        t = DoubleTag.valueOf(tag.getDouble(TAG_VALUE));
+                        break;
+                    case 7:
+                        t = new ByteArrayTag(tag.getByteArray(TAG_VALUE));
+                        break;
+                    case 8:
+                        t = StringTag.valueOf(tag.getString(TAG_VALUE));
+                        break;
+                    case 9:
+                        t = tag.getList(TAG_VALUE, tag.getByte(TAG_LIST_TYPE));
+                        break;
+                    case 10:
+                        t = tag.getCompound(TAG_VALUE);
+                        break;
+                    case 11:
+                        t = new IntArrayTag(tag.getIntArray(TAG_VALUE));
+                        break;
+                    case 12:
+                        t = new LongArrayTag(tag.getLongArray(TAG_VALUE));
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + type);
                 };
 
                 return new Node<>(name, t);
@@ -205,12 +234,13 @@ public class NBTTree {
         }
 
         public String asString() {
-            var tag = new CompoundTag();
+            CompoundTag tag = new CompoundTag();
             tag.putString(TAG_NAME, name);
             tag.put(TAG_VALUE, nbtTag);
             tag.putByte(TAG_TYPE, nbtTag.getId());
 
-            if (nbtTag instanceof ListTag listTag) {
+            if (nbtTag instanceof ListTag) {
+                ListTag listTag = (ListTag) nbtTag;
                 tag.putByte(TAG_LIST_TYPE, listTag.getElementType());
             }
             return tag.getAsString();

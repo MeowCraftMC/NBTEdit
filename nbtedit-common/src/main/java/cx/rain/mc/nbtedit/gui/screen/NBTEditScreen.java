@@ -175,7 +175,7 @@ public class NBTEditScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         super.mouseScrolled(mouseX, mouseY, delta);
 
-        var offset = (int) delta;
+        int offset = (int) delta;
         if (offset != 0) {
             gui.shiftY((offset >= 1) ? 6 : -6);
         }
@@ -185,19 +185,19 @@ public class NBTEditScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        var result = gui.onKeyPress(keyCode, scanCode, modifiers);
+        boolean result = gui.onKeyPress(keyCode, scanCode, modifiers);
         return result || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        var result = gui.onMouseClicked(Mth.floor(mouseX), Mth.floor(mouseY), button);
+        boolean result = gui.onMouseClicked(Mth.floor(mouseX), Mth.floor(mouseY), button);
         return result || super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        var result = gui.onCharTyped(codePoint, modifiers);
+        boolean result = gui.onCharTyped(codePoint, modifiers);
         return result || super.charTyped(codePoint, modifiers);
     }
 

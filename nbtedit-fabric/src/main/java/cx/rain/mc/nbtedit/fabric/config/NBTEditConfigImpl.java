@@ -5,7 +5,9 @@ import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.List;
 
 public class NBTEditConfigImpl implements INBTEditConfig {
     public static final Gson GSON = new Gson();
@@ -27,7 +29,12 @@ public class NBTEditConfigImpl implements INBTEditConfig {
     private void loadConfig() {
         if (configFile.exists()) {
             try {
-                config = GSON.fromJson(Files.readString(configFile.toPath()), ConfigBean.class);
+                StringBuilder builder = new StringBuilder();
+                List<String> lines = Files.readAllLines(configFile.toPath());
+                for (String line : lines) {
+                    builder.append(line);
+                }
+                config = GSON.fromJson(builder.toString(), ConfigBean.class);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 saveNewConfig();
@@ -39,8 +46,8 @@ public class NBTEditConfigImpl implements INBTEditConfig {
 
     private void saveNewConfig() {
         try {
-            var json = GSON.toJson(config);
-            Files.writeString(configFile.toPath(), json);
+            String json = GSON.toJson(config);
+            Files.write(configFile.toPath(), json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

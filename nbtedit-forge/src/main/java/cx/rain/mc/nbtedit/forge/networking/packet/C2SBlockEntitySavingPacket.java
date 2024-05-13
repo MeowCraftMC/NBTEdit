@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.networking.NBTEditSavingHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -35,7 +36,7 @@ public class C2SBlockEntitySavingPacket {
     }
 
     public void serverHandleOnMain(Supplier<NetworkEvent.Context> context) {
-        var player = context.get().getSender();
+        ServerPlayer player = context.get().getSender();
         NBTEditSavingHelper.saveBlockEntity(player, blockPos, compoundTag);
     }
 }
