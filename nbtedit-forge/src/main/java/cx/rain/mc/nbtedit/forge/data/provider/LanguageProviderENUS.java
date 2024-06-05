@@ -50,10 +50,10 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(Constants.GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR, "Value Editor Sub-Window");
 
         add(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT, "[Text Preview] ");
-        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT, "Text Preview: ");
+        add(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION, "Text Preview: ");
         add(Constants.GUI_TOOLTIP_PREVIEW_ITEM, "[Item Preview] ");
-        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM, "Item Preview: ");
+        add(Constants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION, "Item Preview: ");
         add(Constants.GUI_TOOLTIP_PREVIEW_UUID, "[UUID Preview] ");
-        add(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID, "UUID Preview: ");
+        add(Constants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION, "UUID Preview: ");
     }
 }

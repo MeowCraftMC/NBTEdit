@@ -1,19 +1,17 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.legacy.component;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.NBTEditGui;
+import cx.rain.mc.nbtedit.gui.legacy.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
@@ -137,7 +135,7 @@ public class NBTNodeComponent extends AbstractWidget {
         try {
             if (tag instanceof StringTag stringTag) {
                 var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION).append("\n");
 
                 var content = Component.Serializer.fromJson(stringTag.getAsString());
 
@@ -157,7 +155,7 @@ public class NBTNodeComponent extends AbstractWidget {
                 var itemStack = ItemStack.of(compoundTag);
                 if (!itemStack.isEmpty()) {
                     var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
-                    var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION).append("\n");
 
                     // Todo: Mixin render itemStack over the tooltip.
 //                    item = itemStack;
@@ -185,7 +183,7 @@ public class NBTNodeComponent extends AbstractWidget {
         try {
             if (tag instanceof IntArrayTag intArrayTag) {
                 var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_NARRATION_TOOLTIP_PREVIEW_UUID).append("\n");
+                var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION).append("\n");
 
                 var content = NbtUtils.loadUUID(intArrayTag).toString();
 

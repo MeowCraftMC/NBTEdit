@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.gui.component.window;
+package cx.rain.mc.nbtedit.gui.legacy.component.window;
 
 import java.util.List;
 

@@ -1,15 +1,15 @@
-package cx.rain.mc.nbtedit.gui;
+package cx.rain.mc.nbtedit.gui.legacy;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.component.window.EditValueSubWindow;
-import cx.rain.mc.nbtedit.gui.component.NBTNodeComponent;
-import cx.rain.mc.nbtedit.gui.component.button.NBTOperatorButton;
-import cx.rain.mc.nbtedit.gui.component.window.ISubWindowHolder;
-import cx.rain.mc.nbtedit.gui.component.window.SubWindowComponent;
+import cx.rain.mc.nbtedit.gui.legacy.component.window.EditValueSubWindow;
+import cx.rain.mc.nbtedit.gui.legacy.component.NBTNodeComponent;
+import cx.rain.mc.nbtedit.gui.legacy.component.button.NBTOperatorButton;
+import cx.rain.mc.nbtedit.gui.legacy.component.window.ISubWindowHolder;
+import cx.rain.mc.nbtedit.gui.legacy.component.window.SubWindowComponent;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;

@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.legacy.component;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;

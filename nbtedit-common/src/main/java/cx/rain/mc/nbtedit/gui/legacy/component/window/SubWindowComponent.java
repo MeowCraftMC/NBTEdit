@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.gui.component.window;
+package cx.rain.mc.nbtedit.gui.legacy.component.window;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;

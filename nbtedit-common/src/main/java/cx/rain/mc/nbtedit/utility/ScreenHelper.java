@@ -1,6 +1,6 @@
 package cx.rain.mc.nbtedit.utility;
 
-import cx.rain.mc.nbtedit.gui.screen.NBTEditScreen;
+import cx.rain.mc.nbtedit.gui.legacy.screen.NBTEditScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

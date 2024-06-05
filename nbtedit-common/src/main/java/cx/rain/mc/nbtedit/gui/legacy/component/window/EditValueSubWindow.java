@@ -1,8 +1,8 @@
-package cx.rain.mc.nbtedit.gui.component.window;
+package cx.rain.mc.nbtedit.gui.legacy.component.window;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.NBTEditGui;
-import cx.rain.mc.nbtedit.gui.component.IWidgetHolder;
+import cx.rain.mc.nbtedit.gui.legacy.NBTEditGui;
+import cx.rain.mc.nbtedit.gui.legacy.component.IWidgetHolder;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.Constants;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;

@@ -1,9 +1,8 @@
-package cx.rain.mc.nbtedit.gui.component.button;
+package cx.rain.mc.nbtedit.gui.legacy.component.button;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.gui.NBTEditGui;
+import cx.rain.mc.nbtedit.gui.legacy.NBTEditGui;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
