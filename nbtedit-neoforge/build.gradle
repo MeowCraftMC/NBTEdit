@@ -12,6 +12,15 @@ loom {
     accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
 
     neoForge {
+        runs {
+            data {
+                data()
+
+                programArgs '--all', '--mod', 'nbtedit'
+                programArgs '--output', file('../nbtedit-common/src/generated/resources').absolutePath
+                programArgs '--existing', file('../nbtedit-common/src/main/resources').absolutePath
+            }
+        }
     }
 }
 

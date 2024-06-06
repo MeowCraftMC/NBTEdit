@@ -16,17 +16,17 @@ public class ScrollBarWidget extends AbstractWidget {
     private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
 
     private final boolean horizontal;
-    private final IScrollable toScroll;
+    private final IScrollHandler toScroll;
 
     private int contentLength = 0;
     private double scrollAmount = 0;
     private boolean dragging = false;
 
-    public ScrollBarWidget(int x, int y, int width, int height, IScrollable toScroll, int contentLength) {
+    public ScrollBarWidget(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
         this(x, y, width, height, toScroll, contentLength, false);
     }
 
-    public ScrollBarWidget(int x, int y, int width, int height, IScrollable toScroll, int contentLength, boolean horizontal) {
+    public ScrollBarWidget(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength, boolean horizontal) {
         super(x, y, width, height, Component.translatable(Constants.GUI_TITLE_SCROLL_BAR));
 
         this.horizontal = horizontal;
@@ -76,11 +76,7 @@ public class ScrollBarWidget extends AbstractWidget {
         var delta = actual - this.scrollAmount;
         this.scrollAmount = actual;
 
-        if (isHorizontal()) {
-            toScroll.onScroll(delta, 0);
-        } else {
-            toScroll.onScroll(0, delta);
-        }
+        toScroll.onScroll(delta);
     }
 
     @Override

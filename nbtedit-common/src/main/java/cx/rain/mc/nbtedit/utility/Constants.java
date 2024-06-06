@@ -7,12 +7,6 @@ public class Constants {
 
     public static final String GUI_BUTTON_LOAD = "gui.button.load";
     public static final String GUI_BUTTON_CANCEL = "gui.button.cancel";
-
-    public static final String GUI_NARRATION_BUTTON_COPY = "gui.narration.button.copy";
-    public static final String GUI_NARRATION_BUTTON_PASTE = "gui.narration.button.paste";
-    public static final String GUI_NARRATION_BUTTON_CUT = "gui.narration.button.cut";
-    public static final String GUI_NARRATION_BUTTON_EDIT = "gui.narration.button.edit";
-    public static final String GUI_NARRATION_BUTTON_DELETE = "gui.narration.button.delete";
     public static final String GUI_NARRATION_BUTTON_ADD = "gui.narration.button.add";   // Todo: Specify data type name.
     public static final String GUI_NARRATION_BUTTON_SPECIAL_CHARACTER = "gui.narration.button.special_character";
     public static final String GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR = "gui.narration.sub_window.value_editor";
@@ -36,6 +30,19 @@ public class Constants {
     public static final String MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS = "message.nbtedit.saving.failed.block_entity_not_exists";
     public static final String MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS = "message.nbtedit.saving.failed.entity_not_exists";
 
+    public static final String NBT_TYPE_BYTE = "message.nbtedit.nbt_type.byte";
+    public static final String NBT_TYPE_SHORT = "message.nbtedit.nbt_type.short";
+    public static final String NBT_TYPE_INT = "message.nbtedit.nbt_type.int";
+    public static final String NBT_TYPE_LONG = "message.nbtedit.nbt_type.long";
+    public static final String NBT_TYPE_FLOAT = "message.nbtedit.nbt_type.float";
+    public static final String NBT_TYPE_DOUBLE = "message.nbtedit.nbt_type.double";
+    public static final String NBT_TYPE_BYTE_ARRAY = "message.nbtedit.nbt_type.byte_array";
+    public static final String NBT_TYPE_STRING = "message.nbtedit.nbt_type.string";
+    public static final String NBT_TYPE_LIST = "message.nbtedit.nbt_type.list";
+    public static final String NBT_TYPE_COMPOUND = "message.nbtedit.nbt_type.compound";
+    public static final String NBT_TYPE_INT_ARRAY = "message.nbtedit.nbt_type.int_array";
+    public static final String NBT_TYPE_LONG_ARRAY = "message.nbtedit.nbt_type.long_array";
+
     public static final String GUI_TITLE_EDITOR_ENTITY = "gui.nbtedit.title.editor_entity";
     public static final String GUI_TITLE_EDITOR_BLOCK_ENTITY = "gui.nbtedit.title.editor_block_entity";
     public static final String GUI_TITLE_EDITOR_ITEM_STACK = "gui.nbtedit.title.editor_item_stack";
@@ -51,10 +58,25 @@ public class Constants {
     public static final String GUI_TITLE_SCROLL_BAR = "gui.nbtedit.title.scroll_bar";
     public static final String GUI_TITLE_SCROLL_BAR_NARRATION = "gui.nbtedit.title.scroll_bar.narration";
 
+    public static final String GUI_BUTTON_COPY = "gui.nbtedit.button.copy";
+    public static final String GUI_BUTTON_PASTE = "gui.nbtedit.button.paste";
+    public static final String GUI_BUTTON_CUT = "gui.nbtedit.button.cut";
+    public static final String GUI_BUTTON_EDIT = "gui.nbtedit.button.edit";
+    public static final String GUI_BUTTON_DELETE = "gui.nbtedit.button.delete";
+    public static final String GUI_BUTTON_ADD = "gui.nbtedit.button.add";
     public static final String GUI_BUTTON_SAVE = "gui.nbtedit.button.save";
     public static final String GUI_BUTTON_QUIT = "gui.nbtedit.button.quit";
-    public static final String GUI_BUTTON_SAVE_NARRATION = "gui.nbtedit.button.save.narration";
-    public static final String GUI_BUTTON_QUIT_NARRATION = "gui.nbtedit.button.quit.narration";
+
+    // Todo: unused
+    public static final String GUI_TOOLTIP_BUTTON_COPY = "gui.nbtedit.tooltip.button_copy";
+    public static final String GUI_TOOLTIP_BUTTON_PASTE = "gui.nbtedit.tooltip.button_paste";
+    public static final String GUI_TOOLTIP_BUTTON_CUT = "gui.nbtedit.tooltip.button_cut";
+    public static final String GUI_TOOLTIP_BUTTON_EDIT = "gui.nbtedit.tooltip.button_edit";
+    public static final String GUI_TOOLTIP_BUTTON_DELETE = "gui.nbtedit.tooltip.button_delete";
+    public static final String GUI_TOOLTIP_BUTTON_ADD = "gui.nbtedit.tooltip.button_add";
+
+    public static final String GUI_TOOLTIP_BUTTON_SAVE = "gui.nbtedit.tooltip.button_save";
+    public static final String GUI_TOOLTIP_BUTTON_QUIT = "gui.nbtedit.tooltip.button_quit";
 
     public static final String GUI_TOOLTIP_PREVIEW_COMPONENT = "gui.nbtedit.tooltip.preview_component";
     public static final String GUI_TOOLTIP_PREVIEW_ITEM = "gui.nbtedit.tooltip.preview_item";

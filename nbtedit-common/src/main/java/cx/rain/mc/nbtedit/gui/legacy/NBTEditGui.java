@@ -13,7 +13,7 @@ import cx.rain.mc.nbtedit.gui.legacy.component.window.SubWindowComponent;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.utility.Constants;
-import cx.rain.mc.nbtedit.utility.SortHelper;
+import cx.rain.mc.nbtedit.editor.NodeSortHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -92,12 +92,12 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
 
     public void update(NBTTree.Node<?> node) {
         var parent = node.getParent();
-        Collections.sort(parent.getChildren(), SortHelper.get());
+        Collections.sort(parent.getChildren(), NodeSortHelper.get());
         update(true);
     }
 
     public void updateFromRoot(NBTTree.Node<?> node, boolean circular) {
-        Collections.sort(node.getChildren(), SortHelper.get());
+        Collections.sort(node.getChildren(), NodeSortHelper.get());
         if (circular) {
             for (var child : node.getChildren()) {
                 updateFromRoot(child, true);
@@ -177,27 +177,27 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
         int yLoc = 4;
 
         copyButton = new NBTOperatorButton(17, xLoc, yLoc, this, this::onCopyButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_COPY))); // Copy Button.
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_BUTTON_COPY))); // Copy Button.
         addButton(copyButton);
 
         xLoc += 15;
         cutButton = new NBTOperatorButton(16, xLoc, yLoc, this, this::onCutButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_CUT))); // Cut Button.
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_BUTTON_CUT))); // Cut Button.
         addButton(cutButton);
 
         xLoc += 15;
         pasteButton = new NBTOperatorButton(15, xLoc, yLoc, this, this::onPasteButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_PASTE))); // Paste Button.
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_BUTTON_PASTE))); // Paste Button.
         addButton(pasteButton);
 
         xLoc += 45;
         editButton = new NBTOperatorButton(13, xLoc, yLoc, this, this::onEditButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_EDIT))); // Edit Button.
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_BUTTON_EDIT))); // Edit Button.
         addButton(editButton);
 
         xLoc += 15;
         deleteButton = new NBTOperatorButton(14, xLoc, yLoc, this, this::onDeleteButtonClick,
-                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_NARRATION_BUTTON_DELETE))); // Delete Button.
+                componentSupplier -> componentSupplier.get().append(Component.translatable(Constants.GUI_BUTTON_DELETE))); // Delete Button.
         addButton(deleteButton);
 
         // Add nbt type buttons.

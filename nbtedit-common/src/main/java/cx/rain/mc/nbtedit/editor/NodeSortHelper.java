@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.utility;
+package cx.rain.mc.nbtedit.editor;
 
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.CompoundTag;
@@ -6,17 +6,17 @@ import net.minecraft.nbt.ListTag;
 
 import java.util.Comparator;
 
-public class SortHelper implements Comparator<NBTTree.Node<?>> {
-	private static SortHelper INSTANCE;
+public class NodeSortHelper implements Comparator<NBTTree.Node<?>> {
+	private static NodeSortHelper INSTANCE;
 
-	public static SortHelper get() {
+	public static NodeSortHelper get() {
 		if (INSTANCE == null) {
-			return new SortHelper();
+			return new NodeSortHelper();
 		}
 		return INSTANCE;
 	}
 
-	public SortHelper() {
+	public NodeSortHelper() {
 		INSTANCE = this;
 	}
 

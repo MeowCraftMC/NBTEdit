@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.Tag;
 
+@Deprecated(forRemoval = true)
 public class NBTEditClient {
     public NBTEditClient() {
     }

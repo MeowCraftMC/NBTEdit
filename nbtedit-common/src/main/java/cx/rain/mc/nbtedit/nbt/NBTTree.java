@@ -169,6 +169,12 @@ public class NBTTree {
 
         public void setShowChildren(boolean value) {
             shouldShowChildren = value;
+
+            if (!value) {
+                for (var c : getChildren()) {
+                    c.setShowChildren(false);
+                }
+            }
         }
 
         public static final String TAG_NAME = "name";

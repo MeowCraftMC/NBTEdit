@@ -1,12 +1,12 @@
-package cx.rain.mc.nbtedit.forge.data;
+package cx.rain.mc.nbtedit.neoforge.data;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.forge.data.provider.LanguageProviderENUS;
-import cx.rain.mc.nbtedit.forge.data.provider.LanguageProviderZHCN;
+import cx.rain.mc.nbtedit.neoforge.data.provider.LanguageProviderENUS;
+import cx.rain.mc.nbtedit.neoforge.data.provider.LanguageProviderZHCN;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
