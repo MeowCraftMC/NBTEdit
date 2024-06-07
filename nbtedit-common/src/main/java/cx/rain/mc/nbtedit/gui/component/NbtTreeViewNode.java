@@ -5,33 +5,39 @@ import cx.rain.mc.nbtedit.nbt.NBTTree;
 import cx.rain.mc.nbtedit.utility.AccessibilityHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public class NbtTreeViewNode extends AbstractWidget {
+public class NbtTreeViewNode extends AbstractComponent {
     public static final ResourceLocation WIDGET_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final NbtTreeView treeView;
     private final NBTTree.Node<?> node;
 
-    public NbtTreeViewNode(NbtTreeView treeView, int x, int y, NBTTree.Node<?> node) {
+    public NbtTreeViewNode(int x, int y, NBTTree.Node<?> node, @NotNull NbtTreeView parent) {
         super(x, y, 0, getMinecraft().font.lineHeight, Component.empty());
 
-        this.treeView = treeView;
+        this.treeView = parent;
         this.node = node;
 
         setMessage(AccessibilityHelper.buildText(node));
         setWidth(getMinecraft().font.width(getMessage()) + 12);
 
-        updateTooltip();
+        update();
     }
 
     protected static Minecraft getMinecraft() {
         return Minecraft.getInstance();
+    }
+
+    @Override
+    public void update() {
+        setTooltip(AccessibilityHelper.buildTooltip(node));
+        setTooltipDelay(200);
     }
 
     public NbtTreeView getParent() {
@@ -50,12 +56,12 @@ public class NbtTreeViewNode extends AbstractWidget {
         return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + getHeight();
     }
 
-    public boolean shouldRender(int xMin, int yMin, int xMax, int yMax) {
-        return getX() > xMin
-                || getY() > yMin
-                || getX() + getWidth() < xMax
-                || getY() + getHeight() < yMax;
-    }
+//    public boolean shouldRender(int xMin, int yMin, int xMax, int yMax) {
+//        return getX() > xMin
+//                || getY() > yMin
+//                || getX() + getWidth() < xMax
+//                || getY() + getHeight() < yMax;
+//    }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narration) {
@@ -97,11 +103,6 @@ public class NbtTreeViewNode extends AbstractWidget {
 
         graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, getHeight(), (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
         graphics.drawString(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
-    }
-
-    private void updateTooltip() {
-        setTooltip(AccessibilityHelper.buildTooltip(node));
-        setTooltipDelay(200);
     }
 
     @Override

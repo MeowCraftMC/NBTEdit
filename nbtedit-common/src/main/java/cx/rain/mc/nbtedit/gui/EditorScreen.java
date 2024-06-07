@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.editor.EditorHelper;
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.HighlightedButton;
 import cx.rain.mc.nbtedit.gui.component.NbtTreeView;
+import cx.rain.mc.nbtedit.gui.component.ScrollableViewport;
 import cx.rain.mc.nbtedit.gui.window.IWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
@@ -37,7 +38,6 @@ public class EditorScreen extends Screen implements IWindowHolder {
 
     private NbtTreeView treeView;
 
-
     public EditorScreen(CompoundTag tag, Component title, Consumer<CompoundTag> onSave) {
         super(title);
 
@@ -50,8 +50,10 @@ public class EditorScreen extends Screen implements IWindowHolder {
     protected void init() {
         super.init();
 
-        treeView = new NbtTreeView(tree, 0, 29, width, height - 35, v -> updateButtons());
-        addRenderableWidget(treeView);
+        treeView = new NbtTreeView(tree, 0, 29, v -> updateButtons());
+        var treeViewport = new ScrollableViewport(0, 29, width, height - 35, 15);
+        treeViewport.addChild(treeView);
+        addRenderableWidget(treeViewport);
 
         var saveButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), b -> onSave())
                 .pos(width / 4 - 100, height - 27)

@@ -2,7 +2,6 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.utility.Constants;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -11,15 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
-public class ScrollBarWidget extends AbstractWidget {
+public class ScrollBarWidget extends AbstractComponent {
     private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(new ResourceLocation("widget/text_field"), new ResourceLocation("widget/text_field_highlighted"));
     private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
 
     private final boolean horizontal;
     private final IScrollHandler toScroll;
+    private final int contentLength;
 
-    private int contentLength = 0;
-    private double scrollAmount = 0;
+    /**
+     * Offset between scroll-base to the actual viewport start.
+     * (In pixels.)
+     */
+    private int scrollAmount = 0;
     private boolean dragging = false;
 
     public ScrollBarWidget(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
@@ -31,7 +34,6 @@ public class ScrollBarWidget extends AbstractWidget {
 
         this.horizontal = horizontal;
         this.toScroll = toScroll;
-
         this.contentLength = contentLength;
     }
 
@@ -43,7 +45,7 @@ public class ScrollBarWidget extends AbstractWidget {
         return !horizontal;
     }
 
-    public int getScrollBase() {
+    public int getViewStart() {
         if (isHorizontal()) {
             return getX();
         }
@@ -51,7 +53,7 @@ public class ScrollBarWidget extends AbstractWidget {
         return getY();
     }
 
-    public int getScrollableLength() {
+    public int getViewTotalLength() {
         if (isHorizontal()) {
             return getWidth();
         }
@@ -59,24 +61,44 @@ public class ScrollBarWidget extends AbstractWidget {
         return getHeight();
     }
 
-    public int getContentLength() {
-        return contentLength;
+    /**
+     * Get scroll rate (value between 0 ~ 1).
+     * @return the scroll rate
+     */
+    public double getScrollRate() {
+        return Mth.clamp(((double) scrollAmount) / contentLength, 0, 1);
     }
 
-    public void setContentLength(int length) {
-        contentLength = length;
+    /**
+     * Set scroll rate (value between 0 ~ 1).
+     * @param scrollRate the scroll rate
+     */
+    public void setScrollRate(double scrollRate) {
+        var actual = Mth.clamp(scrollRate, 0, 1);
+        var newScrollAmount = (int) (actual * contentLength);
+        var delta = newScrollAmount - this.scrollAmount;
+        this.scrollAmount = newScrollAmount;
+        toScroll.onScroll(delta);
     }
 
-    public double getScrollAmount() {
+    private int getScrollBarLength() {
+        return Mth.clamp((int)((float)(getViewTotalLength() * getViewTotalLength()) / (float)contentLength), 32, getViewTotalLength());
+    }
+
+    private int getMaxScrollAmount() {
+        return contentLength - getViewTotalLength();
+    }
+
+    private int getScrollAmount() {
         return scrollAmount;
     }
 
-    public void setScrollAmount(double scrollAmount) {
-        var actual = Mth.clamp(scrollAmount, 0, 1);
-        var delta = actual - this.scrollAmount;
-        this.scrollAmount = actual;
+    private void setScrollAmount(int amount) {
+        scrollAmount = Mth.clamp(amount, 0, getMaxScrollAmount());
+    }
 
-        toScroll.onScroll(delta);
+    private void addScrollAmount(int value) {
+        setScrollAmount(getScrollAmount() + value);
     }
 
     @Override
@@ -86,14 +108,12 @@ public class ScrollBarWidget extends AbstractWidget {
             guiGraphics.blitSprite(resourceLocation, getX(), getY(), getWidth(), getHeight());
 
             int barLength = this.getScrollBarLength();
+            var barOffset = scrollAmount;
+
             if (isHorizontal()) {
-                int x = getY() + getHeight();
-                int y = Math.max(getX(), (int)getScrollAmount() * (getWidth() - barLength) / this.getMaxScrollAmount() + this.getX());
-                guiGraphics.blitSprite(SCROLLER_SPRITE, x, y, barLength, getHeight());
+                guiGraphics.blitSprite(SCROLLER_SPRITE, barOffset, getY(), barLength, getHeight());
             } else {
-                int x = getX() + getWidth();
-                int y = Math.max(getY(), (int)getScrollAmount() * (getHeight() - barLength) / this.getMaxScrollAmount() + this.getY());
-                guiGraphics.blitSprite(SCROLLER_SPRITE, x, y, getWidth(), barLength);
+                guiGraphics.blitSprite(SCROLLER_SPRITE, getX(), barOffset, getWidth(), barLength);
             }
         }
     }
@@ -104,7 +124,7 @@ public class ScrollBarWidget extends AbstractWidget {
     }
 
     public boolean shouldShow() {
-        return getContentLength() > getScrollableLength();
+        return isActive() && contentLength > getViewTotalLength();
     }
 
     @Override
@@ -127,27 +147,30 @@ public class ScrollBarWidget extends AbstractWidget {
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
-        super.onDrag(mouseX, mouseY, dragX, dragY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (shouldShow()) {
+            var mousePrimary = isVertical() ? mouseY : mouseX;
+            var dragPrimary = isVertical() ? dragY : dragX;
 
-        int i = this.getScrollBarLength();
-        double d = Math.max(1, this.getMaxScrollAmount() / (getScrollableLength() - i));
-
-        if (isHorizontal()) {
-            this.setScrollAmount(getScrollAmount() + dragX * d);
-        } else {
-            this.setScrollAmount(getScrollAmount() + dragY * d);
+            if (mousePrimary < (double)getViewStart()) {
+                this.setScrollAmount(0);
+            } else if (mousePrimary > (double)(getViewStart() + getViewTotalLength())) {
+                this.setScrollAmount(getMaxScrollAmount());
+            } else {
+                var d = Mth.clamp(this.getMaxScrollAmount() / (getViewTotalLength() - getScrollBarLength()), 0, 1);
+                this.addScrollAmount((int) (dragPrimary * d));
+            }
+            return true;
         }
+
+        return false;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (visible) {
-            if (isHorizontal()) {
-                this.setScrollAmount(getScrollAmount() - scrollX * getScrollRate());
-            } else {
-                this.setScrollAmount(getScrollAmount() - scrollY * getScrollRate());
-            }
+        if (shouldShow() && isMouseOver(mouseX, mouseY)) {
+            var scrollPrimary = isVertical() ? scrollY : scrollX;
+            addScrollAmount((int) (9 * scrollPrimary));
 
             return true;
         }
@@ -157,26 +180,20 @@ public class ScrollBarWidget extends AbstractWidget {
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_UP) {
-            this.setScrollAmount(getScrollAmount() - getScrollRate());
-            return true;
-        } else if (keyCode == GLFW.GLFW_KEY_DOWN) {
-            this.setScrollAmount(getScrollAmount() + getScrollRate());
-            return true;
+        if (shouldShow() && isHoveredOrFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_UP) {
+                addScrollAmount(-9);
+                return true;
+            } else if (keyCode == GLFW.GLFW_KEY_DOWN) {
+                addScrollAmount(9);
+                return true;
+            }
         }
 
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
-    public int getMaxScrollAmount() {
-        return Math.max(0, this.getContentLength() - getScrollableLength());
-    }
-
-    private int getScrollBarLength() {
-        return Mth.clamp((int)((float)(getScrollableLength() * getScrollableLength()) / (float)this.getContentLength()), 32, getScrollableLength());
-    }
-
-    public double getScrollRate() {
-        return 9;
+    @Override
+    public void update() {
     }
 }
