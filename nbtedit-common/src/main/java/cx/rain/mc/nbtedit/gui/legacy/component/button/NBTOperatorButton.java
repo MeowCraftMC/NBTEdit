@@ -23,7 +23,7 @@ public class NBTOperatorButton extends Button {
         buttonId = id;
         gui = parent;
 
-        setTooltip(new Tooltip(getMessage(), getMessage()));
+        setTooltip(Tooltip.create(getMessage()));
         setTooltipDelay(200);
     }
 

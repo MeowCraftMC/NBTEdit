@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.nbt;
 
+import com.google.common.base.Strings;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.*;
 
@@ -175,6 +176,22 @@ public class NBTTree {
                     c.setShowChildren(false);
                 }
             }
+        }
+
+        public String getAsString() {
+            String name = getName();
+            Tag tag = getTag();
+
+            if (tag instanceof CompoundTag) {
+                return (Strings.isNullOrEmpty(name) ? "(CompoundTag)" : name) + ": ";
+            }
+
+            if (tag instanceof ListTag) {
+                return (Strings.isNullOrEmpty(name) ? "(ListTag)" : name) + ": ";
+            }
+
+            String s = tag.getAsString();
+            return Strings.isNullOrEmpty(name) ? s : name + ": " + s;
         }
 
         public static final String TAG_NAME = "name";

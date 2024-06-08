@@ -62,7 +62,7 @@ public class NBTEditGui extends Gui implements ISubWindowHolder {
     private final int Y_GAP = getMinecraft().font.lineHeight + 2;
 
     protected Minecraft getMinecraft() {
-        return minecraft;
+        return Minecraft.getInstance();
     }
 
     private int getHeightDifference() {

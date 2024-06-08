@@ -28,7 +28,7 @@ public class HighlightedButton extends Button {
         this.active = active;
 
         if (active) {
-            setTooltip(new Tooltip(getMessage(), createNarrationMessage()));
+            setTooltip(Tooltip.create(getMessage(), createNarrationMessage()));
             setTooltipDelay(200);
         } else {
             setTooltip(null);

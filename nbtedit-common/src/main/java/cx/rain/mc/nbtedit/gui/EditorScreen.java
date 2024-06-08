@@ -64,7 +64,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
                 .pos(width / 4 - 100, height - 27)
                 .size(200, 20)
                 .createNarration(c -> c.get().append(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_SAVE)))
-                .tooltip(new Tooltip(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_SAVE), null))
+                .tooltip(Tooltip.create(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_SAVE)))
                 .build();
         addRenderableWidget(saveButton);
 
@@ -72,7 +72,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
                 .pos(width * 3 / 4 - 100, height - 27)
                 .size(200, 20)
                 .createNarration(c -> c.get().append(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_QUIT)))
-                .tooltip(new Tooltip(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_QUIT), null))
+                .tooltip(Tooltip.create(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_QUIT)))
                 .build();
         addRenderableWidget(quitButton);
 

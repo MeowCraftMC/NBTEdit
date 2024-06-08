@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.utility;
 
-import cx.rain.mc.nbtedit.nbt.NBTHelper;
 import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -20,13 +19,11 @@ public class AccessibilityHelper {
     }
 
     public static Component buildText(NBTTree.Node<?> node) {
-        // Todo
-        return Component.literal(NBTHelper.getNBTNameSpecial(node));
+        return Component.literal(node.getAsString());
     }
 
     public static Component buildNarration(NBTTree.Node<?> node) {
-        // Todo
-        return Component.translatable(Constants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, NBTHelper.getNBTNameSpecial(node));
+        return Component.translatable(Constants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, node.getAsString());
     }
 
     public static @Nullable Tooltip buildTooltip(NBTTree.Node<?> node) {
