@@ -49,11 +49,15 @@ public class NbtTreeView extends AbstractComposedComponent {
         return null;
     }
 
-    public void setFocusedNode(NBTTree.Node<?> node) {
-        for (var n : nodes) {
-            if (n.getNode() == node) {
-                setFocused(n);
-                break;
+    public void setFocusedNode(@Nullable NBTTree.Node<?> node) {
+        setFocused(null);
+
+        if (node != null) {
+            for (var n : nodes) {
+                if (n.getNode() == node) {
+                    setFocused(n);
+                    break;
+                }
             }
         }
     }
@@ -74,30 +78,27 @@ public class NbtTreeView extends AbstractComposedComponent {
     private int maxWidth = 0;
     private int maxHeight = 0;
 
-    @Override
-    public void update() {
-        update(false);
+    public void update(boolean callParent) {
+        if (callParent) {
+            getParent().update();
+        } else {
+            update();
+        }
     }
 
-    public void update(boolean centerFocused) {
+    @Override
+    public void update() {
+        super.update();
+
         nodes.clear();
+        clearChildren();
         nodeOffsetX = START_X;
         nodeOffsetY = START_Y;
         maxWidth = 0;
         maxHeight = 0;
-        clearChildren();
 
         addNodes(tree.getRoot());
-
-        var prevFocused = getFocusedNode();
-        if (prevFocused != null) {
-            setFocused(null);
-            setFocusedNode(prevFocused);
-
-            if (getParent() != null) {
-                getParent().update();
-            }
-        }
+        setFocusedNode(getFocusedNode());
 
         setWidth(maxWidth);
         setHeight(maxHeight);
@@ -133,8 +134,6 @@ public class NbtTreeView extends AbstractComposedComponent {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         for (var n : nodes) {
             n.render(guiGraphics, mouseX, mouseY, partialTick);
-//            if (n.shouldRender(getX(), getY(), getX() + getWidth(), getY() + getHeight())) {
-//            }
         }
     }
 

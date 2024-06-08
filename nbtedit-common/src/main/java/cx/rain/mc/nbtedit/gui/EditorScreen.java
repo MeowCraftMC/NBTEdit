@@ -36,6 +36,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
     private final NBTTree tree;
     private final Consumer<CompoundTag> onSave;
 
+    private ScrollableViewport treeViewport;
     private NbtTreeView treeView;
 
     public EditorScreen(CompoundTag tag, Component title, Consumer<CompoundTag> onSave) {
@@ -50,8 +51,12 @@ public class EditorScreen extends Screen implements IWindowHolder {
     protected void init() {
         super.init();
 
+        width = minecraft.getWindow().getGuiScaledWidth();
+        height = minecraft.getWindow().getGuiScaledHeight();
+
+        treeViewport = new ScrollableViewport(0, 29, width, height - 65, 15);
         treeView = new NbtTreeView(tree, 0, 29, v -> updateButtons());
-        var treeViewport = new ScrollableViewport(0, 29, width, height - 35, 15);
+
         treeViewport.addChild(treeView);
         addRenderableWidget(treeViewport);
 
@@ -72,6 +77,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
         addRenderableWidget(quitButton);
 
         initButtons();
+        update(false);
     }
 
     @Override
@@ -81,6 +87,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderTransparentBackground(guiGraphics);
         renderDirtBackground(guiGraphics, 0, 0, width, 29);
         renderDirtBackground(guiGraphics, 0, height - 35, width, height);
     }
@@ -322,7 +329,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
                 var elementType = nodeToFocus.getChildren().get(0).getTag().getId();
                 inactiveAllButtons();
 
-                editorButtons[elementType].setActive(true);
+                editorButtons[elementType - 1].setActive(true);
                 editButton.active = !(nodeToFocus.getParent().getTag() instanceof ListTag);
                 deleteButton.setActive(true);
                 copyButton.setActive(true);
@@ -361,7 +368,18 @@ public class EditorScreen extends Screen implements IWindowHolder {
     /// <editor-fold desc="Editor logic.">
 
     private void update(boolean centerFocused) {
-        treeView.update(centerFocused);
+        if (centerFocused && treeView.getFocusedChild() != null) {
+            if (treeViewport.shouldShowVerticalBar()) {
+                var yOffset = treeViewport.getHeight() / 2 + treeView.getFocusedChild().getY();
+                treeViewport.setScrollYOffset(yOffset);
+            }
+            if (treeViewport.shouldShowHorizontalBar()) {
+                var xOffset = treeViewport.getWidth() / 2 + treeView.getFocusedChild().getX();
+                treeViewport.setScrollXOffset(xOffset);
+            }
+        }
+
+        treeViewport.update();
         updateButtons();
     }
 

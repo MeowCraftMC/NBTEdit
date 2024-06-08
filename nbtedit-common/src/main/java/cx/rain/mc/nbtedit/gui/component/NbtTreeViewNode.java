@@ -36,6 +36,8 @@ public class NbtTreeViewNode extends AbstractComponent {
 
     @Override
     public void update() {
+        super.update();
+
         setTooltip(AccessibilityHelper.buildTooltip(node));
         setTooltipDelay(200);
     }
@@ -119,12 +121,12 @@ public class NbtTreeViewNode extends AbstractComponent {
     public void onClick(double mouseX, double mouseY) {
         if (isMouseInsideSpoiler((int) mouseX, (int) mouseY)) {
             node.setShowChildren(!node.shouldShowChildren());
-            getParent().update();
+            getParent().update(true);
         }
 
         if (isMouseInsideText((int) mouseX, (int) mouseY)) {
             getParent().setFocused(this);
-            getParent().update();
+            getParent().update(true);
         }
 
         super.onClick(mouseX, mouseY);

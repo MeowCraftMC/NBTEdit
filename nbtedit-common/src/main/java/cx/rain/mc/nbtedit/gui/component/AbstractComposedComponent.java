@@ -76,6 +76,15 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
+    public void update() {
+        super.update();
+
+        for (var child : getChildren()) {
+            child.update();
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return ContainerEventHandler.super.mouseClicked(mouseX, mouseY, button);
     }

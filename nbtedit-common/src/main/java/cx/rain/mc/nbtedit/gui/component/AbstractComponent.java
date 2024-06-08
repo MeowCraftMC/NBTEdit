@@ -13,7 +13,8 @@ public abstract class AbstractComponent extends AbstractWidget {
         super(x, y, width, height, message);
     }
 
-    public abstract void update();
+    public void update() {
+    }
 
     public @Nullable AbstractComposedComponent getParent() {
         return parent;
