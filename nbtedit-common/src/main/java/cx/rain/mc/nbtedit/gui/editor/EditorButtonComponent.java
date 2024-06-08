@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.editor;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import net.minecraft.client.gui.GuiGraphics;
@@ -7,13 +7,13 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class HighlightedButton extends Button {
+public class EditorButtonComponent extends Button {
     public static final ResourceLocation BUTTONS_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final int buttonId;   // Todo: Change it to enum?
 
-    public HighlightedButton(int id, int x, int y, Component message, OnPress onPressed) {
+    public EditorButtonComponent(int id, int x, int y, Component message, OnPress onPressed) {
         super(x, y, 9, 9, message, onPressed, DEFAULT_NARRATION);
 
         buttonId = id;

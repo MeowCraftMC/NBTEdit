@@ -1,27 +1,26 @@
 package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 
 public enum EditorButton {
-    BYTE(0, Constants.NBT_TYPE_BYTE),
-    SHORT(1, Constants.NBT_TYPE_SHORT),
-    INT(2, Constants.NBT_TYPE_INT),
-    LONG(3, Constants.NBT_TYPE_LONG),
-    FLOAT(4, Constants.NBT_TYPE_FLOAT),
-    DOUBLE(5, Constants.NBT_TYPE_DOUBLE),
-    BYTE_ARRAY(6, Constants.NBT_TYPE_BYTE_ARRAY),
-    STRING(7, Constants.NBT_TYPE_STRING),
-    LIST(8, Constants.NBT_TYPE_LIST),
-    COMPOUND(9, Constants.NBT_TYPE_COMPOUND),
-    INT_ARRAY(10, Constants.NBT_TYPE_INT_ARRAY),
-    LONG_ARRAY(11, Constants.NBT_TYPE_LONG_ARRAY),
-    EDIT(12, Constants.GUI_BUTTON_EDIT),
-    DELETE(13, Constants.GUI_BUTTON_DELETE),
-    PASTE(14, Constants.GUI_BUTTON_PASTE),
-    CUT(15, Constants.GUI_BUTTON_CUT),
-    COPY(16, Constants.GUI_BUTTON_COPY),
+    BYTE(0, ModConstants.NBT_TYPE_BYTE),
+    SHORT(1, ModConstants.NBT_TYPE_SHORT),
+    INT(2, ModConstants.NBT_TYPE_INT),
+    LONG(3, ModConstants.NBT_TYPE_LONG),
+    FLOAT(4, ModConstants.NBT_TYPE_FLOAT),
+    DOUBLE(5, ModConstants.NBT_TYPE_DOUBLE),
+    BYTE_ARRAY(6, ModConstants.NBT_TYPE_BYTE_ARRAY),
+    STRING(7, ModConstants.NBT_TYPE_STRING),
+    LIST(8, ModConstants.NBT_TYPE_LIST),
+    COMPOUND(9, ModConstants.NBT_TYPE_COMPOUND),
+    INT_ARRAY(10, ModConstants.NBT_TYPE_INT_ARRAY),
+    LONG_ARRAY(11, ModConstants.NBT_TYPE_LONG_ARRAY),
+    EDIT(12, ModConstants.GUI_BUTTON_EDIT),
+    DELETE(13, ModConstants.GUI_BUTTON_DELETE),
+    PASTE(14, ModConstants.GUI_BUTTON_PASTE),
+    CUT(15, ModConstants.GUI_BUTTON_CUT),
+    COPY(16, ModConstants.GUI_BUTTON_COPY),
     ;
 
     private final int id;

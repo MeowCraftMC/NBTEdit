@@ -1,26 +1,37 @@
 package cx.rain.mc.nbtedit.gui.component;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractComponent extends AbstractWidget {
+import java.util.function.Consumer;
+
+public abstract class AbstractComponent extends AbstractWidget implements IComponent {
 
     @Nullable
-    private AbstractComposedComponent parent;
+    private IComposedComponent parent;
 
     public AbstractComponent(int x, int y, int width, int height, Component message) {
         super(x, y, width, height, message);
     }
 
-    public void update() {
+    protected final Minecraft getMinecraft() {
+        return Minecraft.getInstance();
     }
 
-    public @Nullable AbstractComposedComponent getParent() {
+    @Override
+    public @Nullable IComposedComponent getParent() {
         return parent;
     }
 
-    public void setParent(@Nullable AbstractComposedComponent parent) {
+    @Override
+    public void setParent(@Nullable IComposedComponent parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public void visitWidgets(Consumer<AbstractWidget> consumer) {
+        consumer.accept(this);
     }
 }

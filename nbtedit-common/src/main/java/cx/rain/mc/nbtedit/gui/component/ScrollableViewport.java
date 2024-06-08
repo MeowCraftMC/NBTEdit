@@ -11,8 +11,8 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     private int scrollXOffset = 0;
     private int scrollYOffset = 0;
-    private ScrollBarWidget verticalScrollBar = null;
-    private ScrollBarWidget horizontalScrollBar = null;
+    private ScrollBar verticalScrollBar = null;
+    private ScrollBar horizontalScrollBar = null;
 
     private int contentWidth = 0;
     private int contentHeight = 0;
@@ -44,7 +44,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
         if (shouldShowVerticalBar()) {
             scrollYOffset = Mth.clamp(scrollYOffset, 0, Math.max(contentHeight - getHeight(), 0));
-            verticalScrollBar = new ScrollBarWidget(getX() + getWidth() - getScrollBarWidth(), getY(),
+            verticalScrollBar = new ScrollBar(getX() + getWidth() - getScrollBarWidth(), getY(),
                     getScrollBarWidth(), getHeight(),
                     offset -> this.onScroll(0, offset), contentHeight);
             verticalScrollBar.setScrollAmount(scrollYOffset);
@@ -52,7 +52,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
         if (shouldShowHorizontalBar()) {
             scrollXOffset = Mth.clamp(scrollXOffset, 0, Math.max(contentWidth - getWidth(), 0));
-            horizontalScrollBar = new ScrollBarWidget(getX(), getY() + getHeight() - getScrollBarWidth(),
+            horizontalScrollBar = new ScrollBar(getX(), getY() + getHeight() - getScrollBarWidth(),
                     getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0), getScrollBarWidth(),
                     offset -> this.onScroll(offset, 0), contentWidth, true);
             horizontalScrollBar.setScrollAmount(scrollXOffset);

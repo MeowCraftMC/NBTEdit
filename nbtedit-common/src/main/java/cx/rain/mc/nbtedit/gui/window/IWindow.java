@@ -1,8 +1,8 @@
 package cx.rain.mc.nbtedit.gui.window;
 
-import net.minecraft.client.gui.components.events.GuiEventListener;
+import cx.rain.mc.nbtedit.gui.component.IComponent;
 
-public interface IWindow extends GuiEventListener {
+public interface IWindow extends IComponent {
     default void onOpen() {
     }
     default void onClose() {
@@ -12,4 +12,6 @@ public interface IWindow extends GuiEventListener {
     }
     default void onHidden() {
     }
+
+    IWindowHolder getHolder();
 }

@@ -1,6 +1,6 @@
-package cx.rain.mc.nbtedit.utility;
+package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.nbt.NBTTree;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
@@ -18,20 +18,20 @@ public class AccessibilityHelper {
         return Minecraft.getInstance();
     }
 
-    public static Component buildText(NBTTree.Node<?> node) {
+    public static Component buildText(NbtTree.Node<?> node) {
         return Component.literal(node.getAsString());
     }
 
-    public static Component buildNarration(NBTTree.Node<?> node) {
-        return Component.translatable(Constants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, node.getAsString());
+    public static Component buildNarration(NbtTree.Node<?> node) {
+        return Component.translatable(ModConstants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, node.getAsString());
     }
 
-    public static @Nullable Tooltip buildTooltip(NBTTree.Node<?> node) {
+    public static @Nullable Tooltip buildTooltip(NbtTree.Node<?> node) {
         var tag = node.getTag();
         try {
             if (tag instanceof StringTag stringTag) {
-                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION).append("\n");
+                var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
+                var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION).append("\n");
 
                 var content = Component.Serializer.fromJson(stringTag.getAsString());
 
@@ -49,8 +49,8 @@ public class AccessibilityHelper {
             if (tag instanceof CompoundTag compoundTag) {
                 var itemStack = ItemStack.of(compoundTag);
                 if (!itemStack.isEmpty()) {
-                    var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
-                    var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION).append("\n");
+                    var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
+                    var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION).append("\n");
 
                     var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
                     var content = Component.empty();
@@ -72,8 +72,8 @@ public class AccessibilityHelper {
 
         try {
             if (tag instanceof IntArrayTag intArrayTag) {
-                var preview = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
-                var previewNarration = Component.translatable(Constants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION).append("\n");
+                var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
+                var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION).append("\n");
 
                 var content = NbtUtils.loadUUID(intArrayTag).toString();
 

@@ -1,8 +1,9 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.editor;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.nbt.NBTTree;
-import cx.rain.mc.nbtedit.utility.AccessibilityHelper;
+import cx.rain.mc.nbtedit.editor.NbtTree;
+import cx.rain.mc.nbtedit.editor.AccessibilityHelper;
+import cx.rain.mc.nbtedit.gui.component.AbstractComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -16,10 +17,10 @@ public class NbtTreeViewNode extends AbstractComponent {
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final NbtTreeView treeView;
-    private final NBTTree.Node<?> node;
+    private final NbtTree.Node<?> node;
 
-    public NbtTreeViewNode(int x, int y, NBTTree.Node<?> node, @NotNull NbtTreeView parent) {
-        super(x, y, 0, getMinecraft().font.lineHeight, Component.empty());
+    public NbtTreeViewNode(int x, int y, NbtTree.Node<?> node, @NotNull NbtTreeView parent) {
+        super(x, y, 0, Minecraft.getInstance().font.lineHeight, Component.empty());
 
         this.treeView = parent;
         this.node = node;
@@ -28,10 +29,6 @@ public class NbtTreeViewNode extends AbstractComponent {
         setWidth(getMinecraft().font.width(getMessage()) + 12);
 
         update();
-    }
-
-    protected static Minecraft getMinecraft() {
-        return Minecraft.getInstance();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class NbtTreeViewNode extends AbstractComponent {
         return treeView;
     }
 
-    public NBTTree.Node<?> getNode() {
+    public NbtTree.Node<?> getNode() {
         return node;
     }
 

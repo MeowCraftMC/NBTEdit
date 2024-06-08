@@ -1,7 +1,7 @@
 package cx.rain.mc.nbtedit.networking;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -12,7 +12,7 @@ public class NBTEditNetworkingHelper {
         var result = NBTEdit.getInstance().getPermission().hasPermission(player);
 
         if (!result) {
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_NO_PERMISSION)
+            player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NO_PERMISSION)
                     .withStyle(ChatFormatting.RED));
         }
 
@@ -23,7 +23,7 @@ public class NBTEditNetworkingHelper {
         var result = player.serverLevel().isLoaded(pos);
 
         if (!result) {
-            player.sendSystemMessage(Component.translatable(Constants.MESSAGE_NOT_LOADED)
+            player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_NOT_LOADED)
                     .withStyle(ChatFormatting.RED));
         }
 

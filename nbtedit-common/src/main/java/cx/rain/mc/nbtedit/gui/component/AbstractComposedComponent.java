@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractComposedComponent extends AbstractComponent implements ContainerEventHandler {
-    private final List<AbstractComponent> children = new ArrayList<>();
+public abstract class AbstractComposedComponent extends AbstractComponent implements IComposedComponent {
+    private final List<IComponent> children = new ArrayList<>();
 
     @Nullable
     private GuiEventListener focused;
@@ -20,16 +20,19 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
         super(x, y, width, height, message);
     }
 
-    public void addChild(AbstractComponent child) {
+    @Override
+    public void addChild(IComponent child) {
         children.add(child);
         child.setParent(this);
     }
 
-    public void removeChild(AbstractComponent child) {
+    @Override
+    public void removeChild(IComponent child) {
         children.remove(child);
         child.setParent(null);
     }
 
+    @Override
     public void clearChildren() {
         for (var c : children) {
             c.setParent(null);
@@ -37,7 +40,8 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
         children.clear();
     }
 
-    public List<AbstractComponent> getChildren() {
+    @Override
+    public List<IComponent> getChildren() {
         return List.copyOf(children);
     }
 
@@ -76,6 +80,15 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
+    public void tick() {
+        super.tick();
+
+        for (var child : getChildren()) {
+            child.tick();
+        }
+    }
+
+    @Override
     public void update() {
         super.update();
 
@@ -86,16 +99,16 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return ContainerEventHandler.super.mouseClicked(mouseX, mouseY, button);
+        return IComposedComponent.super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return ContainerEventHandler.super.mouseReleased(mouseX, mouseY, button);
+        return IComposedComponent.super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        return ContainerEventHandler.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return IComposedComponent.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 }

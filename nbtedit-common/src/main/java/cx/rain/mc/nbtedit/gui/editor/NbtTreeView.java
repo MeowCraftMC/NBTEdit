@@ -1,7 +1,8 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.editor;
 
-import cx.rain.mc.nbtedit.nbt.NBTTree;
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.editor.NbtTree;
+import cx.rain.mc.nbtedit.gui.component.AbstractComposedComponent;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -16,11 +17,11 @@ import java.util.function.Consumer;
 public class NbtTreeView extends AbstractComposedComponent {
 
     private final List<NbtTreeViewNode> nodes = new ArrayList<>();
-    private final NBTTree tree;
+    private final NbtTree tree;
     private final Consumer<NbtTreeView> onFocusedUpdated;
 
-    public NbtTreeView(NBTTree tree, int x, int y, Consumer<NbtTreeView> onFocusedUpdated) {
-        super(x, y, 100, 100, Component.translatable(Constants.GUI_TITLE_TREE_VIEW));
+    public NbtTreeView(NbtTree tree, int x, int y, Consumer<NbtTreeView> onFocusedUpdated) {
+        super(x, y, 100, 100, Component.translatable(ModConstants.GUI_TITLE_TREE_VIEW));
 
         this.tree = tree;
         this.onFocusedUpdated = onFocusedUpdated;
@@ -49,7 +50,7 @@ public class NbtTreeView extends AbstractComposedComponent {
         return null;
     }
 
-    public void setFocusedNode(@Nullable NBTTree.Node<?> node) {
+    public void setFocusedNode(@Nullable NbtTree.Node<?> node) {
         setFocused(null);
 
         if (node != null) {
@@ -62,7 +63,7 @@ public class NbtTreeView extends AbstractComposedComponent {
         }
     }
 
-    public @Nullable NBTTree.Node<?> getFocusedNode() {
+    public @Nullable NbtTree.Node<?> getFocusedNode() {
         var c = getFocusedChild();
         return c != null ? c.getNode() : null;
     }
@@ -104,7 +105,7 @@ public class NbtTreeView extends AbstractComposedComponent {
         setHeight(maxHeight);
     }
 
-    private void addNodes(NBTTree.Node<?> root) {
+    private void addNodes(NbtTree.Node<?> root) {
         var node = new NbtTreeViewNode(nodeOffsetX, nodeOffsetY, root, this);
         nodes.add(node);
         addChild(node);

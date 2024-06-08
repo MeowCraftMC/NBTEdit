@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.networking.NBTEditEditingHelper;
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -103,7 +103,7 @@ public class NBTEditCommand {
         if (source.getEntity() instanceof ServerPlayer) {
             return true;
         } else {
-            source.sendFailure(Component.translatable(Constants.MESSAGE_NOT_PLAYER).withStyle(ChatFormatting.RED));
+            source.sendFailure(Component.translatable(ModConstants.MESSAGE_NOT_PLAYER).withStyle(ChatFormatting.RED));
             return false;
         }
     }

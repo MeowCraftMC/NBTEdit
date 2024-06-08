@@ -1,11 +1,107 @@
-package cx.rain.mc.nbtedit.nbt;
+package cx.rain.mc.nbtedit.editor;
+
+import net.minecraft.nbt.*;
 
 import java.util.Locale;
 
 /**
  * Parse string with silent exception.
  */
-public class ParseHelper {
+public class NodeParser {
+
+    public static String getString(NbtTree.Node<?> node) {
+        var tag = node.getTag();
+
+        if (tag instanceof ByteTag b) {
+            return Byte.toString(b.getAsByte());
+        }
+
+        if (tag instanceof ShortTag s) {
+            return Short.toString(s.getAsShort());
+        }
+
+        if (tag instanceof IntTag i) {
+            return Integer.toString(i.getAsInt());
+        }
+
+        if (tag instanceof LongTag l) {
+            return Long.toString(l.getAsLong());
+        }
+
+        if (tag instanceof FloatTag f) {
+            return Float.toString(f.getAsFloat());
+        }
+
+        if (tag instanceof DoubleTag d) {
+            return Double.toString(d.getAsDouble());
+        }
+
+        if (tag instanceof ByteArrayTag ba) {
+            var s = new StringBuilder();
+            for (var b : ba.getAsByteArray()) {
+                s.append(b).append(", ");
+            }
+            return s.toString();
+        }
+
+        if (tag instanceof IntArrayTag ia) {
+            var s = new StringBuilder();
+            for (var i : ia.getAsIntArray()) {
+                s.append(i).append(", ");
+            }
+            return s.toString();
+        }
+
+        if (tag instanceof LongArrayTag la) {
+            var s = new StringBuilder();
+            for (var l : la.getAsLongArray()) {
+                s.append(l).append(", ");
+            }
+            return s.toString();
+        }
+
+        // List or Compound, returns empty.
+        return "";
+    }
+
+    public static <T extends Tag> Tag getTag(NbtTree.Node<T> node, String value) {
+        Tag tag = node.getTag();
+        try {
+            if (tag instanceof ByteTag) {
+                return ByteTag.valueOf(parseByte(value));
+            }
+            if (tag instanceof ShortTag) {
+                return ShortTag.valueOf(parseShort(value));
+            }
+            if (tag instanceof IntTag) {
+                return IntTag.valueOf(parseInt(value));
+            }
+            if (tag instanceof LongTag) {
+                return LongTag.valueOf(parseLong(value));
+            }
+            if (tag instanceof FloatTag) {
+                return FloatTag.valueOf(parseFloat(value));
+            }
+            if (tag instanceof DoubleTag) {
+                return DoubleTag.valueOf(parseDouble(value));
+            }
+            if (tag instanceof ByteArrayTag) {
+                return new ByteArrayTag(parseByteArray(value));
+            }
+            if (tag instanceof IntArrayTag) {
+                return new IntArrayTag(parseIntArray(value));
+            }
+            if (tag instanceof LongArrayTag) {
+                return new LongArrayTag(parseLongArray(value));
+            }
+            if (tag instanceof StringTag) {
+                return StringTag.valueOf(value);
+            }
+        } catch (Exception ignored) {
+        }
+
+        return EndTag.INSTANCE;
+    }
 
     public static byte parseByte(String s) {
         try {

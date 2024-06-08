@@ -3,7 +3,6 @@ package cx.rain.mc.nbtedit;
 import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
 import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
 import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
-import cx.rain.mc.nbtedit.client.NBTEditClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +28,12 @@ public class NBTEdit {
 
     private static NBTEdit INSTANCE;
 
-    private NBTEditClient client;
-
     private final Logger logger = LoggerFactory.getLogger(NAME);
 
     public NBTEdit() {
         INSTANCE = this;
 
-        logger.info("Loading NBTEdit ver: " + VERSION);
+        logger.info("Loading NBTEdit ver: {}", VERSION);
     }
 
     public static NBTEdit getInstance() {
@@ -45,14 +42,6 @@ public class NBTEdit {
 
     public Logger getLogger() {
         return logger;
-    }
-
-    public NBTEditClient getClient() {
-        if (client == null) {
-            client = new NBTEditClient();
-        }
-
-        return client;
     }
 
     public INBTEditNetworking getNetworking() {

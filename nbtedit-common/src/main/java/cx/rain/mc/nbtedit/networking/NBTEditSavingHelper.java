@@ -1,7 +1,7 @@
 package cx.rain.mc.nbtedit.networking;
 
 import cx.rain.mc.nbtedit.NBTEdit;
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -49,10 +49,10 @@ public class NBTEditSavingHelper {
                         NBTEdit.getInstance().getLogger().debug(tag.getAsString());
                     }
 
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                    player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
                             .withStyle(ChatFormatting.GREEN));
                 } catch (Exception ex) {
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                    player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
                             .withStyle(ChatFormatting.RED));
 
                     NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
@@ -72,7 +72,7 @@ public class NBTEditSavingHelper {
                         pos.getX() + " " +
                         pos.getY() + " " +
                         pos.getZ() + ".");
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS)
+                player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_BLOCK_ENTITY_NOT_EXISTS)
                         .withStyle(ChatFormatting.RED));
             }
         });
@@ -95,7 +95,7 @@ public class NBTEditSavingHelper {
                     NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() +
                             " tried to use /nbtedit on a player. But server config is not allow that.");
                     player.createCommandSourceStack().sendFailure(Component
-                            .translatable(Constants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
+                            .translatable(ModConstants.MESSAGE_CANNOT_EDIT_OTHER_PLAYER)
                             .withStyle(ChatFormatting.RED));
                     return;
                 }
@@ -138,10 +138,10 @@ public class NBTEditSavingHelper {
                         targetPlayer.setPos(targetPlayer.getX(), targetPlayer.getY(), targetPlayer.getZ());
                     }
 
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                    player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
                             .withStyle(ChatFormatting.GREEN));
                 } catch (Exception ex) {
-                    player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                    player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
                             .withStyle(ChatFormatting.RED));
 
                     NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +
@@ -155,7 +155,7 @@ public class NBTEditSavingHelper {
             } else {
                 NBTEdit.getInstance().getLogger().info("Player " + player.getName() +
                         " tried to edit a non-existent entity " + entityUuid + ".");
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
+                player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_ENTITY_NOT_EXISTS)
                         .withStyle(ChatFormatting.RED));
             }
         });
@@ -177,10 +177,10 @@ public class NBTEditSavingHelper {
                     NBTEdit.getInstance().getLogger().debug(tag.getAsString());
                 }
 
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_SUCCESSFUL)
+                player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_SUCCESSFUL)
                         .withStyle(ChatFormatting.GREEN));
             } catch (Exception ex) {
-                player.sendSystemMessage(Component.translatable(Constants.MESSAGE_SAVING_FAILED_INVALID_NBT)
+                player.sendSystemMessage(Component.translatable(ModConstants.MESSAGE_SAVING_FAILED_INVALID_NBT)
                         .withStyle(ChatFormatting.RED));
 
                 NBTEdit.getInstance().getLogger().error("Player " + player.getName().getString() +

@@ -1,16 +1,6 @@
 package cx.rain.mc.nbtedit.utility;
 
-public class Constants {
-    public static final String GUI_TITLE_NBTEDIT_ENTITY = "gui.title.nbtedit_entity";
-    public static final String GUI_TITLE_NBTEDIT_BLOCK_ENTITY = "gui.title.nbtedit_block_entity";
-    public static final String GUI_TITLE_NBTEDIT_ITEM_STACK = "gui.title.nbtedit_item_stack";
-
-    public static final String GUI_BUTTON_LOAD = "gui.button.load";
-    public static final String GUI_BUTTON_CANCEL = "gui.button.cancel";
-    public static final String GUI_NARRATION_BUTTON_ADD = "gui.narration.button.add";   // Todo: Specify data type name.
-    public static final String GUI_NARRATION_BUTTON_SPECIAL_CHARACTER = "gui.narration.button.special_character";
-    public static final String GUI_NARRATION_SUB_WINDOW_VALUE_EDITOR = "gui.narration.sub_window.value_editor";
-
+public class ModConstants {
     // Translation keys here.
     public static final String KEY_CATEGORY = "key.category.nbtedit";
     public static final String KEY_NBTEDIT_SHORTCUT = "key.nbtedit.shortcut";
@@ -58,6 +48,13 @@ public class Constants {
     public static final String GUI_TITLE_SCROLL_BAR = "gui.nbtedit.title.scroll_bar";
     public static final String GUI_TITLE_SCROLL_BAR_NARRATION = "gui.nbtedit.title.scroll_bar.narration";
 
+    public static final String GUI_TITLE_EDITING_WINDOW = "gui.nbtedit.title.editing_window";
+    public static final String GUI_TITLE_EDITING_WINDOW_NARRATION = "gui.nbtedit.title.editing_window.narration";
+    public static final String GUI_LABEL_NAME = "gui.nbtedit.label.name";
+    public static final String GUI_LABEL_VALUE = "gui.nbtedit.label.value";
+    public static final String GUI_EDIT_BOX_NAME = "gui.nbtedit.edit_box.name";
+    public static final String GUI_EDIT_BOX_VALUE = "gui.nbtedit.edit_box.value";
+
     public static final String GUI_BUTTON_COPY = "gui.nbtedit.button.copy";
     public static final String GUI_BUTTON_PASTE = "gui.nbtedit.button.paste";
     public static final String GUI_BUTTON_CUT = "gui.nbtedit.button.cut";
@@ -66,6 +63,9 @@ public class Constants {
     public static final String GUI_BUTTON_ADD = "gui.nbtedit.button.add";
     public static final String GUI_BUTTON_SAVE = "gui.nbtedit.button.save";
     public static final String GUI_BUTTON_QUIT = "gui.nbtedit.button.quit";
+
+    public static final String GUI_BUTTON_OK = "gui.nbtedit.button.ok";
+    public static final String GUI_BUTTON_CANCEL = "gui.nbtedit.button.cancel";
 
     // Todo: unused
     public static final String GUI_TOOLTIP_BUTTON_COPY = "gui.nbtedit.tooltip.button_copy";
@@ -77,6 +77,8 @@ public class Constants {
 
     public static final String GUI_TOOLTIP_BUTTON_SAVE = "gui.nbtedit.tooltip.button_save";
     public static final String GUI_TOOLTIP_BUTTON_QUIT = "gui.nbtedit.tooltip.button_quit";
+    public static final String GUI_TOOLTIP_BUTTON_OK = "gui.nbtedit.tooltip.button_ok";
+    public static final String GUI_TOOLTIP_BUTTON_CANCEL = "gui.nbtedit.tooltip.button_cancel";
 
     public static final String GUI_TOOLTIP_PREVIEW_COMPONENT = "gui.nbtedit.tooltip.preview_component";
     public static final String GUI_TOOLTIP_PREVIEW_ITEM = "gui.nbtedit.tooltip.preview_item";

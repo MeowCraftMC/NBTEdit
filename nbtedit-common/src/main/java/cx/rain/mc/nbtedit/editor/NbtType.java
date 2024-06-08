@@ -1,22 +1,21 @@
 package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 
 public enum NbtType {
-    BYTE(1, Constants.NBT_TYPE_BYTE, "Byte"),
-    SHORT(2, Constants.NBT_TYPE_SHORT, "Short"),
-    INT(3, Constants.NBT_TYPE_INT, "Int"),
-    LONG(4, Constants.NBT_TYPE_LONG, "Long"),
-    FLOAT(5, Constants.NBT_TYPE_FLOAT, "Float"),
-    DOUBLE(6, Constants.NBT_TYPE_DOUBLE, "Double"),
-    BYTE_ARRAY(7, Constants.NBT_TYPE_BYTE_ARRAY, "ByteArray"),
-    STRING(8, Constants.NBT_TYPE_STRING, "String"),
-    LIST(9, Constants.NBT_TYPE_LIST, "List"),
-    COMPOUND(10, Constants.NBT_TYPE_COMPOUND, "Compound"),
-    INT_ARRAY(11, Constants.NBT_TYPE_INT_ARRAY, "IntArray"),
-    LONG_ARRAY(12, Constants.NBT_TYPE_LONG_ARRAY, "LongArray"),
+    BYTE(1, ModConstants.NBT_TYPE_BYTE, "Byte"),
+    SHORT(2, ModConstants.NBT_TYPE_SHORT, "Short"),
+    INT(3, ModConstants.NBT_TYPE_INT, "Int"),
+    LONG(4, ModConstants.NBT_TYPE_LONG, "Long"),
+    FLOAT(5, ModConstants.NBT_TYPE_FLOAT, "Float"),
+    DOUBLE(6, ModConstants.NBT_TYPE_DOUBLE, "Double"),
+    BYTE_ARRAY(7, ModConstants.NBT_TYPE_BYTE_ARRAY, "ByteArray"),
+    STRING(8, ModConstants.NBT_TYPE_STRING, "String"),
+    LIST(9, ModConstants.NBT_TYPE_LIST, "List"),
+    COMPOUND(10, ModConstants.NBT_TYPE_COMPOUND, "Compound"),
+    INT_ARRAY(11, ModConstants.NBT_TYPE_INT_ARRAY, "IntArray"),
+    LONG_ARRAY(12, ModConstants.NBT_TYPE_LONG_ARRAY, "LongArray"),
     ;
 
     private final int id;

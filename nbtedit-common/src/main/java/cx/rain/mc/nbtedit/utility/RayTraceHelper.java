@@ -23,7 +23,7 @@ public class RayTraceHelper {
                 NBTEdit.getInstance().getNetworking().clientOpenGuiRequest(player.getMainHandItem());
             } else {
                 player.createCommandSourceStack().sendFailure(Component
-                        .translatable(Constants.MESSAGE_NOTHING_TO_EDIT)
+                        .translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT)
                         .withStyle(ChatFormatting.RED));
             }
         }

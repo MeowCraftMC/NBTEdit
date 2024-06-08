@@ -1,6 +1,5 @@
 package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.*;
 
 public class EditorHelper {
@@ -22,7 +21,7 @@ public class EditorHelper {
         };
     }
 
-    public static String newTagName(int buttonId, NBTTree.Node<?> parent) {
+    public static String newTagName(int buttonId, NbtTree.Node<?> parent) {
         var type = NbtType.ofButtonId(buttonId);
         if (!parent.hasChild()) {
             return type + " 1";
@@ -38,7 +37,7 @@ public class EditorHelper {
         return type + " INF";
     }
 
-    public static boolean isNameValidInNode(String name, NBTTree.Node<?> parent) {
+    public static boolean isNameValidInNode(String name, NbtTree.Node<?> parent) {
         for (var node : parent.getChildren()) {
             if (node.getName().equals(name)) {
                 return false;

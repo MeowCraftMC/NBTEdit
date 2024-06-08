@@ -1,15 +1,16 @@
 package cx.rain.mc.nbtedit.gui.window;
 
+import cx.rain.mc.nbtedit.gui.component.IComposedComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface IWindowHolder {
+public interface IWindowHolder extends IComposedComponent {
     @NotNull
     List<IWindow> getWindows();
     void addWindow(@NotNull IWindow window, boolean mutex, boolean show);
-    void removeWindow(@NotNull IWindow window);
+    void closeWindow(@NotNull IWindow window);
 
     void show(@NotNull IWindow window);
     void hide(@NotNull IWindow window);
@@ -43,7 +44,7 @@ public interface IWindowHolder {
 
     default void closeAll() {
         for (var window : getWindows()) {
-            removeWindow(window);
+            closeWindow(window);
         }
     }
 }

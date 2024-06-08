@@ -2,14 +2,17 @@ package cx.rain.mc.nbtedit.gui;
 
 import cx.rain.mc.nbtedit.editor.EditorHelper;
 import cx.rain.mc.nbtedit.editor.EditorButton;
-import cx.rain.mc.nbtedit.gui.component.HighlightedButton;
-import cx.rain.mc.nbtedit.gui.component.NbtTreeView;
+import cx.rain.mc.nbtedit.gui.component.AbstractComposedComponent;
+import cx.rain.mc.nbtedit.gui.component.AbstractScreen;
+import cx.rain.mc.nbtedit.gui.editor.EditorButtonComponent;
+import cx.rain.mc.nbtedit.gui.editor.NbtTreeView;
 import cx.rain.mc.nbtedit.gui.component.ScrollableViewport;
+import cx.rain.mc.nbtedit.gui.window.EditingWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
-import cx.rain.mc.nbtedit.nbt.NBTTree;
+import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.ClipboardHelper;
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -31,9 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class EditorScreen extends Screen implements IWindowHolder {
+public class EditorScreen extends AbstractScreen {
 
-    private final NBTTree tree;
+    private final NbtTree tree;
     private final Consumer<CompoundTag> onSave;
 
     private ScrollableViewport treeViewport;
@@ -44,7 +47,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
 
         this.onSave = onSave;
 
-        tree = NBTTree.root(tag);
+        tree = NbtTree.root(tag);
     }
 
     @Override
@@ -60,19 +63,19 @@ public class EditorScreen extends Screen implements IWindowHolder {
         treeViewport.addChild(treeView);
         addRenderableWidget(treeViewport);
 
-        var saveButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_SAVE), b -> onSave())
+        var saveButton = Button.builder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
                 .pos(width / 4 - 100, height - 27)
                 .size(200, 20)
-                .createNarration(c -> c.get().append(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_SAVE)))
-                .tooltip(Tooltip.create(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_SAVE)))
+                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
+                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
                 .build();
         addRenderableWidget(saveButton);
 
-        var quitButton = Button.builder(Component.translatable(Constants.GUI_BUTTON_QUIT), b -> onQuit())
+        var quitButton = Button.builder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), b -> onQuit())
                 .pos(width * 3 / 4 - 100, height - 27)
                 .size(200, 20)
-                .createNarration(c -> c.get().append(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_QUIT)))
-                .tooltip(Tooltip.create(Component.translatable(Constants.GUI_TOOLTIP_BUTTON_QUIT)))
+                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
+                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
                 .build();
         addRenderableWidget(quitButton);
 
@@ -98,112 +101,9 @@ public class EditorScreen extends Screen implements IWindowHolder {
         guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    /// <editor-fold desc="Windows holder.">
-
-    /**
-     * Map<IWindow window, Pair<Boolean mutex, Boolean shown>>
-     */
-    private final Map<IWindow, Boolean> windows = new HashMap<>();
-
-    @Nullable
-    private IWindow mutexWindow = null;
-
-    @Nullable
-    private IWindow focusedWindow = null;
-
-    @Override
-    public @NotNull List<IWindow> getWindows() {
-        return List.copyOf(windows.keySet());
-    }
-
-    @Override
-    public void addWindow(@NotNull IWindow window, boolean mutex, boolean show) {
-        windows.put(window, false);
-
-        if (mutex) {
-            if (mutexWindow == null) {
-                mutexWindow = window;
-            } else {
-                throw new IllegalStateException();
-            }
-        }
-
-        if (show) {
-            show(window);
-        }
-    }
-
-    @Override
-    public void removeWindow(@NotNull IWindow window) {
-        if (hasWindow(window)) {
-            window.onClose();
-            windows.remove(window);
-        }
-    }
-
-    @Override
-    public void show(@NotNull IWindow window) {
-        if (windows.containsKey(window)) {
-            if (!windows.get(window)) {
-                windows.put(window, true);
-                window.onShown();
-            }
-        }
-    }
-
-    @Override
-    public void hide(@NotNull IWindow window) {
-        if (windows.containsKey(window)) {
-            if (windows.get(window)) {
-                windows.put(window, false);
-                window.onHidden();
-            }
-        }
-    }
-
-    @Override
-    public @Nullable IWindow getMutexWindow() {
-        return mutexWindow;
-    }
-
-    @Override
-    public void mutex(@Nullable IWindow window) {
-        if (getMutexWindow() == null && window != null && hasWindow(window)) {
-            mutexWindow = window;
-        } else if (window == null) {
-            mutexWindow = null;
-        }
-    }
-
-    @Override
-    public @Nullable IWindow getFocusedWindow() {
-        return focusedWindow;
-    }
-
-    @Override
-    public void focus(@Nullable IWindow window) {
-        setFocused(window);
-        for (var w : getWindows()) {
-            w.setFocused(w == window);
-        }
-    }
-
-    @Override
-    public void setFocused(@Nullable GuiEventListener focused) {
-        super.setFocused(focused);
-
-        if (focused instanceof IWindow window) {
-            this.focusedWindow = window;
-        } else {
-            this.focusedWindow = null;
-        }
-    }
-
-    /// </editor-fold>
-
     /// <editor-fold desc="Buttons.">
 
-    private final HighlightedButton[] editorButtons = new HighlightedButton[17];
+    private final EditorButtonComponent[] editorButtons = new EditorButtonComponent[17];
 
     private void initButtons() {
         int xLoc = 18;
@@ -235,16 +135,16 @@ public class EditorScreen extends Screen implements IWindowHolder {
     }
 
     private void buildButton(EditorButton button, int x, int y, Button.OnPress onPress) {
-        var b = new HighlightedButton(button.getId(), x, y, button.getName(), onPress);
+        var b = new EditorButtonComponent(button.getId(), x, y, button.getName(), onPress);
         addButton(button.getId(), b);
     }
 
     private void buildAddButton(EditorButton button, int x, int y, Button.OnPress onPress) {
-        var b = new HighlightedButton(button.getId(), x, y, Component.translatable(Constants.GUI_BUTTON_ADD, button.getName().getString()), onPress);
+        var b = new EditorButtonComponent(button.getId(), x, y, Component.translatable(ModConstants.GUI_BUTTON_ADD, button.getName().getString()), onPress);
         addButton(button.getId(), b);
     }
 
-    private void addButton(int id, HighlightedButton button) {
+    private void addButton(int id, EditorButtonComponent button) {
         editorButtons[id] = button;
         addRenderableWidget(button);
     }
@@ -385,22 +285,21 @@ public class EditorScreen extends Screen implements IWindowHolder {
 
     public void doEdit() {
         var focused = treeView.getFocusedNode();
-        var base = focused.getTag();
+        var tag = focused.getTag();
         var parent = focused.getParent().getTag();
-        // Todo
-//        var editor = new EditValueSubWindow(this, getFocused(), !(parent instanceof ListTag),
-//                !(base instanceof CompoundTag || base instanceof ListTag));
-//        editor.init((width - EditValueSubWindow.WIDTH) / 2, (height - EditValueSubWindow.HEIGHT) / 2);
-//        addWindow(editor);
+        var editor = new EditingWindow((width - 178) / 2, (height - 93) / 2, 178, 93, focused,
+                !(parent instanceof ListTag),
+                !(tag instanceof CompoundTag || tag instanceof ListTag));
+        addWindow(editor);
     }
 
     private void doCopy() {
         var node = treeView.getFocusedNode();
         if (node != null) {
             if (node.getTag() instanceof ListTag list) {
-                ClipboardHelper.setNode(NBTTree.Node.root(list));
+                ClipboardHelper.setNode(NbtTree.Node.root(list));
             } else if (node.getTag() instanceof CompoundTag compound) {
-                ClipboardHelper.setNode(NBTTree.Node.root(compound));
+                ClipboardHelper.setNode(NbtTree.Node.root(compound));
             } else {
                 ClipboardHelper.setNode(node);
             }
@@ -428,7 +327,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
                     toPaste.setName("");
                 } else {
                     String name = "Paste";
-                    List<NBTTree.Node<Tag>> children = focused.getChildren();
+                    List<NbtTree.Node<Tag>> children = focused.getChildren();
                     for (int i = 1; i < children.size(); i++) {
                         var child = children.get(i);
                         if (!EditorHelper.isNameValidInNode(name, child)) {
@@ -437,7 +336,7 @@ public class EditorScreen extends Screen implements IWindowHolder {
                     }
                 }
 
-                focused.addChild((NBTTree.Node) toPaste);
+                focused.addChild((NbtTree.Node) toPaste);
                 treeView.setFocusedNode(toPaste);
                 update(true);
             }

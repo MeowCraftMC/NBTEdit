@@ -1,6 +1,6 @@
 package cx.rain.mc.nbtedit.gui.component;
 
-import cx.rain.mc.nbtedit.utility.Constants;
+import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
-public class ScrollBarWidget extends AbstractComponent {
+public class ScrollBar extends AbstractComponent {
     private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(new ResourceLocation("widget/text_field"), new ResourceLocation("widget/text_field_highlighted"));
     private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
 
@@ -27,12 +27,12 @@ public class ScrollBarWidget extends AbstractComponent {
     private int scrollAmount = 0;
     private boolean dragging = false;
 
-    public ScrollBarWidget(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
+    public ScrollBar(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength) {
         this(x, y, width, height, toScroll, contentLength, false);
     }
 
-    public ScrollBarWidget(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength, boolean horizontal) {
-        super(x, y, width, height, Component.translatable(Constants.GUI_TITLE_SCROLL_BAR));
+    public ScrollBar(int x, int y, int width, int height, IScrollHandler toScroll, int contentLength, boolean horizontal) {
+        super(x, y, width, height, Component.translatable(ModConstants.GUI_TITLE_SCROLL_BAR));
 
         this.horizontal = horizontal;
         this.toScroll = toScroll;
@@ -120,7 +120,7 @@ public class ScrollBarWidget extends AbstractComponent {
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-        narrationElementOutput.add(NarratedElementType.TITLE, Component.translatable(Constants.GUI_TITLE_SCROLL_BAR_NARRATION));
+        narrationElementOutput.add(NarratedElementType.TITLE, Component.translatable(ModConstants.GUI_TITLE_SCROLL_BAR_NARRATION));
     }
 
     public boolean isDragging() {

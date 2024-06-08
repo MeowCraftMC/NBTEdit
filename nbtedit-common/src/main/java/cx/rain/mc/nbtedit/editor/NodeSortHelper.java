@@ -1,12 +1,11 @@
 package cx.rain.mc.nbtedit.editor;
 
-import cx.rain.mc.nbtedit.nbt.NBTTree;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
 import java.util.Comparator;
 
-public class NodeSortHelper implements Comparator<NBTTree.Node<?>> {
+public class NodeSortHelper implements Comparator<NbtTree.Node<?>> {
 	private static NodeSortHelper INSTANCE;
 
 	public static NodeSortHelper get() {
@@ -21,7 +20,7 @@ public class NodeSortHelper implements Comparator<NBTTree.Node<?>> {
 	}
 
 	@Override
-	public int compare(NBTTree.Node<?> a, NBTTree.Node<?> b) {
+	public int compare(NbtTree.Node<?> a, NbtTree.Node<?> b) {
 		var name1 = a.getName();
 		var name2 = b.getName();
 		var tag1 = a.getTag();

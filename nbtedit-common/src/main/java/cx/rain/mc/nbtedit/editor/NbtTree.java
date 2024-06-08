@@ -1,4 +1,4 @@
-package cx.rain.mc.nbtedit.nbt;
+package cx.rain.mc.nbtedit.editor;
 
 import com.google.common.base.Strings;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -7,15 +7,15 @@ import net.minecraft.nbt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NBTTree {
+public class NbtTree {
     private final Node<CompoundTag> rootNode;  // qyl27: We believe the parent must be Compound.
 
-    private NBTTree(Node<CompoundTag> root) {
+    private NbtTree(Node<CompoundTag> root) {
         rootNode = root;
     }
 
-    public static NBTTree root(CompoundTag tag) {
-        return new NBTTree(Node.root(tag));
+    public static NbtTree root(CompoundTag tag) {
+        return new NbtTree(Node.root(tag));
     }
 
     public CompoundTag toCompound() {
