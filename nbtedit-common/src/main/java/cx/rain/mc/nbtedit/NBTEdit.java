@@ -1,8 +1,8 @@
 package cx.rain.mc.nbtedit;
 
-import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
-import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
-import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
+import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.api.config.IModConfig;
+import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,17 +42,5 @@ public class NBTEdit {
 
     public Logger getLogger() {
         return logger;
-    }
-
-    public INBTEditNetworking getNetworking() {
-        return NBTEditPlatform.getNetworking();
-    }
-
-    public INBTEditConfig getConfig() {
-        return NBTEditPlatform.getConfig();
-    }
-
-    public INBTEditCommandPermission getPermission() {
-        return NBTEditPlatform.getPermission();
     }
 }

@@ -1,7 +1,9 @@
 package cx.rain.mc.nbtedit.fabric.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConfigBean {
-    public boolean canEditOthers = false;
-    public int permissionLevel = 2;
     public boolean debug = false;
+    public Map<String, Integer> permissionsLevels = new HashMap<>();
 }

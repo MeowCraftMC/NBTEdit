@@ -1,6 +1,6 @@
 package cx.rain.mc.nbtedit.utility;
 
-import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.NBTEditPlatform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -16,11 +16,11 @@ public class RayTraceHelper {
         if (result != null) {
             if (result.getType() == HitResult.Type.ENTITY) {
                 var entity = ((EntityHitResult) result).getEntity();
-                NBTEdit.getInstance().getNetworking().clientOpenGuiRequest(entity, false);
+                NBTEditPlatform.getNetworking().clientOpenGuiRequest(entity, false);
             } else if (result.getType() == HitResult.Type.BLOCK) {
-                NBTEdit.getInstance().getNetworking().clientOpenGuiRequest(((BlockHitResult) result).getBlockPos());
+                NBTEditPlatform.getNetworking().clientOpenGuiRequest(((BlockHitResult) result).getBlockPos());
             } else if (!player.getMainHandItem().isEmpty()) {
-                NBTEdit.getInstance().getNetworking().clientOpenGuiRequest(player.getMainHandItem());
+                NBTEditPlatform.getNetworking().clientOpenGuiRequest(player.getMainHandItem());
             } else {
                 player.createCommandSourceStack().sendFailure(Component
                         .translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT)
