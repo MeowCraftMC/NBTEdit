@@ -26,13 +26,12 @@ public class ScrollableViewport extends AbstractComposedComponent {
     @Override
     public void update() {
         var children = getChildren();
-
         unInitialize();
-        initialize();
 
         for (var c : children) {
             addChild(c);
         }
+        initialize();
 
         super.update();
     }

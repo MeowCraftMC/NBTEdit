@@ -260,6 +260,9 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
             }
         }
 
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 500);
+
         if (hasWindow()) {
             drawGrayishBackground(guiGraphics);
         }
@@ -273,6 +276,8 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         if (hasMutexWindow()) {
             getMutexWindow().render(guiGraphics, mouseX, mouseY, partialTick);
         }
+
+        guiGraphics.pose().popPose();
     }
 
     @Override
