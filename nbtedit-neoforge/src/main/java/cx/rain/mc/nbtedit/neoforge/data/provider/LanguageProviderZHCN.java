@@ -54,11 +54,15 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(ModConstants.GUI_TITLE_TREE_VIEW_NODE, "NBT 节点");
         add(ModConstants.GUI_TITLE_TREE_VIEW_NARRATION, "NBT 节点树");
         add(ModConstants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, "NBT 节点：%1$s");
-
         add(ModConstants.GUI_TITLE_SCROLL_BAR, "滚动条");
         add(ModConstants.GUI_TITLE_SCROLL_BAR_NARRATION, "按住拖动");
 
-        // Todo
+        add(ModConstants.GUI_TITLE_EDITING_WINDOW, "编辑 NBT 标签");
+        add(ModConstants.GUI_TITLE_EDITING_WINDOW_NARRATION, "NBT 标签编辑窗口");
+        add(ModConstants.GUI_LABEL_NAME, "名称");
+        add(ModConstants.GUI_LABEL_VALUE, "数值");
+        add(ModConstants.GUI_EDIT_BOX_NAME, "名称");
+        add(ModConstants.GUI_EDIT_BOX_VALUE, "数值");
 
         add(ModConstants.GUI_BUTTON_COPY, "复制");
         add(ModConstants.GUI_BUTTON_PASTE, "粘贴");
@@ -68,6 +72,8 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(ModConstants.GUI_BUTTON_ADD, "添加 %1$s 标签");
         add(ModConstants.GUI_BUTTON_SAVE, "保存");
         add(ModConstants.GUI_BUTTON_QUIT, "退出");
+        add(ModConstants.GUI_BUTTON_OK, "确定");
+        add(ModConstants.GUI_BUTTON_CANCEL, "取消");
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_COPY, "复制选中的标签");
         add(ModConstants.GUI_TOOLTIP_BUTTON_PASTE, "在选中的容器中粘贴标签");
@@ -78,6 +84,8 @@ public class LanguageProviderZHCN extends LanguageProvider {
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE, "保存并退出编辑器");
         add(ModConstants.GUI_TOOLTIP_BUTTON_QUIT, "退出编辑器但不保存");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_OK, "确定");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL, "取消");
 
         add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT, "【文本预览】");
         add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION, "文本预览：");

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.naming.OperationNotSupportedException;
 import java.util.*;
 
-public class AbstractScreen extends Screen implements IWindowHolder {
+public abstract class AbstractScreen extends Screen implements IWindowHolder {
     protected AbstractScreen(Component title) {
         super(title);
     }
@@ -181,14 +181,14 @@ public class AbstractScreen extends Screen implements IWindowHolder {
     private final List<IComponent> children = new ArrayList<>();
 
     @Override
-    public void addChild(IComponent child) {
+    public void addChild(@NotNull IComponent child) {
         children.add(child);
         child.setParent(this);
         addRenderableWidget(child);
     }
 
     @Override
-    public void removeChild(IComponent child) {
+    public void removeChild(@NotNull IComponent child) {
         children.remove(child);
         child.setParent(null);
         removeWidget(child);
@@ -202,6 +202,48 @@ public class AbstractScreen extends Screen implements IWindowHolder {
     @Override
     public @NotNull List<? extends GuiEventListener> children() {
         return List.copyOf(getChildren());
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        unInitialize();
+        super.rebuildWidgets();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        initialize();
+    }
+
+    @Override
+    public void tick() {
+        for (var c : getChildren()) {
+            c.tick();
+        }
+
+        super.tick();
+    }
+
+    protected abstract void createChildren();
+
+    @Override
+    public final void initialize() {
+        createChildren();
+
+        for (var child : getChildren()) {
+            child.initialize();
+        }
+    }
+
+    @Override
+    public void unInitialize() {
+        for (var child : getChildren()) {
+            child.unInitialize();
+        }
+
+        closeWindows();
+        clearChildren();
     }
 
     /// </editor-fold>
@@ -219,7 +261,7 @@ public class AbstractScreen extends Screen implements IWindowHolder {
         }
 
         if (hasWindow()) {
-            renderTransparentBackground(guiGraphics);
+            drawGrayishBackground(guiGraphics);
         }
 
         for (var w : getWindows()) {
@@ -301,5 +343,13 @@ public class AbstractScreen extends Screen implements IWindowHolder {
         }
 
         return IWindowHolder.super.charTyped(codePoint, modifiers);
+    }
+
+    public static void drawGrayishBackground(GuiGraphics guiGraphics) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().last().pose().translate(0, 0, -1);
+        guiGraphics.fillGradient(0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), -1072689136, -804253680);
+        guiGraphics.pose().last().pose().translate(0, 0, 1);
+        guiGraphics.pose().popPose();
     }
 }

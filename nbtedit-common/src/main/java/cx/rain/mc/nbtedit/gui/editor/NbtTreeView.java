@@ -25,8 +25,6 @@ public class NbtTreeView extends AbstractComposedComponent {
 
         this.tree = tree;
         this.onFocusedUpdated = onFocusedUpdated;
-
-        update();
     }
 
     @Override
@@ -85,10 +83,14 @@ public class NbtTreeView extends AbstractComposedComponent {
 
     @Override
     public void update() {
-        super.update();
+        unInitialize();
+        initialize();
 
-        nodes.clear();
-        clearChildren();
+        super.update();
+    }
+
+    @Override
+    protected void createChildren() {
         nodeOffsetX = START_X;
         nodeOffsetY = START_Y;
         maxWidth = 0;
@@ -99,6 +101,13 @@ public class NbtTreeView extends AbstractComposedComponent {
 
         setWidth(maxWidth);
         setHeight(maxHeight);
+    }
+
+    @Override
+    public void unInitialize() {
+        nodes.clear();
+
+        super.unInitialize();
     }
 
     private void addNodes(NbtTree.Node<?> root) {

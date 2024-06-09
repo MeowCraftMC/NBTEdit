@@ -19,6 +19,12 @@ public interface IComponent extends Renderable, GuiEventListener, LayoutElement,
     default void update() {
     }
 
+    default void initialize() {
+    }
+
+    default void unInitialize() {
+    }
+
     IComposedComponent getParent();
 
     void setParent(@Nullable IComposedComponent parent);

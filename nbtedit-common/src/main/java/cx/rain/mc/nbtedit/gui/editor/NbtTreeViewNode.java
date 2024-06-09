@@ -27,13 +27,11 @@ public class NbtTreeViewNode extends AbstractComponent {
 
         setMessage(AccessibilityHelper.buildText(node));
         setWidth(getMinecraft().font.width(getMessage()) + 12);
-
-        update();
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void initialize() {
+        super.initialize();
 
         setTooltip(AccessibilityHelper.buildTooltip(node));
         setTooltipDelay(200);

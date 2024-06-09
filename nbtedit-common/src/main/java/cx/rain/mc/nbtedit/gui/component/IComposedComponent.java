@@ -1,13 +1,14 @@
 package cx.rain.mc.nbtedit.gui.component;
 
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public interface IComposedComponent extends IComponent, ContainerEventHandler {
-    void addChild(IComponent child);
+    void addChild(@NotNull IComponent child);
 
-    void removeChild(IComponent child);
+    void removeChild(@NotNull IComponent child);
 
     List<IComponent> getChildren();
 

@@ -44,7 +44,6 @@ public class ModConstants {
     public static final String GUI_TITLE_TREE_VIEW_NODE = "gui.nbtedit.title.tree_view_node";
     public static final String GUI_TITLE_TREE_VIEW_NARRATION = "gui.nbtedit.title.tree_view.narration";
     public static final String GUI_TITLE_TREE_VIEW_NODE_NARRATION = "gui.nbtedit.title.tree_view_node.narration";
-
     public static final String GUI_TITLE_SCROLL_BAR = "gui.nbtedit.title.scroll_bar";
     public static final String GUI_TITLE_SCROLL_BAR_NARRATION = "gui.nbtedit.title.scroll_bar.narration";
 
@@ -63,7 +62,6 @@ public class ModConstants {
     public static final String GUI_BUTTON_ADD = "gui.nbtedit.button.add";
     public static final String GUI_BUTTON_SAVE = "gui.nbtedit.button.save";
     public static final String GUI_BUTTON_QUIT = "gui.nbtedit.button.quit";
-
     public static final String GUI_BUTTON_OK = "gui.nbtedit.button.ok";
     public static final String GUI_BUTTON_CANCEL = "gui.nbtedit.button.cancel";
 

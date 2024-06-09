@@ -46,7 +46,7 @@ public interface IWindowHolder extends IComposedComponent {
         return getWindows().contains(window);
     }
 
-    default void closeAll() {
+    default void closeWindows() {
         for (var window : getWindows()) {
             closeWindow(window);
         }

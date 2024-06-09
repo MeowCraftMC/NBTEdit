@@ -22,13 +22,13 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public void addChild(IComponent child) {
+    public void addChild(@NotNull IComponent child) {
         children.add(child);
         child.setParent(this);
     }
 
     @Override
-    public void removeChild(IComponent child) {
+    public void removeChild(@NotNull IComponent child) {
         children.remove(child);
         child.setParent(null);
     }
@@ -88,6 +88,30 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
         for (var child : getChildren()) {
             child.update();
         }
+    }
+
+    protected abstract void createChildren();
+
+    @Override
+    public final void initialize() {
+        createChildren();
+
+        for (var child : getChildren()) {
+            child.initialize();
+        }
+
+        super.initialize();
+    }
+
+    @Override
+    public void unInitialize() {
+        for (var child : getChildren()) {
+            child.unInitialize();
+        }
+
+        clearChildren();
+
+        super.unInitialize();
     }
 
     @Override

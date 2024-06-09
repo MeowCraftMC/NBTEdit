@@ -54,11 +54,15 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.GUI_TITLE_TREE_VIEW_NODE, "NBT Node");
         add(ModConstants.GUI_TITLE_TREE_VIEW_NARRATION, "NBT Node Tree");
         add(ModConstants.GUI_TITLE_TREE_VIEW_NODE_NARRATION, "NBT Node: %1$s");
-
         add(ModConstants.GUI_TITLE_SCROLL_BAR, "Scrollbar");
         add(ModConstants.GUI_TITLE_SCROLL_BAR_NARRATION, "Drag to scroll");
 
-        // Todo
+        add(ModConstants.GUI_TITLE_EDITING_WINDOW, "Editing Tag");
+        add(ModConstants.GUI_TITLE_EDITING_WINDOW_NARRATION, "Tag Editing Window");
+        add(ModConstants.GUI_LABEL_NAME, "Name");
+        add(ModConstants.GUI_LABEL_VALUE, "Value");
+        add(ModConstants.GUI_EDIT_BOX_NAME, "Name");
+        add(ModConstants.GUI_EDIT_BOX_VALUE, "Value");
 
         add(ModConstants.GUI_BUTTON_COPY, "Copy");
         add(ModConstants.GUI_BUTTON_PASTE, "Paste");
@@ -68,6 +72,8 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.GUI_BUTTON_ADD, "Add %1$s Tag");
         add(ModConstants.GUI_BUTTON_SAVE, "Save");
         add(ModConstants.GUI_BUTTON_QUIT, "Quit");
+        add(ModConstants.GUI_BUTTON_OK, "OK");
+        add(ModConstants.GUI_BUTTON_CANCEL, "Cancel");
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_COPY, "Copy selected tag.");
         add(ModConstants.GUI_TOOLTIP_BUTTON_PASTE, "Paste tag into selected container.");
@@ -78,6 +84,8 @@ public class LanguageProviderENUS extends LanguageProvider {
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE, "Save and quit the editor.");
         add(ModConstants.GUI_TOOLTIP_BUTTON_QUIT, "Discard and quit the editor.");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_OK, "OK");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL, "Cancel");
 
         add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT, "[Text Preview] ");
         add(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION, "Text Preview: ");

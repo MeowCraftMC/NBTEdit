@@ -28,61 +28,51 @@ public class AccessibilityHelper {
 
     public static @Nullable Tooltip buildTooltip(NbtTree.Node<?> node) {
         var tag = node.getTag();
-        try {
-            if (tag instanceof StringTag stringTag) {
-                var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT).append("\n");
-                var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION).append("\n");
+        var showPreview = false;
+        var previewTitle = "";
+        var previewNarrationTitle = "";
+        var previewContent = Component.empty();
 
-                var content = Component.Serializer.fromJson(stringTag.getAsString());
+        var item = TagReadingHelper.tryReadItem(tag);
+        if (item != null) {
+            showPreview = true;
+            previewTitle = ModConstants.GUI_TOOLTIP_PREVIEW_ITEM;
+            previewNarrationTitle = ModConstants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION;
 
-                if (content != null && !content.getString().isBlank()) {
-                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-
-                    return Tooltip.create(preview, previewNarration);
+            var lines = item.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
+            for (int i = 0; i < lines.size(); i++) {
+                previewContent.append(lines.get(i));
+                if (i != lines.size() - 1) {
+                    previewContent.append("\n");
                 }
             }
-        } catch (Exception ignored) {
         }
 
-        try {
-            if (tag instanceof CompoundTag compoundTag) {
-                var itemStack = ItemStack.of(compoundTag);
-                if (!itemStack.isEmpty()) {
-                    var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM).append("\n");
-                    var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION).append("\n");
-
-                    var lines = itemStack.getTooltipLines(getMinecraft().player, TooltipFlag.ADVANCED);
-                    var content = Component.empty();
-                    for (int i = 0; i < lines.size(); i++) {
-                        content.append(lines.get(i));
-                        if (i != lines.size() - 1) {
-                            content.append("\n");
-                        }
-                    }
-
-                    preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                    previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-
-                    return Tooltip.create(preview, previewNarration);
-                }
-            }
-        } catch (Exception ignored) {
+        var uuid = TagReadingHelper.tryReadUuid(tag);
+        if (!showPreview && uuid != null) {
+            showPreview = true;
+            previewTitle = ModConstants.GUI_TOOLTIP_PREVIEW_UUID;
+            previewNarrationTitle = ModConstants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION;
+            previewContent.append(uuid.toString());
         }
 
-        try {
-            if (tag instanceof IntArrayTag intArrayTag) {
-                var preview = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_UUID).append("\n");
-                var previewNarration = Component.translatable(ModConstants.GUI_TOOLTIP_PREVIEW_UUID_NARRATION).append("\n");
+        var text = TagReadingHelper.tryReadText(tag);
+        if (!showPreview && text != null) {
+            showPreview = true;
+            previewTitle = ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT;
+            previewNarrationTitle = ModConstants.GUI_TOOLTIP_PREVIEW_COMPONENT_NARRATION;
+            previewContent.append(text);
+        }
 
-                var content = NbtUtils.loadUUID(intArrayTag).toString();
+        if (showPreview) {
+            var preview = Component.translatable(previewTitle)
+                    .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
+                            .append(previewContent));
+            var previewNarration = Component.translatable(previewNarrationTitle)
+                    .append(Component.literal("\n").withStyle(ChatFormatting.RESET)
+                            .append(previewContent));
 
-                preview.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-                previewNarration.append(Component.empty().withStyle(ChatFormatting.RESET).append(content));
-
-                return Tooltip.create(preview, previewNarration);
-            }
-        } catch (Exception ignored) {
+            return Tooltip.create(preview, previewNarration);
         }
 
         return null;
