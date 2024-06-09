@@ -29,10 +29,6 @@ public class NbtTreeView extends AbstractComposedComponent {
         update();
     }
 
-    protected static Minecraft getMinecraft() {
-        return Minecraft.getInstance();
-    }
-
     @Override
     public void setFocused(@Nullable GuiEventListener focused) {
         super.setFocused(focused);
@@ -71,7 +67,7 @@ public class NbtTreeView extends AbstractComposedComponent {
     public static final int START_X = 10;
     public static final int START_Y = 30;
     public static final int NODE_GAP_X = 10;
-    public static final int NODE_GAP_Y = getMinecraft().font.lineHeight + 2;
+    public static final int NODE_GAP_Y = Minecraft.getInstance().font.lineHeight + 2;
 
     private int nodeOffsetX = 0;
     private int nodeOffsetY = 0;
@@ -128,13 +124,6 @@ public class NbtTreeView extends AbstractComposedComponent {
                 addNodes(child);
             }
             nodeOffsetX -= NODE_GAP_X;
-        }
-    }
-
-    @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        for (var n : nodes) {
-            n.render(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 

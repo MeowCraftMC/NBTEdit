@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.gui.window.IWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -9,15 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.naming.OperationNotSupportedException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class AbstractScreen extends Screen implements IComponent, IWindowHolder {
+public class AbstractScreen extends Screen implements IWindowHolder {
     protected AbstractScreen(Component title) {
         super(title);
     }
+
+    /// <editor-fold desc="IComponent.">
 
     @Override
     public AbstractComposedComponent getParent() {
@@ -59,10 +59,17 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
         return height;
     }
 
+    @Override
+    public boolean isHovered() {
+        return true;
+    }
+
+    /// </editor-fold>
+
     /// <editor-fold desc="Windows holder.">
 
     /**
-     * Map<IWindow window, Pair<Boolean mutex, Boolean shown>>
+     * Map<IWindow window, Boolean shown>
      */
     private final Map<IWindow, Boolean> windows = new HashMap<>();
 
@@ -84,8 +91,8 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
         window.onOpen();
 
         if (mutex) {
-            if (mutexWindow == null) {
-                mutexWindow = window;
+            if (!hasMutexWindow()) {
+                setMutexWindow(window);
             } else {
                 throw new IllegalStateException();
             }
@@ -98,6 +105,14 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
 
     @Override
     public void closeWindow(@NotNull IWindow window) {
+        if (getMutexWindow() == window) {
+            setMutexWindow(null);
+        }
+
+        if (getFocusedWindow() == window) {
+            setFocusedWindow(null);
+        }
+
         removeChild(window);
         windows.remove(window);
         window.onClose();
@@ -113,7 +128,7 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
 
     @Override
     public void hide(@NotNull IWindow window) {
-        if (windows.get(window)) {
+        if (windows.get(window) && getMutexWindow() != window) {
             windows.put(window, false);
             window.onHidden();
         }
@@ -125,10 +140,11 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
     }
 
     @Override
-    public void mutex(@Nullable IWindow window) {
-        if (getMutexWindow() == null && window != null && hasWindow(window)) {
+    public void setMutexWindow(@Nullable IWindow window) {
+        if (window != null && hasWindow(window)) {
+            setFocusedWindow(window);
             mutexWindow = window;
-        } else if (window == null) {
+        } else {
             mutexWindow = null;
         }
     }
@@ -139,7 +155,12 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
     }
 
     @Override
-    public void focus(@Nullable IWindow window) {
+    public void setFocusedWindow(@Nullable IWindow window) {
+        if (hasMutexWindow()) {
+            setFocused(getMutexWindow());
+            return;
+        }
+
         setFocused(window);
         for (var w : getWindows()) {
             w.setFocused(w == window);
@@ -163,20 +184,14 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
     public void addChild(IComponent child) {
         children.add(child);
         child.setParent(this);
+        addRenderableWidget(child);
     }
 
     @Override
     public void removeChild(IComponent child) {
         children.remove(child);
         child.setParent(null);
-    }
-
-    @Override
-    public void clearChildren() {
-        for (var c : children) {
-            c.setParent(null);
-        }
-        children.clear();
+        removeWidget(child);
     }
 
     @Override
@@ -190,4 +205,101 @@ public class AbstractScreen extends Screen implements IComponent, IWindowHolder 
     }
 
     /// </editor-fold>
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        var maskedMouseX = hasMutexWindow() ? -1 : mouseX;
+        var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
+
+        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        for (var c : getChildren()) {
+            if (!(c instanceof IWindow)) {
+                c.render(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+            }
+        }
+
+        if (hasWindow()) {
+            renderTransparentBackground(guiGraphics);
+        }
+
+        for (var w : getWindows()) {
+            if (w != getMutexWindow()) {
+                w.render(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
+            }
+        }
+
+        if (hasMutexWindow()) {
+            getMutexWindow().render(guiGraphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().mouseClicked(mouseX, mouseY, button);
+        }
+
+        return IWindowHolder.super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().mouseReleased(mouseX, mouseY, button);
+        }
+
+        return IWindowHolder.super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
+
+        return IWindowHolder.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        return IWindowHolder.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        return IWindowHolder.super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().keyReleased(keyCode, scanCode, modifiers);
+        }
+
+        return IWindowHolder.super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        if (hasMutexWindow()) {
+            assert getMutexWindow() != null;
+            return getMutexWindow().charTyped(codePoint, modifiers);
+        }
+
+        return IWindowHolder.super.charTyped(codePoint, modifiers);
+    }
 }

@@ -85,9 +85,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(-scrollXOffset, -scrollYOffset, 0.0);
 
-        for (var c : getChildren()) {
-            c.render(guiGraphics, mouseX + scrollXOffset, mouseY + scrollYOffset, partialTick);
-        }
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
 
         guiGraphics.pose().popPose();
         guiGraphics.disableScissor();
@@ -153,11 +151,11 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (shouldShowVerticalBar() && verticalScrollBar.isDragging()) {
+        if (shouldShowVerticalBar() && verticalScrollBar.isDragging() && dragY != 0) {
             return verticalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
 
-        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging()) {
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isDragging() && dragX != 0) {
             return horizontalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
 
@@ -166,11 +164,11 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (shouldShowVerticalBar() && verticalScrollBar.isHoveredOrFocused()) {
+        if (shouldShowVerticalBar() && scrollY != 0) {
             return verticalScrollBar.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
-        if (shouldShowHorizontalBar() && verticalScrollBar.isHoveredOrFocused()) {
+        if (shouldShowHorizontalBar() && scrollX != 0) {
             return horizontalScrollBar.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 

@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.editor.EditorHelper;
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.AbstractComposedComponent;
 import cx.rain.mc.nbtedit.gui.component.AbstractScreen;
+import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import cx.rain.mc.nbtedit.gui.editor.EditorButtonComponent;
 import cx.rain.mc.nbtedit.gui.editor.NbtTreeView;
 import cx.rain.mc.nbtedit.gui.component.ScrollableViewport;
@@ -17,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CollectionTag;
@@ -26,12 +26,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class EditorScreen extends AbstractScreen {
@@ -61,23 +57,23 @@ public class EditorScreen extends AbstractScreen {
         treeView = new NbtTreeView(tree, 0, 29, v -> updateButtons());
 
         treeViewport.addChild(treeView);
-        addRenderableWidget(treeViewport);
+        addChild(treeViewport);
 
-        var saveButton = Button.builder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
+        var saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
                 .pos(width / 4 - 100, height - 27)
                 .size(200, 20)
                 .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
                 .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
                 .build();
-        addRenderableWidget(saveButton);
+        addChild(saveButton);
 
-        var quitButton = Button.builder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), b -> onQuit())
+        var quitButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), b -> onQuit())
                 .pos(width * 3 / 4 - 100, height - 27)
                 .size(200, 20)
                 .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
                 .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_QUIT)))
                 .build();
-        addRenderableWidget(quitButton);
+        addChild(quitButton);
 
         initButtons();
         update(false);
@@ -135,23 +131,23 @@ public class EditorScreen extends AbstractScreen {
     }
 
     private void buildButton(EditorButton button, int x, int y, Button.OnPress onPress) {
-        var b = new EditorButtonComponent(button.getId(), x, y, button.getName(), onPress);
+        var b = new EditorButtonComponent(button, x, y, button.getName(), onPress);
         addButton(button.getId(), b);
     }
 
     private void buildAddButton(EditorButton button, int x, int y, Button.OnPress onPress) {
-        var b = new EditorButtonComponent(button.getId(), x, y, Component.translatable(ModConstants.GUI_BUTTON_ADD, button.getName().getString()), onPress);
+        var b = new EditorButtonComponent(button, x, y, Component.translatable(ModConstants.GUI_BUTTON_ADD, button.getName().getString()), onPress);
         addButton(button.getId(), b);
     }
 
     private void addButton(int id, EditorButtonComponent button) {
         editorButtons[id] = button;
-        addRenderableWidget(button);
+        addChild(button);
     }
 
     protected void onEdit() {
         doEdit();
-        update(true);
+        update(false);
     }
 
     protected void onDelete() {
@@ -172,7 +168,7 @@ public class EditorScreen extends AbstractScreen {
 
     protected void onCopy() {
         doCopy();
-        update(true);
+        update(false);
     }
 
     protected void onAddButtonsClick(int id) {
@@ -267,6 +263,13 @@ public class EditorScreen extends AbstractScreen {
 
     /// <editor-fold desc="Editor logic.">
 
+
+    @Override
+    public void update() {
+        treeViewport.update();
+        updateButtons();
+    }
+
     private void update(boolean centerFocused) {
         if (centerFocused && treeView.getFocusedChild() != null) {
             if (treeViewport.shouldShowVerticalBar()) {
@@ -279,18 +282,21 @@ public class EditorScreen extends AbstractScreen {
             }
         }
 
-        treeViewport.update();
-        updateButtons();
+        update();
     }
 
     public void doEdit() {
+        if (hasMutexWindow()) {
+            return;
+        }
+
         var focused = treeView.getFocusedNode();
         var tag = focused.getTag();
         var parent = focused.getParent().getTag();
-        var editor = new EditingWindow((width - 178) / 2, (height - 93) / 2, 178, 93, focused,
+        var editor = new EditingWindow((width - EditingWindow.WIDTH) / 2, (height - EditingWindow.HEIGHT) / 2, focused,
                 !(parent instanceof ListTag),
                 !(tag instanceof CompoundTag || tag instanceof ListTag));
-        addWindow(editor);
+        addWindow(editor, true, true);
     }
 
     private void doCopy() {

@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.gui.window;
 
+import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.NodeParser;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
@@ -9,8 +10,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class EditingWindow extends AbstractWindow {
+    public static final ResourceLocation TEXTURE = new ResourceLocation(NBTEdit.MODID, "textures/gui/window.png");
+    public static final int WIDTH = 178;
+    public static final int HEIGHT = 93;
+
     private final NbtTree.Node<?> node;
     private final boolean nameEditable;
     private final boolean valueEditable;
@@ -18,8 +24,8 @@ public class EditingWindow extends AbstractWindow {
     private EditBoxComponent nameField;
     private EditBoxComponent valueField;
 
-    public EditingWindow(int x, int y, int width, int height, NbtTree.Node<?> node, boolean nameEditable, boolean valueEditable) {
-        super(x, y, width, height, Component.translatable(ModConstants.GUI_TITLE_EDITING_WINDOW));
+    public EditingWindow(int x, int y, NbtTree.Node<?> node, boolean nameEditable, boolean valueEditable) {
+        super(x, y, WIDTH, HEIGHT, Component.translatable(ModConstants.GUI_TITLE_EDITING_WINDOW));
 
         this.node = node;
         this.nameEditable = nameEditable;
@@ -50,27 +56,29 @@ public class EditingWindow extends AbstractWindow {
         nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
         nameField.setEditable(nameEditable);
-        nameField.setBordered(true);
+        nameField.setBordered(false);
         addChild(nameField);
 
         valueField = new EditBoxComponent(getMinecraft().font, getX() + 46, getY() + 44, 116, 15,
                 Component.translatable(ModConstants.GUI_EDIT_BOX_VALUE));
-        nameField.setMaxLength(Integer.MAX_VALUE);
-        nameField.setValue(value);
-        nameField.setEditable(valueEditable);
-        nameField.setBordered(true);
+        valueField.setMaxLength(Integer.MAX_VALUE);
+        valueField.setValue(value);
+        valueField.setEditable(valueEditable);
+        valueField.setBordered(false);
         addChild(valueField);
 
-        var saveButton = new ButtonComponent(getX() + 9, getY() + 62, 75, 20,
-                Component.translatable(ModConstants.GUI_BUTTON_OK),
-                b -> onOk(),
-                n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_OK));
+        var saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_OK), b -> onOk())
+                .pos(getX() + 9, getY() + 62)
+                .size(75, 20)
+                .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_OK))
+                .build();
         addChild(saveButton);
 
-        var cancelButton = new ButtonComponent(getX() + 93, getY() + 62, 75, 20,
-                Component.translatable(ModConstants.GUI_BUTTON_CANCEL),
-                b -> onCancel(),
-                n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL));
+        var cancelButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_CANCEL), b -> onCancel())
+                .pos(getX() + 93, getY() + 62)
+                .size(75, 20)
+                .createNarration(n -> Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL))
+                .build();
         addChild(cancelButton);
     }
 
@@ -107,7 +115,9 @@ public class EditingWindow extends AbstractWindow {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.blit(TEXTURE, getX(), getY(), getWidth(), getHeight(), 0, 0, getWidth(), getHeight(), 256, 256);
 
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override

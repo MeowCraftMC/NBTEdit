@@ -55,13 +55,6 @@ public class NbtTreeViewNode extends AbstractComponent {
         return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + getHeight();
     }
 
-//    public boolean shouldRender(int xMin, int yMin, int xMax, int yMax) {
-//        return getX() > xMin
-//                || getY() > yMin
-//                || getX() + getWidth() < xMax
-//                || getY() + getHeight() < yMax;
-//    }
-
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narration) {
         narration.add(NarratedElementType.TITLE, AccessibilityHelper.buildNarration(node));
@@ -73,10 +66,10 @@ public class NbtTreeViewNode extends AbstractComponent {
                 && getParent().getFocusedNode() == this.getNode();
         var isTextHover = isMouseInsideText(mouseX, mouseY);
         var isSpoilerHover = isMouseInsideSpoiler(mouseX, mouseY);
-        var color = isSelected ? 0xff : isTextHover ? 16777120 : (node.hasParent()) ? 14737632 : -6250336;
+        var color = isSelected ? 0xFFE0E0E0 : isTextHover ? 0xFFFFFFA0 : (node.hasParent()) ? 0xFFE0E0E0 : 0xFFA0A0A0;
 
         if (isSelected) {
-            graphics.fill(getX() + 11, getY(), getX() + getWidth(), getY() + getHeight(), Integer.MIN_VALUE);
+            graphics.fill(getX() + 11, getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
 
         var w = 18;

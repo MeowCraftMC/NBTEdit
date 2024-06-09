@@ -34,4 +34,9 @@ public abstract class AbstractComponent extends AbstractWidget implements ICompo
     public void visitWidgets(Consumer<AbstractWidget> consumer) {
         consumer.accept(this);
     }
+
+    @Override
+    public boolean isHovered() {
+        return super.isHovered();
+    }
 }

@@ -17,10 +17,10 @@ public interface IWindowHolder extends IComposedComponent {
 
     @Nullable
     IWindow getMutexWindow();
-    void mutex(@Nullable IWindow window);
+    void setMutexWindow(@Nullable IWindow window);
     @Nullable
     IWindow getFocusedWindow();
-    void focus(@Nullable IWindow window);
+    void setFocusedWindow(@Nullable IWindow window);
 
     default void addWindow(@NotNull IWindow window) {
         addWindow(window, false, true);
@@ -34,7 +34,11 @@ public interface IWindowHolder extends IComposedComponent {
         return getMutexWindow() == window;
     }
 
-    default boolean hasWindow(boolean mutex) {
+    default boolean hasMutexWindow() {
+        return getMutexWindow() != null;
+    }
+
+    default boolean hasWindow() {
         return !getWindows().isEmpty();
     }
 

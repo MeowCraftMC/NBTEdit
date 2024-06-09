@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.gui.component;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractComposedComponent extends AbstractComponent implements IComposedComponent {
+public abstract class AbstractComposedComponent extends AbstractComponent implements IComposedComponent, ContainerEventHandler {
     private final List<IComponent> children = new ArrayList<>();
 
     @Nullable
@@ -30,14 +31,6 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     public void removeChild(IComponent child) {
         children.remove(child);
         child.setParent(null);
-    }
-
-    @Override
-    public void clearChildren() {
-        for (var c : children) {
-            c.setParent(null);
-        }
-        children.clear();
     }
 
     @Override
@@ -110,5 +103,32 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         return IComposedComponent.super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return IComposedComponent.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return IComposedComponent.super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        return IComposedComponent.super.keyReleased(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        return IComposedComponent.super.charTyped(codePoint, modifiers);
+    }
+
+    @Override
+    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        for (var c : getChildren()) {
+            c.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
     }
 }
