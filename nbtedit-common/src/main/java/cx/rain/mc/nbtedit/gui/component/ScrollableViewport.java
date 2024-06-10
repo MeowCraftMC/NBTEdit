@@ -92,11 +92,14 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX : -1;
+        var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY : -1;
+
         guiGraphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(-scrollXOffset, -scrollYOffset, 0.0);
 
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+        super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
 
         guiGraphics.pose().popPose();
         guiGraphics.disableScissor();

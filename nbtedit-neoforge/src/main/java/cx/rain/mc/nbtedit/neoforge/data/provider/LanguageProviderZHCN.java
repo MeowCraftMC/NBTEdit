@@ -43,6 +43,7 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(ModConstants.NBT_TYPE_INT_ARRAY, "整数数组");
         add(ModConstants.NBT_TYPE_LONG_ARRAY, "长整数数组");
 
+        add(ModConstants.GUI_TITLE_EDITOR_READ_ONLY, "（只读）");
         add(ModConstants.GUI_TITLE_EDITOR_ENTITY, "编辑实体（ID：%1$s）");
         add(ModConstants.GUI_TITLE_EDITOR_BLOCK_ENTITY, "编辑方块实体（%1$s, %2$s, %3$s）");
         add(ModConstants.GUI_TITLE_EDITOR_ITEM_STACK, "编辑物品（%1$s）");
@@ -83,6 +84,7 @@ public class LanguageProviderZHCN extends LanguageProvider {
         add(ModConstants.GUI_TOOLTIP_BUTTON_ADD, "添加 %1$s 类型的标签");
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE, "保存并退出编辑器");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED, "无法保存，因为此编辑器是只读的");
         add(ModConstants.GUI_TOOLTIP_BUTTON_QUIT, "退出编辑器但不保存");
         add(ModConstants.GUI_TOOLTIP_BUTTON_OK, "确定");
         add(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL, "取消");

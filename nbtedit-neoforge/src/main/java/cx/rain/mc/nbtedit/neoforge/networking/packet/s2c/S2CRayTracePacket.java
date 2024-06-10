@@ -1,6 +1,7 @@
 package cx.rain.mc.nbtedit.neoforge.networking.packet.s2c;
 
 import cx.rain.mc.nbtedit.neoforge.networking.ModNetworkingImpl;
+import cx.rain.mc.nbtedit.networking.NetworkingConstants;
 import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -27,6 +28,6 @@ public class S2CRayTracePacket implements CustomPacketPayload {
 
     @Override
     public @NotNull ResourceLocation id() {
-        return ModNetworkingImpl.S2C_RAY_TRACE_REQUEST_PACKET_ID;
+        return NetworkingConstants.S2C_RAYTRACE_REQUEST_PACKET_ID;
     }
 }

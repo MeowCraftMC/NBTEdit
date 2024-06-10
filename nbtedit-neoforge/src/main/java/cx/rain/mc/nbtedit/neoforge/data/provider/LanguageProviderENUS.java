@@ -43,6 +43,7 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.NBT_TYPE_INT_ARRAY, "Integer Array");
         add(ModConstants.NBT_TYPE_LONG_ARRAY, "Long Array");
 
+        add(ModConstants.GUI_TITLE_EDITOR_READ_ONLY, "[Read-only] ");
         add(ModConstants.GUI_TITLE_EDITOR_ENTITY, "Editing Entity (%1$s)");
         add(ModConstants.GUI_TITLE_EDITOR_BLOCK_ENTITY, "Editing BlockEntity (%1$s, %2$s, %3$s)");
         add(ModConstants.GUI_TITLE_EDITOR_ITEM_STACK, "Editing ItemStack (%1$s)");
@@ -83,6 +84,7 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.GUI_TOOLTIP_BUTTON_ADD, "Add tag typed %1$s.");
 
         add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE, "Save and quit the editor.");
+        add(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED, "Cannot be saved, the editor is read-only.");
         add(ModConstants.GUI_TOOLTIP_BUTTON_QUIT, "Discard and quit the editor.");
         add(ModConstants.GUI_TOOLTIP_BUTTON_OK, "OK");
         add(ModConstants.GUI_TOOLTIP_BUTTON_CANCEL, "Cancel");

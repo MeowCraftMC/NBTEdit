@@ -10,7 +10,7 @@ public interface IModPermission {
     }
 
     default boolean isReadOnly(ServerPlayer player) {
-        return hasPermission(player, ModPermissions.READ_ONLY);
+        return !hasPermission(player, ModPermissions.USE) && hasPermission(player, ModPermissions.READ_ONLY);
     }
 
     default boolean canSave(ServerPlayer player) {

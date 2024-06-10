@@ -33,6 +33,7 @@ public class ModConstants {
     public static final String NBT_TYPE_INT_ARRAY = "message.nbtedit.nbt_type.int_array";
     public static final String NBT_TYPE_LONG_ARRAY = "message.nbtedit.nbt_type.long_array";
 
+    public static final String GUI_TITLE_EDITOR_READ_ONLY = "gui.nbtedit.title.editor.read_only";
     public static final String GUI_TITLE_EDITOR_ENTITY = "gui.nbtedit.title.editor_entity";
     public static final String GUI_TITLE_EDITOR_BLOCK_ENTITY = "gui.nbtedit.title.editor_block_entity";
     public static final String GUI_TITLE_EDITOR_ITEM_STACK = "gui.nbtedit.title.editor_item_stack";
@@ -74,6 +75,7 @@ public class ModConstants {
     public static final String GUI_TOOLTIP_BUTTON_ADD = "gui.nbtedit.tooltip.button_add";
 
     public static final String GUI_TOOLTIP_BUTTON_SAVE = "gui.nbtedit.tooltip.button_save";
+    public static final String GUI_TOOLTIP_BUTTON_SAVE_DISABLED = "gui.nbtedit.tooltip.button_save.disabled";
     public static final String GUI_TOOLTIP_BUTTON_QUIT = "gui.nbtedit.tooltip.button_quit";
     public static final String GUI_TOOLTIP_BUTTON_OK = "gui.nbtedit.tooltip.button_ok";
     public static final String GUI_TOOLTIP_BUTTON_CANCEL = "gui.nbtedit.tooltip.button_cancel";

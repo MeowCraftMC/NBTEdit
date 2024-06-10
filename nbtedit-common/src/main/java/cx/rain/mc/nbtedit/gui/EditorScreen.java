@@ -32,14 +32,16 @@ public class EditorScreen extends AbstractScreen {
 
     private final NbtTree tree;
     private final Consumer<CompoundTag> onSave;
+    private final boolean readOnly;
 
     private ScrollableViewport treeViewport;
     private NbtTreeView treeView;
 
-    public EditorScreen(CompoundTag tag, Component title, Consumer<CompoundTag> onSave) {
-        super(title);
+    public EditorScreen(CompoundTag tag, Component title, Consumer<CompoundTag> onSave, boolean readOnly) {
+        super(readOnly ? Component.translatable(ModConstants.GUI_TITLE_EDITOR_READ_ONLY).append(title) : title);
 
         this.onSave = onSave;
+        this.readOnly = readOnly;
 
         tree = NbtTree.root(tag);
     }
@@ -54,12 +56,23 @@ public class EditorScreen extends AbstractScreen {
         treeViewport.addChild(treeView);
         addChild(treeViewport);
 
-        var saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
-                .pos(width / 4 - 100, height - 27)
-                .size(200, 20)
-                .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
-                .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
-                .build();
+        ButtonComponent saveButton;
+        if (!readOnly) {
+            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> onSave())
+                    .pos(width / 4 - 100, height - 27)
+                    .size(200, 20)
+                    .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
+                    .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE)))
+                    .build();
+        } else {
+            saveButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_SAVE), b -> {})
+                    .pos(width / 4 - 100, height - 27)
+                    .size(200, 20)
+                    .createNarration(c -> c.get().append(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
+                    .tooltip(Tooltip.create(Component.translatable(ModConstants.GUI_TOOLTIP_BUTTON_SAVE_DISABLED)))
+                    .build();
+            saveButton.active = false;
+        }
         addChild(saveButton);
 
         var quitButton = ButtonComponent.getBuilder(Component.translatable(ModConstants.GUI_BUTTON_QUIT), b -> onQuit())
@@ -201,6 +214,11 @@ public class EditorScreen extends AbstractScreen {
     }
 
     public void updateButtons() {
+        if (readOnly) {
+            inactiveAllButtons();
+            return;
+        }
+
         var editButton = editorButtons[12];
         var deleteButton = editorButtons[13];
         var pasteButton = editorButtons[14];
