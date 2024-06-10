@@ -5,6 +5,10 @@ A Minecraft mod allows you to edit any NBT tags of the game content with a GUI w
 **Forge, NeoForge, Fabric are supported!**  
 **Forge、NeoForge、Fabric 均已支持！**
 
+
+
+[Documents before version 5.2.0 （5.2.0 版本之前的文档）](https://github.com/qyl27/NBTEdit/blob/1.20.3/README.md)
+
 ## Usage（食用方法）
 
 ### Shortcuts（快捷键）
@@ -96,5 +100,5 @@ http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1286750-
 
 
 ## Bug report / Feature request（反馈/催更）
-Please go to the issues page.  
-请到 Issues 页面提出。
+Please go to the [issues page](https://github.com/qyl27/NBTEdit/issues) of GitHub repo.  
+请到 [Issues 页面](https://github.com/qyl27/NBTEdit/issues) 提出。
