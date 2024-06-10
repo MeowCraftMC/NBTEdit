@@ -1,6 +1,7 @@
 package cx.rain.mc.nbtedit.fabric.config;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import cx.rain.mc.nbtedit.api.config.IModConfig;
 
 import java.io.File;
@@ -9,7 +10,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class ModConfigImpl implements IModConfig {
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     protected File configDir;
     protected File configFile;

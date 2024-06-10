@@ -3,6 +3,7 @@ package cx.rain.mc.nbtedit.forge.command;
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.command.ModPermissions;
 import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.forge.config.ModConfigImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,12 +19,6 @@ import java.util.Map;
 public class ModPermissionImpl implements IModPermission {
     public static final Map<ModPermissions, PermissionNode<Boolean>> NODES = new HashMap<>();
 
-    static {
-        for (var p : ModPermissions.values()) {
-            NODES.put(p, bool(p.getName(), p.getDefaultLevel()));
-        }
-    }
-
     private static PermissionNode<Boolean> bool(String name, int defaultLevel) {
         return new PermissionNode<>(NBTEdit.MODID, name, PermissionTypes.BOOLEAN,
                 (player, uuid, context) -> player != null && player.hasPermissions(defaultLevel));
@@ -31,8 +26,10 @@ public class ModPermissionImpl implements IModPermission {
 
     @SubscribeEvent
     public static void registerPermission(PermissionGatherEvent.Nodes event) {
-        for (var n : NODES.values()) {
-            event.addNodes(n);
+        for (var p : ModPermissions.values()) {
+            var node = bool(p.getName(), ModConfigImpl.PERMISSION_LEVELS.get(p).get());
+            NODES.put(p, node);
+            event.addNodes(node);
         }
     }
 
