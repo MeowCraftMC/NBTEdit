@@ -72,7 +72,11 @@ public class NetworkEditingHelper {
                     .withStyle(ChatFormatting.GREEN));
 
             var tag = new CompoundTag();
-            entity.save(tag);
+            if (entity instanceof Player) {
+                entity.saveWithoutId(tag);
+            } else {
+                entity.saveAsPassenger(tag);
+            }
             NBTEditPlatform.getNetworking().sendTo(player, new EntityEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), entity.getUUID(), entity.getId()));
         });
     }

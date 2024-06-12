@@ -25,15 +25,8 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     public void update() {
-        var children = getChildren();
-        unInitialize();
-
-        for (var c : children) {
-            addChild(c);
-        }
-        initialize();
-
         super.update();
+        createChildren();
     }
 
     @Override
@@ -92,12 +85,12 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX : -1;
-        var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY : -1;
+        var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX - getX() : -1;
+        var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY - getY() : -1;
 
         guiGraphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(-scrollXOffset, -scrollYOffset, 0.0);
+        guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset(), 0.0);
 
         super.renderWidget(guiGraphics, maskedMouseX, maskedMouseY, partialTick);
 
@@ -147,7 +140,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseClicked(mouseX, mouseY, button);
         }
 
-        return super.mouseClicked(mouseX + getScrollXOffset(), mouseY + getScrollYOffset(), button);
+        return super.mouseClicked(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
     }
 
     @Override
@@ -160,7 +153,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseReleased(mouseX, mouseY, button);
         }
 
-        return super.mouseReleased(mouseX + getScrollXOffset(), mouseY + getScrollYOffset(), button);
+        return super.mouseReleased(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button);
     }
 
     @Override
@@ -173,7 +166,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
 
-        return super.mouseDragged(mouseX + getScrollXOffset(), mouseY + getScrollYOffset(), button, dragX, dragY);
+        return super.mouseDragged(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), button, dragX, dragY);
     }
 
     @Override
@@ -186,7 +179,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return horizontalScrollBar.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
-        return super.mouseScrolled(mouseX + getScrollXOffset(), mouseY + getScrollYOffset(), scrollX, scrollY);
+        return super.mouseScrolled(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), scrollX, scrollY);
     }
 
     @Override

@@ -1,9 +1,8 @@
 package cx.rain.mc.nbtedit.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import cx.rain.mc.nbtedit.editor.EditorHelper;
 import cx.rain.mc.nbtedit.editor.EditorButton;
-import cx.rain.mc.nbtedit.gui.component.AbstractScreen;
+import cx.rain.mc.nbtedit.gui.screen.AbstractScreen;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import cx.rain.mc.nbtedit.gui.editor.EditorButtonComponent;
 import cx.rain.mc.nbtedit.gui.editor.NbtTreeView;
@@ -16,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
@@ -52,8 +50,8 @@ public class EditorScreen extends AbstractScreen {
         width = minecraft.getWindow().getGuiScaledWidth();
         height = minecraft.getWindow().getGuiScaledHeight();
 
-        treeViewport = new ScrollableViewport(0, 29, width, height - 65, 15);
-        treeView = new NbtTreeView(tree, 0, 29, v -> updateButtons());
+        treeViewport = new ScrollableViewport(0, 40, width, height - 76, 15);
+        treeView = new NbtTreeView(tree, 0, 0, v -> updateButtons());
         treeViewport.addChild(treeView);
         addChild(treeViewport);
 
@@ -97,7 +95,7 @@ public class EditorScreen extends AbstractScreen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         renderBlurredBackground(partialTick);
-        renderMenuBackground(guiGraphics, 0, 0, width, 29);
+        renderMenuBackground(guiGraphics, 0, 0, width, 40);
         renderMenuBackground(guiGraphics, 0, height - 35, width, height);
     }
 
@@ -107,7 +105,7 @@ public class EditorScreen extends AbstractScreen {
 
     private void initButtons() {
         int xLoc = 18;
-        int yLoc = 4;
+        int yLoc = 15;
 
         buildButton(EditorButton.COPY, xLoc, yLoc, b -> onCopy());
 
@@ -124,7 +122,7 @@ public class EditorScreen extends AbstractScreen {
         buildButton(EditorButton.EDIT, xLoc, yLoc, b -> onEdit());
 
         xLoc = 18;
-        yLoc = 17;
+        yLoc = 27;
         for (var i = 0; i < 12; i++) {
             int id = i;
             buildAddButton(EditorButton.of(id), xLoc, yLoc, b -> onAddButtonsClick(id));

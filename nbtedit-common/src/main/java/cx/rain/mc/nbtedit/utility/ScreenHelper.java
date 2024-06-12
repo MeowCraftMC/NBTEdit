@@ -22,7 +22,7 @@ public class ScreenHelper {
 
     public static void showNBTEditScreen(UUID uuid, int id, CompoundTag tag, boolean readOnly) {
         Minecraft.getInstance().setScreen(new EditorScreen(tag,
-                Component.translatable(ModConstants.GUI_TITLE_EDITOR_ENTITY, id),
+                Component.translatable(ModConstants.GUI_TITLE_EDITOR_ENTITY, uuid),
                 newTag -> NBTEditPlatform.getNetworking().sendToServer(new EntityEditingPacket(newTag, false, uuid, id)), readOnly));
     }
 

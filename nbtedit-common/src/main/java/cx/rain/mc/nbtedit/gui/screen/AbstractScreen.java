@@ -1,5 +1,8 @@
-package cx.rain.mc.nbtedit.gui.component;
+package cx.rain.mc.nbtedit.gui.screen;
 
+import cx.rain.mc.nbtedit.gui.component.AbstractComposedComponent;
+import cx.rain.mc.nbtedit.gui.component.IComponent;
+import cx.rain.mc.nbtedit.gui.component.IComposedComponent;
 import cx.rain.mc.nbtedit.gui.window.IWindow;
 import cx.rain.mc.nbtedit.gui.window.IWindowHolder;
 import net.minecraft.client.gui.GuiGraphics;
@@ -254,7 +257,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
 
         renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 5, 16777215);
+        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 16777215);
 
         for (var c : getChildren()) {
             if (!(c instanceof IWindow)) {
