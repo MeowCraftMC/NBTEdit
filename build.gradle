@@ -39,7 +39,7 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
-        options.release = 17
+        options.release = 21
     }
 
     java {
@@ -47,7 +47,7 @@ subprojects {
     }
 
     processResources {
-        var resourcesToReplace = ['build.properties', 'META-INF/mods.toml', 'pack.mcmeta', 'fabric.mod.json']
+        var resourcesToReplace = ['build.properties', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', 'pack.mcmeta', 'fabric.mod.json']
         var replaceTokens = [
                 minecraft_version: minecraft_version,
                 mod_id: mod_id,

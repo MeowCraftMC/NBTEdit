@@ -18,6 +18,9 @@ A Minecraft mod allows you edit any NBT tags of the game content while in game. 
 It can help many map creator to make custom items or help many mod creator to debug.
 '''
 
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
 [[dependencies.nbtedit]]
     modId="neoforge"
     type="required"

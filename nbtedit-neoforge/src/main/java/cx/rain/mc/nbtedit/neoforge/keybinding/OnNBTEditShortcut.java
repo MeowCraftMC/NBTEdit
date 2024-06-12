@@ -4,10 +4,10 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 
-@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class OnNBTEditShortcut {
     @SubscribeEvent
     public static void onKeyboardInput(InputEvent.Key event) {

@@ -6,7 +6,7 @@ import cx.rain.mc.nbtedit.api.command.ModPermissions;
 import cx.rain.mc.nbtedit.neoforge.config.ModConfigImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.server.permission.PermissionAPI;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
@@ -15,7 +15,7 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionTypes;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = NBTEdit.MODID)
+@EventBusSubscriber(modid = NBTEdit.MODID)
 public class ModPermissionImpl implements IModPermission {
     public static final Map<ModPermissions, PermissionNode<Boolean>> NODES = new HashMap<>();
 

@@ -2,204 +2,134 @@ package cx.rain.mc.nbtedit.neoforge.networking;
 
 import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
-import cx.rain.mc.nbtedit.neoforge.networking.packet.*;
-import cx.rain.mc.nbtedit.neoforge.networking.packet.c2s.C2SBlockEntityEditingRequestPacket;
-import cx.rain.mc.nbtedit.neoforge.networking.packet.c2s.C2SEntityEditingRequestPacket;
-import cx.rain.mc.nbtedit.neoforge.networking.packet.c2s.C2SItemStackEditingRequestPacket;
-import cx.rain.mc.nbtedit.neoforge.networking.packet.s2c.S2CRayTracePacket;
-import cx.rain.mc.nbtedit.networking.NetworkEditingHelper;
-import cx.rain.mc.nbtedit.networking.NetworkSavingHelper;
-import cx.rain.mc.nbtedit.networking.NetworkingConstants;
+import cx.rain.mc.nbtedit.networking.NetworkClientHandler;
+import cx.rain.mc.nbtedit.networking.NetworkServerHandler;
+import cx.rain.mc.nbtedit.networking.packet.c2s.BlockEntityRaytraceResultPacket;
+import cx.rain.mc.nbtedit.networking.packet.c2s.EntityRaytraceResultPacket;
+import cx.rain.mc.nbtedit.networking.packet.c2s.ItemStackRaytraceResultPacket;
+import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
 import cx.rain.mc.nbtedit.utility.RayTraceHelper;
-import cx.rain.mc.nbtedit.utility.ScreenHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-@Mod.EventBusSubscriber(modid = NBTEdit.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModNetworkingImpl implements IModNetworking {
 
 	@SubscribeEvent
-	public static void register(RegisterPayloadHandlerEvent event) {
-		var registrar = event.registrar(NBTEdit.MODID);
-		registrar.play(NetworkingConstants.S2C_RAYTRACE_REQUEST_PACKET_ID, S2CRayTracePacket::new, handler -> handler.client(ModNetworkingImpl::clientHandle));
+	public static void register(RegisterPayloadHandlersEvent event) {
+		var registrar = event.registrar(NBTEdit.VERSION);
 
-		registrar.play(NetworkingConstants.C2S_BLOCK_ENTITY_RAYTRACE_RESULT_PACKET_ID, C2SBlockEntityEditingRequestPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle));
-		registrar.play(NetworkingConstants.C2S_ENTITY_RAYTRACE_RESULT_PACKET_ID, C2SEntityEditingRequestPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle));
-		registrar.play(NetworkingConstants.C2S_ITEM_STACK_RAYTRACE_RESULT_PACKET_ID, C2SItemStackEditingRequestPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle));
+		registrar.playToServer(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
 
-		registrar.play(NetworkingConstants.BLOCK_ENTITY_EDITING_PACKET_ID, BlockEntityEditPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle).client(ModNetworkingImpl::clientHandle));
-		registrar.play(NetworkingConstants.ENTITY_EDITING_PACKET_ID, EntityEditPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle).client(ModNetworkingImpl::clientHandle));
-		registrar.play(NetworkingConstants.ITEM_STACK_EDITING_PACKET_ID, ItemStackEditPacket::new, handler -> handler.server(ModNetworkingImpl::serverHandle).client(ModNetworkingImpl::clientHandle));
+		registrar.playToClient(BlockEntityRaytraceResultPacket.TYPE, BlockEntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+		registrar.playToClient(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+		registrar.playToClient(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+
+		registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::handle);
+		registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::handle);
+		registrar.playBidirectional(ItemStackEditingPacket.TYPE, ItemStackEditingPacket.CODEC, ModNetworkingImpl::handle);
 	}
 
-	private static void clientHandle(S2CRayTracePacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(RayTraceHelper::doRayTrace);
+	private static void clientHandle(RaytracePacket packet, IPayloadContext context) {
+		context.enqueueWork(() -> NetworkClientHandler.handleRaytrace(packet));
 	}
 
-	private static void serverHandle(C2SBlockEntityEditingRequestPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkEditingHelper.editBlockEntity(serverPlayer, packet.getPos());
-				}
+	private static void serverHandle(BlockEntityRaytraceResultPacket packet, IPayloadContext context) {
+		context.enqueueWork(() -> {
+			var player = context.player();
+			if (player instanceof ServerPlayer serverPlayer) {
+				NetworkServerHandler.handleBlockEntityResult(serverPlayer, packet);
 			}
 		});
 	}
 
-	private static void serverHandle(C2SEntityEditingRequestPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkEditingHelper.editEntity(serverPlayer, packet.getEntityUuid());
-				}
+	private static void serverHandle(EntityRaytraceResultPacket packet, IPayloadContext context) {
+		context.enqueueWork(() -> {
+			var player = context.player();
+			if (player instanceof ServerPlayer serverPlayer) {
+				NetworkServerHandler.handleEntityResult(serverPlayer, packet);
 			}
 		});
 	}
 
-	private static void serverHandle(C2SItemStackEditingRequestPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
-				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkEditingHelper.editItemStack(serverPlayer, packet.getItemStack());
-				}
+	private static void serverHandle(ItemStackRaytraceResultPacket packet, IPayloadContext context) {
+		context.enqueueWork(() -> {
+			var player = context.player();
+			if (player instanceof ServerPlayer serverPlayer) {
+				NetworkServerHandler.handleItemStackResult(serverPlayer, packet);
 			}
 		});
 	}
 
-	private static void clientHandle(BlockEntityEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> ScreenHelper.showNBTEditScreen(packet.getBlockPos(), packet.getTag(), packet.isReadOnly()));
-	}
+	private static void handle(BlockEntityEditingPacket packet, IPayloadContext context) {
+		if (context.flow().isClientbound()) {
+			context.enqueueWork(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
+			return;
+		}
 
-	private static void clientHandle(EntityEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> ScreenHelper.showNBTEditScreen(packet.getUuid(), packet.getEntityId(), packet.getTag(), packet.isSelf(), packet.isReadOnly()));
-	}
-
-	private static void clientHandle(ItemStackEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().execute(() -> ScreenHelper.showNBTEditScreen(packet.getItemStack(), packet.getTag(), packet.isReadOnly()));
-	}
-
-	private static void serverHandle(BlockEntityEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
+		if (context.flow().isServerbound()) {
+			context.enqueueWork(() -> {
+				var player = context.player();
 				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkSavingHelper.saveBlockEntity(serverPlayer, packet.getBlockPos(), packet.getTag());
+					NetworkServerHandler.saveBlockEntity(serverPlayer, packet);
 				}
-			}
-		});
+			});
+		}
 	}
 
-	private static void serverHandle(EntityEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
+	private static void handle(EntityEditingPacket packet, IPayloadContext context) {
+		if (context.flow().isClientbound()) {
+			context.enqueueWork(() -> NetworkClientHandler.handleEntityEditing(packet));
+			return;
+		}
+
+		if (context.flow().isServerbound()) {
+			context.enqueueWork(() -> {
+				var player = context.player();
 				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkSavingHelper.saveEntity(serverPlayer, packet.getUuid(), packet.getTag());
+					NetworkServerHandler.saveEntity(serverPlayer, packet);
 				}
-			}
-		});
+			});
+		}
 	}
 
-	private static void serverHandle(ItemStackEditPacket packet, PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
-			var optional = context.player();
-			if (optional.isPresent()) {
-				var player = optional.get();
+	private static void handle(ItemStackEditingPacket packet, IPayloadContext context) {
+		if (context.flow().isClientbound()) {
+			context.enqueueWork(() -> NetworkClientHandler.handleItemStackEditing(packet));
+			return;
+		}
+
+		if (context.flow().isServerbound()) {
+			context.enqueueWork(() -> {
+				var player = context.player();
 				if (player instanceof ServerPlayer serverPlayer) {
-					NetworkSavingHelper.saveItemStack(serverPlayer, packet.getItemStack(), packet.getTag());
+					NetworkServerHandler.saveItemStack(serverPlayer, packet);
 				}
-			}
-		});
+			});
+		}
 	}
 
 	public ModNetworkingImpl() {
 	}
 
 	@Override
-	public void serverRayTraceRequest(ServerPlayer player) {
-		player.connection.send(new S2CRayTracePacket());
+	public void sendTo(ServerPlayer player, CustomPacketPayload packet) {
+		player.connection.send(packet);
 	}
 
 	@Override
-	public void clientOpenGuiRequest(BlockPos pos) {
+	public void sendToServer(CustomPacketPayload packet) {
 		var connection = Minecraft.getInstance().getConnection();
 		if (connection != null) {
-			connection.send(new C2SBlockEntityEditingRequestPacket(pos));
-		}
-	}
-
-	@Override
-	public void clientOpenGuiRequest(Entity entity, boolean self) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
-			connection.send(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
-		}
-	}
-
-	@Override
-	public void clientOpenGuiRequest(ItemStack stack) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
-			connection.send(new C2SItemStackEditingRequestPacket(stack));
-		}
-	}
-
-	@Override
-	public void serverOpenClientGui(ServerPlayer player, BlockPos pos, BlockEntity blockEntity, boolean readOnly) {
-		var tag = blockEntity.serializeNBT();
-		player.connection.send(new BlockEntityEditPacket(tag, readOnly, pos));
-	}
-
-	@Override
-	public void serverOpenClientGui(ServerPlayer player, Entity entity, boolean readOnly) {
-		var tag = entity.serializeNBT();
-		player.connection.send(new EntityEditPacket(tag, readOnly, player.getUUID(), player.getId(), player == entity));
-	}
-
-	@Override
-	public void serverOpenClientGui(ServerPlayer player, ItemStack stack, boolean readOnly) {
-		var tag = stack.save(new CompoundTag());
-		player.connection.send(new ItemStackEditPacket(tag, readOnly, stack));
-	}
-
-	@Override
-	public void saveEditing(BlockPos pos, CompoundTag tag) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
-			connection.send(new BlockEntityEditPacket(tag, false, pos));
-		}
-	}
-
-	@Override
-	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
-			connection.send(new EntityEditPacket(tag, false, entity.getUUID(), entity.getId(), self));
-		}
-	}
-
-	@Override
-	public void saveEditing(ItemStack stack, CompoundTag tag) {
-		var connection = Minecraft.getInstance().getConnection();
-		if (connection != null) {
-			connection.send(new ItemStackEditPacket(tag, false, stack));
+			connection.send(packet);
 		}
 	}
 }

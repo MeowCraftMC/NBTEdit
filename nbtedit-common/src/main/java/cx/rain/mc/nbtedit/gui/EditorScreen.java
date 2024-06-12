@@ -1,5 +1,6 @@
 package cx.rain.mc.nbtedit.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import cx.rain.mc.nbtedit.editor.EditorHelper;
 import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.AbstractScreen;
@@ -95,15 +96,10 @@ public class EditorScreen extends AbstractScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderTransparentBackground(guiGraphics);
-        renderDirtBackground(guiGraphics, 0, 0, width, 29);
-        renderDirtBackground(guiGraphics, 0, height - 35, width, height);
-    }
-
-    public void renderDirtBackground(GuiGraphics guiGraphics, int xLoc, int yLoc, int width, int height) {
-        guiGraphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
-        guiGraphics.blit(Screen.BACKGROUND_LOCATION, xLoc, yLoc, width, height, 0.0F, 0.0F, width, height, 32, 32);
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        renderTransparentBackground(guiGraphics);
+        renderBlurredBackground(partialTick);
+        renderMenuBackground(guiGraphics, 0, 0, width, 29);
+        renderMenuBackground(guiGraphics, 0, height - 35, width, height);
     }
 
     /// <editor-fold desc="Buttons.">

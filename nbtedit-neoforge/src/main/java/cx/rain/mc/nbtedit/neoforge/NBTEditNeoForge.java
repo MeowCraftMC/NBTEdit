@@ -4,7 +4,6 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.neoforge.config.ModConfigImpl;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,7 +17,7 @@ public class NBTEditNeoForge {
 
         var nbtedit = new NBTEdit();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModConfigImpl.CONFIG, "nbtedit.toml");
+        container.registerConfig(ModConfig.Type.COMMON, ModConfigImpl.CONFIG, "nbtedit.toml");
 
         bus.addListener(this::setup);
         bus.addListener(this::setupClient);

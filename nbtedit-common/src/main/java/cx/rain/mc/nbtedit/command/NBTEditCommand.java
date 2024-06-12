@@ -6,6 +6,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.NBTEditPlatform;
 import cx.rain.mc.nbtedit.networking.NetworkEditingHelper;
 import com.mojang.brigadier.context.CommandContext;
+import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -29,7 +30,7 @@ public class NBTEditCommand {
 
     private static int onUse(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
-        NBTEditPlatform.getNetworking().serverRayTraceRequest(player);
+        NBTEditPlatform.getNetworking().sendTo(player, new RaytracePacket());
 
         NBTEdit.getInstance().getLogger().info("Player " + player.getName().getString() + " issued command /nbtedit.");
         return 1;

@@ -13,5 +13,5 @@ rootProject.name = 'nbtedit'
 
 include(':nbtedit-common')
 include(':nbtedit-fabric')
-include(':nbtedit-forge')
+//include(':nbtedit-forge')
 include(':nbtedit-neoforge')

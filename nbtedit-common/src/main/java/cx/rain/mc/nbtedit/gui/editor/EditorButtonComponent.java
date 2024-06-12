@@ -8,6 +8,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.time.Duration;
+
 public class EditorButtonComponent extends ButtonComponent {
     public static final ResourceLocation BUTTONS_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
@@ -25,7 +27,7 @@ public class EditorButtonComponent extends ButtonComponent {
 
         if (active) {
             setTooltip(Tooltip.create(getMessage(), createNarrationMessage()));
-            setTooltipDelay(200);
+            setTooltipDelay(Duration.ofMillis(200));
         } else {
             setTooltip(null);
         }

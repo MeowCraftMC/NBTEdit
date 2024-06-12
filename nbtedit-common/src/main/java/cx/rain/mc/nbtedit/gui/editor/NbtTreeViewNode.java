@@ -12,6 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+
 public class NbtTreeViewNode extends AbstractComponent {
     public static final ResourceLocation WIDGET_TEXTURE =
             new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
@@ -33,8 +35,8 @@ public class NbtTreeViewNode extends AbstractComponent {
     public void initialize() {
         super.initialize();
 
-        setTooltip(AccessibilityHelper.buildTooltip(node));
-        setTooltipDelay(200);
+        setTooltip(AccessibilityHelper.buildTooltip(getMinecraft().player, node));
+        setTooltipDelay(Duration.ofMillis(200));
     }
 
     public NbtTreeView getParent() {
