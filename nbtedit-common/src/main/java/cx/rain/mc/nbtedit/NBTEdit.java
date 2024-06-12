@@ -1,8 +1,5 @@
 package cx.rain.mc.nbtedit;
 
-import cx.rain.mc.nbtedit.api.command.IModPermission;
-import cx.rain.mc.nbtedit.api.config.IModConfig;
-import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
