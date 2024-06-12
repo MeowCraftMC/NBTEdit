@@ -160,6 +160,10 @@ public class NetworkSavingHelper {
     }
 
     public static void saveItemStack(ServerPlayer player, ItemStack itemStack, CompoundTag tag) {
+        if (!NetworkingHelper.checkWritePermission(player)) {
+            return;
+        }
+
         var server = player.getServer();
 
         server.execute(() -> {
