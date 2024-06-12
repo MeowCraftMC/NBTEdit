@@ -79,7 +79,7 @@ unifiedPublishing {
         version = publishVersion
         gameVersions = [project.minecraft_version]
         gameLoaders = ['fabric']
-        releaseType = 'beta'
+        releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
 
         mainPublication tasks.remapJar
