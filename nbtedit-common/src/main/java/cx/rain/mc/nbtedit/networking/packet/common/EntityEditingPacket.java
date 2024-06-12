@@ -14,7 +14,7 @@ import java.util.UUID;
 public record EntityEditingPacket(CompoundTag tag, boolean readOnly, UUID uuid, int id) implements CustomPacketPayload {
     public static final Type<EntityEditingPacket> TYPE = new Type<>(NetworkingConstants.ENTITY_EDITING_ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, EntityEditingPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, EntityEditingPacket::tag,
+            NetworkingConstants.TAG, EntityEditingPacket::tag,
             ByteBufCodecs.BOOL, EntityEditingPacket::readOnly,
             UUIDUtil.STREAM_CODEC, EntityEditingPacket::uuid,
             ByteBufCodecs.VAR_INT, EntityEditingPacket::id,

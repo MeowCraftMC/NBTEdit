@@ -96,7 +96,6 @@ public class EditorScreen extends AbstractScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-//        renderTransparentBackground(guiGraphics);
         renderBlurredBackground(partialTick);
         renderMenuBackground(guiGraphics, 0, 0, width, 29);
         renderMenuBackground(guiGraphics, 0, height - 35, width, height);

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public record BlockEntityEditingPacket(CompoundTag tag, boolean readOnly, BlockPos pos) implements CustomPacketPayload {
     public static final Type<BlockEntityEditingPacket> TYPE = new Type<>(NetworkingConstants.BLOCK_ENTITY_EDITING_ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntityEditingPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, BlockEntityEditingPacket::tag,
+            NetworkingConstants.TAG, BlockEntityEditingPacket::tag,
             ByteBufCodecs.BOOL, BlockEntityEditingPacket::readOnly,
             BlockPos.STREAM_CODEC, BlockEntityEditingPacket::pos,
             BlockEntityEditingPacket::new

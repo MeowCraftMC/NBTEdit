@@ -15,7 +15,7 @@ import java.util.UUID;
 public record ItemStackEditingPacket(CompoundTag tag, boolean readOnly, ItemStack itemStack) implements CustomPacketPayload {
     public static final Type<ItemStackEditingPacket> TYPE = new Type<>(NetworkingConstants.ITEM_STACK_EDITING_ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackEditingPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.COMPOUND_TAG, ItemStackEditingPacket::tag,
+            NetworkingConstants.TAG, ItemStackEditingPacket::tag,
             ByteBufCodecs.BOOL, ItemStackEditingPacket::readOnly,
             ItemStack.STREAM_CODEC, ItemStackEditingPacket::itemStack,
             ItemStackEditingPacket::new

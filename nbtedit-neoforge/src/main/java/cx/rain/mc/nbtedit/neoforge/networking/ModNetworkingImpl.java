@@ -11,7 +11,6 @@ import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
 import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
-import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,11 +26,11 @@ public class ModNetworkingImpl implements IModNetworking {
 	public static void register(RegisterPayloadHandlersEvent event) {
 		var registrar = event.registrar(NBTEdit.VERSION);
 
-		registrar.playToServer(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
+		registrar.playToClient(RaytracePacket.TYPE, RaytracePacket.CODEC, ModNetworkingImpl::clientHandle);
 
-		registrar.playToClient(BlockEntityRaytraceResultPacket.TYPE, BlockEntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
-		registrar.playToClient(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
-		registrar.playToClient(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+		registrar.playToServer(BlockEntityRaytraceResultPacket.TYPE, BlockEntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+		registrar.playToServer(EntityRaytraceResultPacket.TYPE, EntityRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
+		registrar.playToServer(ItemStackRaytraceResultPacket.TYPE, ItemStackRaytraceResultPacket.CODEC, ModNetworkingImpl::serverHandle);
 
 		registrar.playBidirectional(BlockEntityEditingPacket.TYPE, BlockEntityEditingPacket.CODEC, ModNetworkingImpl::handle);
 		registrar.playBidirectional(EntityEditingPacket.TYPE, EntityEditingPacket.CODEC, ModNetworkingImpl::handle);
