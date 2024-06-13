@@ -36,7 +36,7 @@ dependencies {
     neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
     common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
+    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')) { transitive = false }
 }
 
 shadowJar {
