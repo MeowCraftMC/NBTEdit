@@ -12,7 +12,7 @@ import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
 public class NBTEditFabricClient implements ClientModInitializer {
-    private static KeyMapping NBTEDIT_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+    private static final KeyMapping NBTEDIT_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             ModConstants.KEY_NBTEDIT_SHORTCUT,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_N,
