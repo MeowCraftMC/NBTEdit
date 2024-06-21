@@ -71,11 +71,9 @@ public class NbtTreeViewNode extends AbstractComponent {
         }
 
         var w = 18;
-        var h = 16;
+        var h = 18;
         var u = 0;
         if (node.shouldShowChildren()) {
-            w = 16;
-            h = 18;
             if (isSpoilerHover) {
                 u = 18 + 18 + 18;
             } else {

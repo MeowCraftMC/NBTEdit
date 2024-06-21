@@ -63,7 +63,7 @@ public class NbtTreeView extends AbstractComposedComponent {
     }
 
     public static final int START_X = 10;
-    public static final int START_Y = 30;
+    public static final int START_Y = 2;
     public static final int NODE_GAP_X = 10;
     public static final int NODE_GAP_Y = Minecraft.getInstance().font.lineHeight + 2;
 
@@ -138,6 +138,5 @@ public class NbtTreeView extends AbstractComposedComponent {
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-        // Todo
     }
 }

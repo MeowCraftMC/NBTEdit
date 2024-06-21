@@ -14,7 +14,7 @@ public class ScrollBar extends AbstractComponent {
     private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(new ResourceLocation("widget/text_field"), new ResourceLocation("widget/text_field_highlighted"));
     private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
 
-    private static final int SCROLL_UNIT = 9;
+    private final int scrollUnit = getMinecraft().font.lineHeight + 2;
 
     private final boolean horizontal;
     private final IScrollHandler toScroll;
@@ -153,9 +153,9 @@ public class ScrollBar extends AbstractComponent {
             var dragPrimary = isVertical() ? dragY : dragX;
 
             if (mousePrimary < (double) getPrimaryStart()) {
-                this.addScrollAmount(-SCROLL_UNIT);
+                this.addScrollAmount(-scrollUnit);
             } else if (mousePrimary > (double)(getPrimaryStart() + getPrimaryLength())) {
-                this.addScrollAmount(SCROLL_UNIT);
+                this.addScrollAmount(scrollUnit);
             } else {
                 var d = Mth.clamp(this.getMaxScrollAmount() / (getPrimaryLength() - getScrollBarLength()), 0, 1);
                 this.addScrollAmount((int) (dragPrimary * d));
@@ -170,7 +170,7 @@ public class ScrollBar extends AbstractComponent {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isMouseOver(mouseX, mouseY)) {
             var scrollPrimary = isVertical() ? scrollY : scrollX;
-            addScrollAmount((int) (SCROLL_UNIT * -scrollPrimary));
+            addScrollAmount((int) (scrollUnit * -scrollPrimary));
 
             return true;
         }
@@ -182,10 +182,10 @@ public class ScrollBar extends AbstractComponent {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         if (isHoveredOrFocused()) {
             if (keyCode == GLFW.GLFW_KEY_UP) {
-                addScrollAmount(-SCROLL_UNIT);
+                addScrollAmount(-scrollUnit);
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_DOWN) {
-                addScrollAmount(SCROLL_UNIT);
+                addScrollAmount(scrollUnit);
                 return true;
             }
         }

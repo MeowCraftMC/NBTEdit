@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ScreenHelper {
     public static void showNBTEditScreen(UUID uuid, int id, CompoundTag tag, boolean self, boolean readOnly) {
         Minecraft.getInstance().setScreen(new EditorScreen(tag,
-                Component.translatable(ModConstants.GUI_TITLE_EDITOR_ENTITY, id),
+                Component.translatable(ModConstants.GUI_TITLE_EDITOR_ENTITY, uuid.toString()),
                 newTag -> NBTEditPlatform.getNetworking().saveEditing(getEntity(id), newTag, self), readOnly));
     }
 

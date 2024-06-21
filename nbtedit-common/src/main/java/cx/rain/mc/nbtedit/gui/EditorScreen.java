@@ -51,8 +51,8 @@ public class EditorScreen extends AbstractScreen {
         width = minecraft.getWindow().getGuiScaledWidth();
         height = minecraft.getWindow().getGuiScaledHeight();
 
-        treeViewport = new ScrollableViewport(0, 29, width, height - 65, 15);
-        treeView = new NbtTreeView(tree, 0, 29, v -> updateButtons());
+        treeViewport = new ScrollableViewport(0, 40, width, height - 76, 15);
+        treeView = new NbtTreeView(tree, 0, 40, v -> updateButtons());
         treeViewport.addChild(treeView);
         addChild(treeViewport);
 
@@ -96,7 +96,7 @@ public class EditorScreen extends AbstractScreen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         renderTransparentBackground(guiGraphics);
-        renderDirtBackground(guiGraphics, 0, 0, width, 29);
+        renderDirtBackground(guiGraphics, 0, 0, width, 40);
         renderDirtBackground(guiGraphics, 0, height - 35, width, height);
     }
 
@@ -112,7 +112,7 @@ public class EditorScreen extends AbstractScreen {
 
     private void initButtons() {
         int xLoc = 18;
-        int yLoc = 4;
+        int yLoc = 15;
 
         buildButton(EditorButton.COPY, xLoc, yLoc, b -> onCopy());
 
@@ -129,7 +129,7 @@ public class EditorScreen extends AbstractScreen {
         buildButton(EditorButton.EDIT, xLoc, yLoc, b -> onEdit());
 
         xLoc = 18;
-        yLoc = 17;
+        yLoc = 27;
         for (var i = 0; i < 12; i++) {
             int id = i;
             buildAddButton(EditorButton.of(id), xLoc, yLoc, b -> onAddButtonsClick(id));

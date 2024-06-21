@@ -254,6 +254,8 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
 
         renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 16777215);
+
         for (var c : getChildren()) {
             if (!(c instanceof IWindow)) {
                 c.render(guiGraphics, maskedMouseX, maskedMouseY, partialTick);

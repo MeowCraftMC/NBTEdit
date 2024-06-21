@@ -71,6 +71,7 @@ public class EditingWindow extends AbstractWindow {
         nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
         nameField.setEditable(nameEditable);
+        nameField.active = nameEditable;
         nameField.setBordered(false);
         addChild(nameField);
 
@@ -79,6 +80,7 @@ public class EditingWindow extends AbstractWindow {
         valueField.setMaxLength(Integer.MAX_VALUE);
         valueField.setValue(value);
         valueField.setEditable(valueEditable);
+        valueField.active = valueEditable;
         valueField.setBordered(false);
         addChild(valueField);
 
