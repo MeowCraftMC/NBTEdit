@@ -13,15 +13,15 @@ public class NetworkingConstants {
     public static final StreamCodec<ByteBuf, CompoundTag> TAG = ByteBufCodecs.compoundTagCodec(() -> new NbtAccounter(128_000_000L, 512));
 
     // Common
-    public static final ResourceLocation BLOCK_ENTITY_EDITING_ID = new ResourceLocation(NBTEdit.MODID, "block_entity_editing");
-    public static final ResourceLocation ENTITY_EDITING_ID = new ResourceLocation(NBTEdit.MODID, "entity_editing");
-    public static final ResourceLocation ITEM_STACK_EDITING_ID = new ResourceLocation(NBTEdit.MODID, "item_stack_editing");
+    public static final ResourceLocation BLOCK_ENTITY_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "block_entity_editing");
+    public static final ResourceLocation ENTITY_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "entity_editing");
+    public static final ResourceLocation ITEM_STACK_EDITING_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "item_stack_editing");
 
     // C2S
-    public static final ResourceLocation BLOCK_ENTITY_RAYTRACE_RESULT_ID = new ResourceLocation(NBTEdit.MODID, "block_entity_raytrace_result");
-    public static final ResourceLocation ENTITY_RAYTRACE_RESULT_ID = new ResourceLocation(NBTEdit.MODID, "entity_raytrace_result");
-    public static final ResourceLocation ITEM_STACK_RAYTRACE_RESULT_ID = new ResourceLocation(NBTEdit.MODID, "item_stack_raytrace_result");
+    public static final ResourceLocation BLOCK_ENTITY_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "block_entity_raytrace_result");
+    public static final ResourceLocation ENTITY_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "entity_raytrace_result");
+    public static final ResourceLocation ITEM_STACK_RAYTRACE_RESULT_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "item_stack_raytrace_result");
 
     // S2C
-    public static final ResourceLocation RAYTRACE_REQUEST_ID = new ResourceLocation(NBTEdit.MODID, "raytrace_request");
+    public static final ResourceLocation RAYTRACE_REQUEST_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "raytrace_request");
 }

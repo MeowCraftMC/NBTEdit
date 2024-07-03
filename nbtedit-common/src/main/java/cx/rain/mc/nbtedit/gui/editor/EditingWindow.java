@@ -19,7 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.UUID;
 
 public class EditingWindow extends AbstractWindow {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(NBTEdit.MODID, "textures/gui/window.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/window.png");
     public static final int WIDTH = 178;
     public static final int HEIGHT = 93;
 

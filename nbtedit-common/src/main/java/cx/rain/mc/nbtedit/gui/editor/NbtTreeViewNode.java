@@ -16,7 +16,7 @@ import java.time.Duration;
 
 public class NbtTreeViewNode extends AbstractComponent {
     public static final ResourceLocation WIDGET_TEXTURE =
-            new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
+            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final NbtTreeView treeView;
     private final NbtTree.Node<?> node;

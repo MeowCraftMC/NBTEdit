@@ -18,7 +18,7 @@ import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.*;
 
 public class ModNetworkingImpl implements IModNetworking {
-	private static final ResourceLocation CHANNEL_ID = new ResourceLocation(NBTEdit.MODID, "editing");
+	private static final ResourceLocation CHANNEL_ID = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editing");
 
 	private final SimpleChannel channel;
 

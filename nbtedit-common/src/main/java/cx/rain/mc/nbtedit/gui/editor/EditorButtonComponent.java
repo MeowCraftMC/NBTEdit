@@ -12,7 +12,7 @@ import java.time.Duration;
 
 public class EditorButtonComponent extends ButtonComponent {
     public static final ResourceLocation BUTTONS_TEXTURE =
-            new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
+            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final EditorButton button;
 

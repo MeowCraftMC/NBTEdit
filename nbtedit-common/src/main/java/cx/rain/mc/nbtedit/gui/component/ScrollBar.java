@@ -11,8 +11,8 @@ import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
 public class ScrollBar extends AbstractComponent {
-    private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(new ResourceLocation("widget/text_field"), new ResourceLocation("widget/text_field_highlighted"));
-    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
+    private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(ResourceLocation.withDefaultNamespace("widget/text_field"), ResourceLocation.withDefaultNamespace("widget/text_field_highlighted"));
+    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
 
     private final int scrollUnit = getMinecraft().font.lineHeight + 2;
 
