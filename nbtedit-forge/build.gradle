@@ -51,6 +51,10 @@ sourcesJar {
     from commonSources.archiveFile.map { zipTree(it) }
 }
 
+configurations.all {
+    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
+}
+
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
