@@ -31,6 +31,9 @@ public class ScrollableViewport extends AbstractComposedComponent {
 
     @Override
     protected void createChildren() {
+        var prevContentWidth = contentWidth;
+        var prevContentHeight = contentHeight;
+
         contentWidth = 0;
         contentHeight = 0;
 
@@ -47,19 +50,23 @@ public class ScrollableViewport extends AbstractComposedComponent {
         }
 
         if (shouldShowVerticalBar()) {
-            scrollYOffset = Mth.clamp(scrollYOffset, 0, Math.max(contentHeight - getHeight(), 0));
+            var delta = contentHeight - prevContentHeight;
+            scrollYOffset -= delta;
             verticalScrollBar = new ScrollBar(getX() + getWidth() - getScrollBarWidth(), getY(),
                     getScrollBarWidth(), getHeight(),
                     offset -> this.onScroll(0, offset), contentHeight);
             verticalScrollBar.setScrollAmount(scrollYOffset);
+            scrollYOffset = verticalScrollBar.getScrollAmount();
         }
 
         if (shouldShowHorizontalBar()) {
-            scrollXOffset = Mth.clamp(scrollXOffset, 0, Math.max(contentWidth - getWidth(), 0));
+            var delta = contentWidth - prevContentWidth;
+            scrollXOffset -= delta;
             horizontalScrollBar = new ScrollBar(getX(), getY() + getHeight() - getScrollBarWidth(),
                     getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0), getScrollBarWidth(),
                     offset -> this.onScroll(offset, 0), contentWidth, true);
             horizontalScrollBar.setScrollAmount(scrollXOffset);
+            scrollXOffset = horizontalScrollBar.getScrollAmount();
         }
     }
 
@@ -74,12 +81,12 @@ public class ScrollableViewport extends AbstractComposedComponent {
     public void onScroll(int deltaX, int deltaY) {
         if (deltaY != 0) {
             scrollYOffset += deltaY;
-            scrollYOffset = Mth.clamp(scrollYOffset, 0, Math.max(contentHeight - getHeight(), 0));
+            scrollYOffset = Math.clamp(scrollYOffset, 0, getMaxScrollYOffset());
         }
 
         if (deltaX != 0) {
             scrollXOffset += deltaX;
-            scrollXOffset = Mth.clamp(scrollXOffset, 0, Math.max(contentWidth - getWidth(), 0));
+            scrollXOffset = Math.clamp(scrollXOffset, 0, getMaxScrollXOffset());
         }
     }
 
@@ -88,7 +95,9 @@ public class ScrollableViewport extends AbstractComposedComponent {
         var maskedMouseX = mouseX > getX() && mouseX < (getX() + getWidth()) ? mouseX - getX() : -1;
         var maskedMouseY = mouseY > getY() && mouseY < (getY() + getHeight()) ? mouseY - getY() : -1;
 
-        guiGraphics.enableScissor(getX(), getY(), getX() + getWidth(), getY() + getHeight());
+        var maxX = getX() + getWidth() - (shouldShowVerticalBar() ? getScrollBarWidth() : 0);
+        var maxY = getY() + getHeight() - (shouldShowHorizontalBar() ? getScrollBarWidth() : 0);
+        guiGraphics.enableScissor(getX(), getY(), maxX, maxY);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(getX() - getScrollXOffset(), getY() - getScrollYOffset(), 0.0);
 
@@ -114,7 +123,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
         return scrollBarWidth;
     }
 
-    public double getScrollXOffset() {
+    public int getScrollXOffset() {
         return scrollXOffset;
     }
 
@@ -122,12 +131,20 @@ public class ScrollableViewport extends AbstractComposedComponent {
         this.scrollXOffset = value;
     }
 
-    public double getScrollYOffset() {
-        return scrollYOffset;
+    public int getMaxScrollXOffset() {
+        return contentWidth - getWidth() + (shouldShowVerticalBar() ? getScrollBarWidth() : 0);
+    }
+
+    public int getScrollYOffset() {
+        return shouldShowVerticalBar() ? verticalScrollBar.getScrollAmount() : 0;
     }
 
     public void setScrollYOffset(int value) {
         this.scrollYOffset = value;
+    }
+
+    public int getMaxScrollYOffset() {
+        return contentHeight - getHeight();
     }
 
     @Override
@@ -188,7 +205,7 @@ public class ScrollableViewport extends AbstractComposedComponent {
             return verticalScrollBar.keyReleased(keyCode, scanCode, modifiers);
         }
 
-        if (shouldShowHorizontalBar() && verticalScrollBar.isHoveredOrFocused()) {
+        if (shouldShowHorizontalBar() && horizontalScrollBar.isHoveredOrFocused()) {
             return horizontalScrollBar.keyReleased(keyCode, scanCode, modifiers);
         }
 

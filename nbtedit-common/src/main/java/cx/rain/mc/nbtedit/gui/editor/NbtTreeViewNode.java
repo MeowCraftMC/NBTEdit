@@ -47,11 +47,11 @@ public class NbtTreeViewNode extends AbstractComponent {
         return node;
     }
 
-    public boolean isMouseInsideText(int mouseX, int mouseY) {
+    public boolean isMouseInsideText(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
     }
 
-    public boolean isMouseInsideSpoiler(int mouseX, int mouseY) {
+    public boolean isMouseInsideSpoiler(double mouseX, double mouseY) {
         return mouseX >= getX() - 9 && mouseY >= getY() && mouseX < getX() && mouseY < getY() + getHeight();
     }
 
@@ -99,20 +99,23 @@ public class NbtTreeViewNode extends AbstractComponent {
     protected boolean clicked(double mouseX, double mouseY) {
         return this.active
                 && this.visible
-                && mouseX >= getX() - 9
-                && mouseY >= getY()
-                && mouseX < getX() + getWidth()
-                && mouseY < getY() + getHeight();
+                && isMouseOver(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return isMouseInsideText(mouseX, mouseY)
+                || isMouseInsideSpoiler(mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (isMouseInsideSpoiler((int) mouseX, (int) mouseY)) {
+        if (isMouseInsideSpoiler(mouseX, mouseY)) {
             node.setShowChildren(!node.shouldShowChildren());
             getParent().update(true);
         }
 
-        if (isMouseInsideText((int) mouseX, (int) mouseY)) {
+        if (isMouseInsideText(mouseX, mouseY)) {
             getParent().setFocused(this);
             getParent().update(true);
         }

@@ -15,6 +15,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.UUID;
 
@@ -147,5 +148,15 @@ public class EditingWindow extends AbstractWindow {
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         narrationElementOutput.add(NarratedElementType.TITLE, Component.translatable(ModConstants.GUI_TITLE_EDITING_WINDOW_NARRATION));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            onCancel();
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

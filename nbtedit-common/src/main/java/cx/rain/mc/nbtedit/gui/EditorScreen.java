@@ -11,6 +11,7 @@ import cx.rain.mc.nbtedit.gui.editor.EditingWindow;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.ClipboardHelper;
 import cx.rain.mc.nbtedit.utility.ModConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -271,18 +272,18 @@ public class EditorScreen extends AbstractScreen {
     /// <editor-fold desc="Editor logic.">
 
     private void update(boolean centerFocused) {
-        if (centerFocused && treeView.getFocusedChild() != null) {
-            if (treeViewport.shouldShowVerticalBar()) {
-                var yOffset = treeViewport.getHeight() / 2 + treeView.getFocusedChild().getY();
-                treeViewport.setScrollYOffset(yOffset);
-            }
-            if (treeViewport.shouldShowHorizontalBar()) {
-                var xOffset = treeViewport.getWidth() / 2 + treeView.getFocusedChild().getX();
-                treeViewport.setScrollXOffset(xOffset);
-            }
-        }
-
         update();
+
+//        if (centerFocused && treeView.getFocusedChild() != null) {
+//            if (treeViewport.shouldShowVerticalBar()) {
+//                var yOffset = treeViewport.getHeight() / 2 + treeView.getFocusedChild().getY();
+//                treeViewport.setScrollYOffset(yOffset);
+//            }
+//            if (treeViewport.shouldShowHorizontalBar()) {
+//                var xOffset = treeViewport.getWidth() / 2 + treeView.getFocusedChild().getX();
+//                treeViewport.setScrollXOffset(xOffset);
+//            }
+//        }
     }
 
     public void doEdit() {
@@ -370,8 +371,31 @@ public class EditorScreen extends AbstractScreen {
         minecraft.cursorEntered();
     }
 
+    /// </editor-fold>
+
+    /// <editor-fold desc="Handle input">
+
+    private long lastClickTime = 0;
+
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (treeView.getFocusedChild() != null && Util.getMillis() - this.lastClickTime <= 250L) {
+            onEdit();
+            return true;
+        }
+
+        this.lastClickTime = Util.getMillis();
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        this.lastClickTime = 0;
+        super.mouseMoved(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (!hasWindow()) {
             if (keyCode == GLFW.GLFW_KEY_C && modifiers == GLFW.GLFW_MOD_CONTROL) {
                 if (getFocused() != null) {
@@ -381,6 +405,7 @@ public class EditorScreen extends AbstractScreen {
                 } else {
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 }
+                return true;
             }
 
             if (keyCode == GLFW.GLFW_KEY_V && modifiers == GLFW.GLFW_MOD_CONTROL) {
@@ -391,6 +416,7 @@ public class EditorScreen extends AbstractScreen {
                 } else {
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 }
+                return true;
             }
 
             if (keyCode == GLFW.GLFW_KEY_X && modifiers == GLFW.GLFW_MOD_CONTROL) {
@@ -402,9 +428,11 @@ public class EditorScreen extends AbstractScreen {
                 } else {
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 }
+                return true;
             }
 
-            if (keyCode == GLFW.GLFW_KEY_D && modifiers == GLFW.GLFW_MOD_CONTROL) {
+            if ((keyCode == GLFW.GLFW_KEY_D && modifiers == GLFW.GLFW_MOD_CONTROL)
+                    || (keyCode == GLFW.GLFW_KEY_DELETE)) {
                 if (getFocused() != null) {
                     doDelete();
                     update(true);
@@ -412,11 +440,29 @@ public class EditorScreen extends AbstractScreen {
                 } else {
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
                 }
+                return true;
             }
 
-            return true;
+            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                if (getFocused() != null) {
+                    onEdit();
+                } else {
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.VILLAGER_NO, 1));
+                }
+                return true;
+            }
+
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                onQuit();
+                return true;
+            }
         }
 
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 

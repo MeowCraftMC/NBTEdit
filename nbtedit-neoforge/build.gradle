@@ -12,44 +12,53 @@ loom {
     accessWidenerPath = project(':nbtedit-common').loom.accessWidenerPath
 
     neoForge {
-        runs {
-            data {
-                data()
+    }
 
-                programArgs '--all', '--mod', 'nbtedit'
-                programArgs '--output', file('../nbtedit-common/src/generated/resources').absolutePath
-                programArgs '--existing', file('../nbtedit-common/src/main/resources').absolutePath
-            }
+    runs {
+        data {
+            data()
+
+            programArgs '--all', '--mod', 'nbtedit'
+            programArgs '--output', file('../nbtedit-common/src/generated/resources').absolutePath
+            programArgs '--existing', file('../nbtedit-common/src/main/resources').absolutePath
         }
     }
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
     neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')) { transitive = false }
+    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionNeoForge')
 }
 
 shadowJar {
     exclude 'fabric.mod.json'
     exclude 'architectury.common.json'
 
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = 'dev-shadow'
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
+    atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 }
 
 sourcesJar {

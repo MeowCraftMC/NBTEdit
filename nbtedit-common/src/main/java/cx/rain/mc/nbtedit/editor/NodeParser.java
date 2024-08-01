@@ -36,6 +36,10 @@ public class NodeParser {
             return Double.toString(d.getAsDouble());
         }
 
+        if (tag instanceof StringTag s) {
+            return s.getAsString();
+        }
+
         if (tag instanceof ByteArrayTag ba) {
             var s = new StringBuilder();
             for (var b : ba.getAsByteArray()) {

@@ -18,25 +18,32 @@ loom {
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentFabric.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
 
-    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive = false }
-    shadowCommon(project(path: ':nbtedit-common', configuration: 'transformProductionForge')) { transitive = false }
+    common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionForge')
 }
 
 shadowJar {
     exclude 'fabric.mod.json'
     exclude 'architectury.common.json'
 
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = 'dev-shadow'
 }
 

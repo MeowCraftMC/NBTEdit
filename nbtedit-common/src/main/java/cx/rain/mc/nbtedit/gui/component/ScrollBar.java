@@ -94,13 +94,12 @@ public class ScrollBar extends AbstractComponent {
     }
 
     public void setScrollAmount(int amount) {
-        var delta = amount - getScrollAmount();
         scrollAmount = Mth.clamp(amount, 0, getMaxScrollAmount());
-        toScroll.onScroll(delta);
     }
 
     private void addScrollAmount(int value) {
         setScrollAmount(getScrollAmount() + value);
+        toScroll.onScroll(value);
     }
 
     @Override
@@ -168,14 +167,10 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (isMouseOver(mouseX, mouseY)) {
-            var scrollPrimary = isVertical() ? scrollY : scrollX;
-            addScrollAmount((int) (scrollUnit * -scrollPrimary));
+        var scrollPrimary = isVertical() ? scrollY : scrollX;
+        addScrollAmount((int) (scrollUnit * -scrollPrimary));
 
-            return true;
-        }
-
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return true;
     }
 
     @Override
