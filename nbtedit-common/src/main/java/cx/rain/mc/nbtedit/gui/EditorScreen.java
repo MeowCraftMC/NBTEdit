@@ -149,6 +149,10 @@ public class EditorScreen extends AbstractScreen {
     }
 
     protected void onEdit() {
+        if (!editorButtons[12].active) {
+            return;
+        }
+
         doEdit();
         update(false);
     }
