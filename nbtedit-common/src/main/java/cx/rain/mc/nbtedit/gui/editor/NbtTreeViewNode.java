@@ -15,8 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 
 public class NbtTreeViewNode extends AbstractComponent {
-    public static final ResourceLocation WIDGET_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
+    public static final ResourceLocation WIDGET_TEXTURE = new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final NbtTreeView treeView;
     private final NbtTree.Node<?> node;
@@ -36,7 +35,7 @@ public class NbtTreeViewNode extends AbstractComponent {
         super.initialize();
 
         setTooltip(AccessibilityHelper.buildTooltip(getMinecraft().player, node));
-        setTooltipDelay(Duration.ofMillis(200));
+        setTooltipDelay(200);
     }
 
     public NbtTreeView getParent() {

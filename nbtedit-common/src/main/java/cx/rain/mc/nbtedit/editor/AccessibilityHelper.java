@@ -36,7 +36,7 @@ public class AccessibilityHelper {
             previewTitle = ModConstants.GUI_TOOLTIP_PREVIEW_ITEM;
             previewNarrationTitle = ModConstants.GUI_TOOLTIP_PREVIEW_ITEM_NARRATION;
 
-            var lines = item.getTooltipLines(Item.TooltipContext.of(player.level()), player, TooltipFlag.ADVANCED);
+            var lines = item.getTooltipLines(player, TooltipFlag.ADVANCED);
             for (int i = 0; i < lines.size(); i++) {
                 previewContent.append(lines.get(i));
                 if (i != lines.size() - 1) {

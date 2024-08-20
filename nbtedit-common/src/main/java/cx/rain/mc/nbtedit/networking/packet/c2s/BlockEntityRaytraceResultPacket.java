@@ -1,21 +1,23 @@
 package cx.rain.mc.nbtedit.networking.packet.c2s;
 
 import cx.rain.mc.nbtedit.networking.NetworkingConstants;
+import cx.rain.mc.nbtedit.networking.packet.IModPacket;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
-public record BlockEntityRaytraceResultPacket(BlockPos pos) implements CustomPacketPayload {
-    public static final Type<BlockEntityRaytraceResultPacket> TYPE = new Type<>(NetworkingConstants.BLOCK_ENTITY_RAYTRACE_RESULT_ID);
-    public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntityRaytraceResultPacket> CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC, BlockEntityRaytraceResultPacket::pos,
-            BlockEntityRaytraceResultPacket::new
-    );
+public record BlockEntityRaytraceResultPacket(BlockPos pos) implements IModPacket {
+    @Override
+    public ResourceLocation getId() {
+        return NetworkingConstants.BLOCK_ENTITY_RAYTRACE_RESULT_ID;
+    }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeBlockPos(pos);
+    }
+
+    public static BlockEntityRaytraceResultPacket read(FriendlyByteBuf buf) {
+        return new BlockEntityRaytraceResultPacket(buf.readBlockPos());
     }
 }

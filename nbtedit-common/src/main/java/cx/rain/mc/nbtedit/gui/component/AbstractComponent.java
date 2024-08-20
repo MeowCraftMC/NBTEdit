@@ -20,6 +20,10 @@ public abstract class AbstractComponent extends AbstractWidget implements ICompo
         return Minecraft.getInstance();
     }
 
+    protected void setHeight(int value) {
+        height = value;
+    }
+
     @Override
     public @Nullable IComposedComponent getParent() {
         return parent;

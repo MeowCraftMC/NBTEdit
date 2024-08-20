@@ -1,25 +1,26 @@
 package cx.rain.mc.nbtedit.networking.packet.common;
 
 import cx.rain.mc.nbtedit.networking.NetworkingConstants;
+import cx.rain.mc.nbtedit.networking.packet.IModPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
-public record BlockEntityEditingPacket(CompoundTag tag, boolean readOnly, BlockPos pos) implements CustomPacketPayload {
-    public static final Type<BlockEntityEditingPacket> TYPE = new Type<>(NetworkingConstants.BLOCK_ENTITY_EDITING_ID);
-    public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntityEditingPacket> CODEC = StreamCodec.composite(
-            NetworkingConstants.TAG, BlockEntityEditingPacket::tag,
-            ByteBufCodecs.BOOL, BlockEntityEditingPacket::readOnly,
-            BlockPos.STREAM_CODEC, BlockEntityEditingPacket::pos,
-            BlockEntityEditingPacket::new
-    );
+public record BlockEntityEditingPacket(CompoundTag tag, boolean readOnly, BlockPos pos) implements IModPacket {
+    @Override
+    public ResourceLocation getId() {
+        return NetworkingConstants.BLOCK_ENTITY_EDITING_ID;
+    }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeNbt(tag);
+        buf.writeBoolean(readOnly);
+        buf.writeBlockPos(pos);
+    }
+
+    public static BlockEntityEditingPacket read(FriendlyByteBuf buf) {
+        return new BlockEntityEditingPacket(buf.readNbt(), buf.readBoolean(), buf.readBlockPos());
     }
 }

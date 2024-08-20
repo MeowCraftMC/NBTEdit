@@ -130,8 +130,8 @@ public abstract class AbstractComposedComponent extends AbstractComponent implem
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        return IComposedComponent.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return IComposedComponent.super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

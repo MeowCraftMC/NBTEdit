@@ -16,7 +16,7 @@ public class TagReadingHelper {
         if (tag instanceof CompoundTag compoundTag) {
             try {
                 var optional = ItemStack.CODEC
-                        .parse(player.registryAccess().createSerializationContext(NbtOps.INSTANCE), compoundTag)
+                        .parse(NbtOps.INSTANCE, compoundTag)
                         .result();
                 if (optional.isPresent()) {
                     var itemStack = optional.get();
@@ -45,7 +45,7 @@ public class TagReadingHelper {
     public static @Nullable Component tryReadText(Player player, @Nullable Tag tag) {
         if (tag instanceof StringTag stringTag) {
             try {
-                return Component.Serializer.fromJson(stringTag.getAsString(), player.registryAccess());
+                return Component.Serializer.fromJson(stringTag.getAsString());
             } catch (Exception ignored) {
             }
         }

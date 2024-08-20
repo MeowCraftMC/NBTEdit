@@ -162,16 +162,16 @@ public class ScrollableViewport extends AbstractComposedComponent {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (shouldShowVerticalBar() && scrollY != 0) {
-            return verticalScrollBar.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (shouldShowVerticalBar() && delta != 0) {
+            return verticalScrollBar.mouseScrolled(mouseX, mouseY, delta);
         }
 
-        if (shouldShowHorizontalBar() && scrollX != 0) {
-            return horizontalScrollBar.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        if (shouldShowHorizontalBar() && delta != 0) {
+            return horizontalScrollBar.mouseScrolled(mouseX, mouseY, delta);
         }
 
-        return super.mouseScrolled(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), scrollX, scrollY);
+        return super.mouseScrolled(mouseX - getX() + getScrollXOffset(), mouseY - getY() + getScrollYOffset(), delta);
     }
 
     @Override

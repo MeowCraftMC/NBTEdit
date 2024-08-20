@@ -1,25 +1,25 @@
 package cx.rain.mc.nbtedit.networking.packet.c2s;
 
 import cx.rain.mc.nbtedit.networking.NetworkingConstants;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import org.jetbrains.annotations.NotNull;
+import cx.rain.mc.nbtedit.networking.packet.IModPacket;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
 
-public record EntityRaytraceResultPacket(UUID uuid, int id) implements CustomPacketPayload {
-    public static final Type<EntityRaytraceResultPacket> TYPE = new Type<>(NetworkingConstants.ENTITY_RAYTRACE_RESULT_ID);
-    public static final StreamCodec<RegistryFriendlyByteBuf, EntityRaytraceResultPacket> CODEC = StreamCodec.composite(
-            UUIDUtil.STREAM_CODEC, EntityRaytraceResultPacket::uuid,
-            ByteBufCodecs.VAR_INT, EntityRaytraceResultPacket::id,
-            EntityRaytraceResultPacket::new
-    );
+public record EntityRaytraceResultPacket(UUID uuid, int id) implements IModPacket {
+    @Override
+    public ResourceLocation getId() {
+        return NetworkingConstants.ENTITY_RAYTRACE_RESULT_ID;
+    }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUUID(uuid);
+        buf.writeVarInt(id);
+    }
+
+    public static EntityRaytraceResultPacket read(FriendlyByteBuf buf) {
+        return new EntityRaytraceResultPacket(buf.readUUID(), buf.readVarInt());
     }
 }

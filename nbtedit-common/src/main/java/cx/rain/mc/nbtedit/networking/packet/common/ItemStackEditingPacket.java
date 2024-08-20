@@ -1,28 +1,26 @@
 package cx.rain.mc.nbtedit.networking.packet.common;
 
 import cx.rain.mc.nbtedit.networking.NetworkingConstants;
-import net.minecraft.core.UUIDUtil;
+import cx.rain.mc.nbtedit.networking.packet.IModPacket;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
-public record ItemStackEditingPacket(CompoundTag tag, boolean readOnly, ItemStack itemStack) implements CustomPacketPayload {
-    public static final Type<ItemStackEditingPacket> TYPE = new Type<>(NetworkingConstants.ITEM_STACK_EDITING_ID);
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackEditingPacket> CODEC = StreamCodec.composite(
-            NetworkingConstants.TAG, ItemStackEditingPacket::tag,
-            ByteBufCodecs.BOOL, ItemStackEditingPacket::readOnly,
-            ItemStack.STREAM_CODEC, ItemStackEditingPacket::itemStack,
-            ItemStackEditingPacket::new
-    );
+public record ItemStackEditingPacket(CompoundTag tag, boolean readOnly, ItemStack itemStack) implements IModPacket {
+    @Override
+    public ResourceLocation getId() {
+        return NetworkingConstants.ITEM_STACK_EDITING_ID;
+    }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeNbt(tag);
+        buf.writeBoolean(readOnly);
+        buf.writeItem(itemStack);
+    }
+
+    public static ItemStackEditingPacket read(FriendlyByteBuf buf) {
+        return new ItemStackEditingPacket(buf.readNbt(), buf.readBoolean(), buf.readItem());
     }
 }

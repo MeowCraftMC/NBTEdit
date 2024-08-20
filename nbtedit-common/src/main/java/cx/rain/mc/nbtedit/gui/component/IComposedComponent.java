@@ -35,8 +35,8 @@ public interface IComposedComponent extends IComponent, ContainerEventHandler {
     }
 
     @Override
-    default boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        return ContainerEventHandler.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    default boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return ContainerEventHandler.super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

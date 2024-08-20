@@ -11,8 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.time.Duration;
 
 public class EditorButtonComponent extends ButtonComponent {
-    public static final ResourceLocation BUTTONS_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
+    public static final ResourceLocation BUTTONS_TEXTURE = new ResourceLocation(NBTEdit.MODID, "textures/gui/widgets.png");
 
     private final EditorButton button;
 
@@ -27,7 +26,7 @@ public class EditorButtonComponent extends ButtonComponent {
 
         if (active) {
             setTooltip(Tooltip.create(getMessage(), createNarrationMessage()));
-            setTooltipDelay(Duration.ofMillis(200));
+            setTooltipDelay(200);
         } else {
             setTooltip(null);
         }

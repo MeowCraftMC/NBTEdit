@@ -42,7 +42,7 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_BLOCK_ENTITY, pos.getX(), pos.getY(), pos.getZ())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = blockEntity.saveWithFullMetadata(player.getServer().registryAccess());
+            var tag = blockEntity.saveWithFullMetadata();
             NBTEditPlatform.getNetworking().sendTo(player, new BlockEntityEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), pos));
         });
     }
@@ -94,7 +94,7 @@ public class NetworkEditingHelper {
                     .translatable(ModConstants.MESSAGE_EDITING_ITEM_STACK, stack.getDisplayName().getString())
                     .withStyle(ChatFormatting.GREEN));
 
-            var tag = (CompoundTag) stack.saveOptional(player.getServer().registryAccess());
+            var tag = stack.save(new CompoundTag());
             NBTEditPlatform.getNetworking().sendTo(player, new ItemStackEditingPacket(tag, NBTEditPlatform.getPermission().isReadOnly(player), stack));
         });
     }

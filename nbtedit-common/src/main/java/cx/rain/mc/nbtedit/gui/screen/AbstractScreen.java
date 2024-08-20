@@ -256,7 +256,7 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
         var maskedMouseX = hasMutexWindow() ? -1 : mouseX;
         var maskedMouseY = hasMutexWindow() ? -1 : mouseY;
 
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        renderBackground(guiGraphics);
         guiGraphics.drawCenteredString(minecraft.font, title, this.width / 2, 4, 16777215);
 
         for (var c : getChildren()) {
@@ -316,13 +316,13 @@ public abstract class AbstractScreen extends Screen implements IWindowHolder {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (hasMutexWindow()) {
             assert getMutexWindow() != null;
-            return getMutexWindow().mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+            return getMutexWindow().mouseScrolled(mouseX, mouseY, delta);
         }
 
-        return IWindowHolder.super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return IWindowHolder.super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

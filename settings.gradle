@@ -3,7 +3,6 @@ pluginManagement {
 		maven { url = 'https://maven.architectury.dev/' }
 		maven { url = 'https://maven.fabricmc.net/' }
         mavenCentral()
-        maven { url = "https://maven.neoforged.net/releases/" }
         maven { url = 'https://maven.minecraftforge.net/' }
         gradlePluginPortal()
     }
@@ -14,4 +13,3 @@ rootProject.name = 'nbtedit'
 include(':nbtedit-common')
 include(':nbtedit-fabric')
 include(':nbtedit-forge')
-include(':nbtedit-neoforge')

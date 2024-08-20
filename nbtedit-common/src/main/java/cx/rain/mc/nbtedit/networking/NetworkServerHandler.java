@@ -54,7 +54,7 @@ public class NetworkServerHandler {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
                 try {
-                    blockEntity.loadWithComponents(tag, server.registryAccess());
+                    blockEntity.load(tag);
                     blockEntity.setChanged();	// Ensure changes gets saved to disk later on. (qyl27: In MCP it is markDirty.)
                     if (blockEntity.hasLevel() && blockEntity.getLevel() instanceof ServerLevel) {
                         ((ServerLevel) blockEntity.getLevel()).getChunkSource().blockChanged(pos);	// Broadcast changes.
@@ -191,7 +191,7 @@ public class NetworkServerHandler {
 
         server.execute(() -> {
             try {
-                var item = ItemStack.parseOptional(server.registryAccess(), tag);
+                var item = ItemStack.of(tag);
                 player.setItemInHand(InteractionHand.MAIN_HAND, item);
 
                 NBTEdit.getInstance().getLogger().info("Player {} successfully edited the tag of a ItemStack named {}.",

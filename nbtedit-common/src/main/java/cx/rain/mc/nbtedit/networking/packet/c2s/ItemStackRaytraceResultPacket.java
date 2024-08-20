@@ -1,21 +1,23 @@
 package cx.rain.mc.nbtedit.networking.packet.c2s;
 
 import cx.rain.mc.nbtedit.networking.NetworkingConstants;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import cx.rain.mc.nbtedit.networking.packet.IModPacket;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
-public record ItemStackRaytraceResultPacket(ItemStack itemStack) implements CustomPacketPayload {
-    public static final Type<ItemStackRaytraceResultPacket> TYPE = new Type<>(NetworkingConstants.ITEM_STACK_RAYTRACE_RESULT_ID);
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemStackRaytraceResultPacket> CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC, ItemStackRaytraceResultPacket::itemStack,
-            ItemStackRaytraceResultPacket::new
-    );
+public record ItemStackRaytraceResultPacket(ItemStack itemStack) implements IModPacket {
+    @Override
+    public ResourceLocation getId() {
+        return NetworkingConstants.ITEM_STACK_RAYTRACE_RESULT_ID;
+    }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void write(FriendlyByteBuf buf) {
+        buf.writeItem(itemStack);
+    }
+
+    public static ItemStackRaytraceResultPacket read(FriendlyByteBuf buf) {
+        return new ItemStackRaytraceResultPacket(buf.readItem());
     }
 }

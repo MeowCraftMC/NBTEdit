@@ -94,10 +94,16 @@ public class EditorScreen extends AbstractScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBlurredBackground(partialTick);
-        renderMenuBackground(guiGraphics, 0, 0, width, 40);
-        renderMenuBackground(guiGraphics, 0, height - 35, width, height);
+    public void renderBackground(GuiGraphics guiGraphics) {
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+        renderDirtBackground(guiGraphics, 0, 0, width, 40);
+        renderDirtBackground(guiGraphics, 0, height - 35, width, height);
+    }
+
+    private void renderDirtBackground(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        guiGraphics.setColor(0.25F, 0.25F, 0.25F, 1.0F);
+        guiGraphics.blit(BACKGROUND_LOCATION, x, y, 0, 0.0F, 0.0F, width, height, 32, 32);
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     /// <editor-fold desc="Buttons.">

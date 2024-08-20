@@ -2,7 +2,6 @@ package cx.rain.mc.nbtedit.gui.component;
 
 import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -11,8 +10,8 @@ import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
 public class ScrollBar extends AbstractComponent {
-    private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(ResourceLocation.withDefaultNamespace("widget/text_field"), ResourceLocation.withDefaultNamespace("widget/text_field_highlighted"));
-    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("widget/scroller");
+//    private static final WidgetSprites BACKGROUND_SPRITES = new WidgetSprites(ResourceLocation.withDefaultNamespace("widget/text_field"), ResourceLocation.withDefaultNamespace("widget/text_field_highlighted"));
+//    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
 
     private final int scrollUnit = getMinecraft().font.lineHeight + 2;
 
@@ -104,16 +103,16 @@ public class ScrollBar extends AbstractComponent {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation resourceLocation = BACKGROUND_SPRITES.get(false, false);
-        guiGraphics.blitSprite(resourceLocation, getX(), getY(), getWidth(), getHeight());
+        guiGraphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), -6250336);
+        guiGraphics.fill(getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, -16777216);
 
         var barLength = this.getScrollBarLength();
         var barOffset = (int) (getScrollRate() * (getPrimaryLength() - barLength));
 
         if (isHorizontal()) {
-            guiGraphics.blitSprite(SCROLLER_SPRITE, getX() + barOffset, getY(), barLength, getHeight());
+            guiGraphics.fill(getX() + barOffset, getY(), getX() + barOffset + barLength, getY() + getHeight(), 0xFF8B8B8B);
         } else {
-            guiGraphics.blitSprite(SCROLLER_SPRITE, getX(), getY() + barOffset, getWidth(), barLength);
+            guiGraphics.fill(getX(), getY() + barOffset, getX() + getWidth(), getY() + barOffset + barLength, 0xFF8B8B8B);
         }
     }
 
@@ -166,9 +165,8 @@ public class ScrollBar extends AbstractComponent {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        var scrollPrimary = isVertical() ? scrollY : scrollX;
-        addScrollAmount((int) (scrollUnit * -scrollPrimary));
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        addScrollAmount((int) (scrollUnit * -delta));
 
         return true;
     }
