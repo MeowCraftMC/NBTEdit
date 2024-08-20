@@ -1,23 +1,23 @@
 package cx.rain.mc.nbtedit;
 
-import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
-import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
-import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
+import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.api.config.IModConfig;
+import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 public class NBTEditPlatform {
     @ExpectPlatform
-    public static INBTEditNetworking getNetworking() {
+    public static IModNetworking getNetworking() {
         throw new RuntimeException();
     }
 
     @ExpectPlatform
-    public static INBTEditConfig getConfig() {
+    public static IModConfig getConfig() {
         throw new RuntimeException();
     }
 
     @ExpectPlatform
-    public static INBTEditCommandPermission getPermission() {
+    public static IModPermission getPermission() {
         throw new RuntimeException();
     }
 }

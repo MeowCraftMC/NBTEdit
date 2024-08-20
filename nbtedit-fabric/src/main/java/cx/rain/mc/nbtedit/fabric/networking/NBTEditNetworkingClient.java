@@ -1,42 +1,39 @@
 package cx.rain.mc.nbtedit.fabric.networking;
 
-import cx.rain.mc.nbtedit.fabric.networking.packet.*;
+import cx.rain.mc.nbtedit.networking.NetworkClientHandler;
+import cx.rain.mc.nbtedit.networking.packet.common.BlockEntityEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.common.EntityEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.common.ItemStackEditingPacket;
+import cx.rain.mc.nbtedit.networking.packet.s2c.RaytracePacket;
+import cx.rain.mc.nbtedit.utility.RayTraceHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public class NBTEditNetworkingClient {
 	public NBTEditNetworkingClient() {
-		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_RAY_TRACE_REQUEST_PACKET_ID, S2CRayTracePacket::clientHandle);
-
-		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_BLOCK_ENTITY_EDITING_PACKET_ID, S2COpenBlockEntityEditingGuiPacket::clientHandle);
-		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_ENTITY_EDITING_PACKET_ID, S2COpenEntityEditingGuiPacket::clientHandle);
-		ClientPlayNetworking.registerGlobalReceiver(NBTEditNetworkingImpl.S2C_OPEN_ITEM_STACK_EDITING_PACKET_ID, S2COpenItemStackEditingGuiPacket::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(RaytracePacket.TYPE, this::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(BlockEntityEditingPacket.TYPE, this::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(EntityEditingPacket.TYPE, this::clientHandle);
+		ClientPlayNetworking.registerGlobalReceiver(ItemStackEditingPacket.TYPE, this::clientHandle);
 	}
 
-	public void clientOpenGuiRequest(Entity entity, boolean self) {
-		ClientPlayNetworking.send(new C2SEntityEditingRequestPacket(entity.getUUID(), entity.getId(), self));
+	private void clientHandle(RaytracePacket packet, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> NetworkClientHandler.handleRaytrace(packet));
 	}
 
-	public void clientOpenGuiRequest(BlockPos pos) {
-		ClientPlayNetworking.send(new C2SBlockEntityEditingRequestPacket(pos));
+	private void clientHandle(BlockEntityEditingPacket packet, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> NetworkClientHandler.handleBlockEntityEditing(packet));
 	}
 
-	public void clientOpenGuiRequest(ItemStack stack) {
-		ClientPlayNetworking.send(new C2SItemStackEditingRequestPacket(stack));
+	private void clientHandle(EntityEditingPacket packet, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> NetworkClientHandler.handleEntityEditing(packet));
 	}
 
-	public void saveEditing(Entity entity, CompoundTag tag, boolean self) {
-		ClientPlayNetworking.send(new C2SEntitySavingPacket(entity.getUUID(), entity.getId(), tag, self));
+	private void clientHandle(ItemStackEditingPacket packet, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> NetworkClientHandler.handleItemStackEditing(packet));
 	}
 
-	public void saveEditing(BlockPos pos, CompoundTag tag) {
-		ClientPlayNetworking.send(new C2SBlockEntitySavingPacket(pos, tag));
-	}
-
-	public void saveEditing(ItemStack stack, CompoundTag tag) {
-		ClientPlayNetworking.send(new C2SItemStackSavingPacket(stack, tag));
+	public void send(CustomPacketPayload packet) {
+		ClientPlayNetworking.send(packet);
 	}
 }

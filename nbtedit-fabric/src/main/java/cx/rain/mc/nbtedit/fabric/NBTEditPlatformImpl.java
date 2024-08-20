@@ -1,27 +1,27 @@
 package cx.rain.mc.nbtedit.fabric;
 
-import cx.rain.mc.nbtedit.api.command.INBTEditCommandPermission;
-import cx.rain.mc.nbtedit.api.config.INBTEditConfig;
-import cx.rain.mc.nbtedit.api.netowrking.INBTEditNetworking;
-import cx.rain.mc.nbtedit.fabric.command.NBTEditPermissionImpl;
-import cx.rain.mc.nbtedit.fabric.config.NBTEditConfigImpl;
-import cx.rain.mc.nbtedit.fabric.networking.NBTEditNetworkingImpl;
+import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.api.config.IModConfig;
+import cx.rain.mc.nbtedit.api.netowrking.IModNetworking;
+import cx.rain.mc.nbtedit.fabric.command.ModPermissionImpl;
+import cx.rain.mc.nbtedit.fabric.config.ModConfigImpl;
+import cx.rain.mc.nbtedit.fabric.networking.ModNetworkingImpl;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class NBTEditPlatformImpl {
-    private static final NBTEditNetworkingImpl NETWORKING = new NBTEditNetworkingImpl();
-    private static final NBTEditConfigImpl CONFIG = new NBTEditConfigImpl(FabricLoader.getInstance().getGameDir().toFile());
-    private static final NBTEditPermissionImpl PERMISSION = new NBTEditPermissionImpl(CONFIG.getPermissionLevel());
+    private static final ModNetworkingImpl NETWORKING = new ModNetworkingImpl();
+    private static final ModConfigImpl CONFIG = new ModConfigImpl(FabricLoader.getInstance().getGameDir().toFile());
+    private static final ModPermissionImpl PERMISSION = new ModPermissionImpl(CONFIG.getPermissionsLevel());
 
-    public static INBTEditNetworking getNetworking() {
+    public static IModNetworking getNetworking() {
         return NETWORKING;
     }
 
-    public static INBTEditConfig getConfig() {
+    public static IModConfig getConfig() {
         return CONFIG;
     }
 
-    public static INBTEditCommandPermission getPermission() {
+    public static IModPermission getPermission() {
         return PERMISSION;
     }
 }
