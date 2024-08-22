@@ -99,12 +99,12 @@ unifiedPublishing {
         }
 
         curseforge {
-            token = System.getenv('CURSEFORGE_TOKEN')
+            token = Objects.requireNonNullElse(System.getenv('CURSEFORGE_TOKEN'), "")
             id = '678133'
         }
 
         modrinth {
-            token = System.getenv('MODRINTH_TOKEN')
+            token = Objects.requireNonNullElse(System.getenv('MODRINTH_TOKEN'), "")
             id = 'Vr2eDeCw'
         }
     }
