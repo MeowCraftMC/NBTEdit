@@ -16,7 +16,7 @@ public class LanguageProviderENUS extends LanguageProvider {
         add(ModConstants.KEY_NBTEDIT_SHORTCUT, "Open the NBT editor");
 
         add(ModConstants.MESSAGE_NOT_PLAYER, "Only players can use this command.");
-        add(ModConstants.MESSAGE_NO_PERMISSION, "You have no permission to use NBTEdit!");
+        add(ModConstants.MESSAGE_NO_PERMISSION, "You have no permission to use NBTEdit.");
         add(ModConstants.MESSAGE_NOT_LOADED, "Block pos was not loaded.");
         add(ModConstants.MESSAGE_NOTHING_TO_EDIT, "There is no any target for editing.");
         add(ModConstants.MESSAGE_TARGET_IS_NOT_BLOCK_ENTITY, "There is no BlockEntity to edit.");

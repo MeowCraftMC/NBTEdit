@@ -87,6 +87,11 @@ public class NetworkEditingHelper {
                 return;
             }
 
+            if (stack.isEmpty()) {
+                player.sendSystemMessage(Component.literal(ModConstants.MESSAGE_NOTHING_TO_EDIT).withStyle(ChatFormatting.RED));
+                return;
+            }
+
             NBTEdit.getInstance().getLogger().debug("Player {} is editing ItemStack named {}.",
                     player.getName().getString(), stack.getDisplayName().getString());
 

@@ -63,7 +63,7 @@
   "message.nbtedit.nbt_type.long_array": "Long Array",
   "message.nbtedit.nbt_type.short": "Short",
   "message.nbtedit.nbt_type.string": "String",
-  "message.nbtedit.no_permission": "You have no permission to use NBTEdit!",
+  "message.nbtedit.no_permission": "You have no permission to use NBTEdit.",
   "message.nbtedit.not_a_player": "Only players can use this command.",
   "message.nbtedit.not_loaded": "Block pos was not loaded.",
   "message.nbtedit.nothing_to_edit": "There is no any target for editing.",
