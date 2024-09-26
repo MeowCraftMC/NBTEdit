@@ -70,11 +70,12 @@ public class EditValueSubWindow extends SubWindowComponent implements IWidgetHol
         valueField = new EditBox(getMinecraft().font, x + 46, y + 44, 116, 15, Component.literal("Value"));
         addWidget(valueField);
 
+        nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
         nameField.setEditable(canEditName);
         nameField.setBordered(false);
 
-        valueField.setMaxLength(256);
+        valueField.setMaxLength(Integer.MAX_VALUE);
         valueField.setValue(value);
         valueField.setEditable(canEditValue);
         valueField.setBordered(false);
