@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[${neoforge_loader_version},${next_neoforge_loader_version})"
+loaderVersion="${neoforge_loader_version_range}"
 license="GPLv3"
 issueTrackerURL="https://github.com/qyl27/NBTEdit/issues"
 
@@ -24,13 +24,13 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.nbtedit]]
     modId="neoforge"
     type="required"
-    versionRange="[${neoforge_version},${next_neoforge_version})"
+    versionRange="${neoforge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbtedit]]
     modId="minecraft"
     type="required"
-    versionRange="[${minecraft_version},${next_minecraft_version})"
+    versionRange="${neoforge_minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

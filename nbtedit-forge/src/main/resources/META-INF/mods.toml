@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[${forge_loader_version},${next_forge_loader_version})"
+loaderVersion="${forge_loader_version_range}"
 license="GPLv3"
 issueTrackerURL="https://github.com/qyl27/NBTEdit/issues"
 
@@ -21,13 +21,13 @@ It can help many map creator to make custom items or help many mod creator to de
 [[dependencies.nbtedit]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},${next_forge_version})"
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.nbtedit]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${minecraft_version},${next_minecraft_version})"
+    versionRange="${forge_minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

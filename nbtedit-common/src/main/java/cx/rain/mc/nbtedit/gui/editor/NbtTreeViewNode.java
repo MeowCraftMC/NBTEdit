@@ -1,6 +1,7 @@
 package cx.rain.mc.nbtedit.gui.editor;
 
 import cx.rain.mc.nbtedit.NBTEdit;
+import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.editor.NbtTree;
 import cx.rain.mc.nbtedit.editor.AccessibilityHelper;
 import cx.rain.mc.nbtedit.gui.component.AbstractComponent;
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +19,11 @@ import java.time.Duration;
 public class NbtTreeViewNode extends AbstractComponent {
     public static final ResourceLocation WIDGET_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
+
+    public static final ResourceLocation ARROW_RIGHT = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right");
+    public static final ResourceLocation ARROW_DOWN = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down");
+    public static final ResourceLocation ARROW_RIGHT_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_right_highlighted");
+    public static final ResourceLocation ARROW_DOWN_HIGHLIGHTED = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "editor/arrow_down_highlighted");
 
     private final NbtTreeView treeView;
     private final NbtTree.Node<?> node;
@@ -72,26 +79,27 @@ public class NbtTreeViewNode extends AbstractComponent {
             graphics.fill(getX() + 11, getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }
 
-        var w = 18;
-        var h = 18;
-        var u = 0;
+        ResourceLocation arrowSprite;
         if (node.shouldShowChildren()) {
             if (isSpoilerHover) {
-                u = 18 + 18 + 18;
+                arrowSprite = ARROW_DOWN_HIGHLIGHTED;
             } else {
-                u = 18;
+                arrowSprite = ARROW_DOWN;
             }
         } else {
             if (isSpoilerHover) {
-                u = 18 + 18;
+                arrowSprite = ARROW_RIGHT_HIGHLIGHTED;
+            } else {
+                arrowSprite = ARROW_RIGHT;
             }
         }
 
         if (node.hasChild()) {
-            graphics.blit(WIDGET_TEXTURE, getX() - 9, getY(), 9, getHeight(), u, 16, w, h, 512, 512);
+            graphics.blitSprite(RenderType::guiTextured, arrowSprite, getX() - 9, getY(), 9, getHeight());
         }
 
-        graphics.blit(WIDGET_TEXTURE, getX() + 1, getY(), 9, getHeight(), (node.getTag().getId() - 1) * 16, 0, 16, 16, 512, 512);
+        var tagSprite = EditorButton.ofTag(node.getTag()).getSprite();
+        graphics.blitSprite(RenderType::guiTextured, tagSprite, getX() + 1, getY(), 9, getHeight());
         graphics.drawString(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
     }
 

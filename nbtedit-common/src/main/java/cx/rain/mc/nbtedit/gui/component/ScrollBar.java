@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -105,15 +106,15 @@ public class ScrollBar extends AbstractComponent {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         ResourceLocation resourceLocation = BACKGROUND_SPRITES.get(false, false);
-        guiGraphics.blitSprite(resourceLocation, getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(RenderType::guiTextured, resourceLocation, getX(), getY(), getWidth(), getHeight());
 
         var barLength = this.getScrollBarLength();
         var barOffset = (int) (getScrollRate() * (getPrimaryLength() - barLength));
 
         if (isHorizontal()) {
-            guiGraphics.blitSprite(SCROLLER_SPRITE, getX() + barOffset, getY(), barLength, getHeight());
+            guiGraphics.blitSprite(RenderType::guiTextured, SCROLLER_SPRITE, getX() + barOffset, getY(), barLength, getHeight());
         } else {
-            guiGraphics.blitSprite(SCROLLER_SPRITE, getX(), getY() + barOffset, getWidth(), barLength);
+            guiGraphics.blitSprite(RenderType::guiTextured, SCROLLER_SPRITE, getX(), getY() + barOffset, getWidth(), barLength);
         }
     }
 

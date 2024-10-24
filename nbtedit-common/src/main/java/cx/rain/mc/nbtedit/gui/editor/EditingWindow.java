@@ -12,6 +12,7 @@ import cx.rain.mc.nbtedit.utility.ModConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +21,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.UUID;
 
 public class EditingWindow extends AbstractWindow {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/window.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "window");
     public static final int WIDTH = 178;
     public static final int HEIGHT = 93;
 
@@ -67,7 +68,7 @@ public class EditingWindow extends AbstractWindow {
 
         clearChildren();
 
-        nameField = new EditBoxComponent(getMinecraft().font, getX() + 46, getY() + 18, 116, 15,
+        nameField = new EditBoxComponent(getMinecraft().font, getX() + 47, getY() + 20, 116, 15,
                 Component.translatable(ModConstants.GUI_EDIT_BOX_NAME));
         nameField.setMaxLength(Integer.MAX_VALUE);
         nameField.setValue(name);
@@ -76,7 +77,7 @@ public class EditingWindow extends AbstractWindow {
         nameField.setBordered(false);
         addChild(nameField);
 
-        valueField = new EditBoxComponent(getMinecraft().font, getX() + 46, getY() + 44, 116, 15,
+        valueField = new EditBoxComponent(getMinecraft().font, getX() + 47, getY() + 46, 116, 15,
                 Component.translatable(ModConstants.GUI_EDIT_BOX_VALUE));
         valueField.setMaxLength(Integer.MAX_VALUE);
         valueField.setValue(value);
@@ -132,14 +133,14 @@ public class EditingWindow extends AbstractWindow {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blit(TEXTURE, getX(), getY(), getWidth(), getHeight(), 0, 0, getWidth(), getHeight(), 256, 256);
+        guiGraphics.blitSprite(RenderType::guiTextured, TEXTURE, getX(), getY(), getWidth(), getHeight());
 
         if (!nameEditable) {
-            guiGraphics.fill(getX() + 42, getY() + 15, getX() + 169, getY() + 31, 0x80000000);
+            guiGraphics.fill(getX() + 43, getY() + 16, getX() + 170, getY() + 31, 0x80000000);
         }
 
         if (!valueEditable) {
-            guiGraphics.fill(getX() + 42, getY() + 41, getX() + 169, getY() + 57, 0x80000000);
+            guiGraphics.fill(getX() + 43, getY() + 43, getX() + 170, getY() + 59, 0x80000000);
         }
 
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);

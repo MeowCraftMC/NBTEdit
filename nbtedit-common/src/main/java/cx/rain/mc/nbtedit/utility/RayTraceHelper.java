@@ -26,9 +26,9 @@ public class RayTraceHelper {
             } else if (!player.getMainHandItem().isEmpty()) {
                 NBTEditPlatform.getNetworking().sendToServer(new ItemStackRaytraceResultPacket(player.getMainHandItem()));
             } else {
-                player.sendSystemMessage(Component
+                player.displayClientMessage(Component
                         .translatable(ModConstants.MESSAGE_NOTHING_TO_EDIT)
-                        .withStyle(ChatFormatting.RED));
+                        .withStyle(ChatFormatting.RED), false);
             }
         }
     }

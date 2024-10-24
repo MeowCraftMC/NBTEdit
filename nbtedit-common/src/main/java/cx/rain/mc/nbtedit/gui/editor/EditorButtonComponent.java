@@ -5,15 +5,13 @@ import cx.rain.mc.nbtedit.editor.EditorButton;
 import cx.rain.mc.nbtedit.gui.component.ButtonComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.time.Duration;
 
 public class EditorButtonComponent extends ButtonComponent {
-    public static final ResourceLocation BUTTONS_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(NBTEdit.MODID, "textures/gui/widgets.png");
-
     private final EditorButton button;
 
     public EditorButtonComponent(EditorButton id, int x, int y, Component message, OnPress onPressed) {
@@ -47,7 +45,8 @@ public class EditorButtonComponent extends ButtonComponent {
             graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80ffffff);
         }
 
-        graphics.blit(BUTTONS_TEXTURE, getX(), getY(), getWidth(), getHeight(), button.getId() * 16, 0, 16, 16, 512, 512);
+        graphics.blitSprite(RenderType::guiTextured, button.getSprite(), getX(), getY(), getWidth(), getHeight());
+
         if (!isActive()) {
             graphics.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), 0x80000000);
         }

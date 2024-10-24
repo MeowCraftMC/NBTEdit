@@ -1,9 +1,11 @@
+import java.time.OffsetDateTime
+
 plugins {
     id "architectury-plugin" version "${architect_plugin_version}"
     id "dev.architectury.loom" version "${architectury_loom_version}" apply false
 }
 
-def ENV = System.getenv();
+def ENV = System.getenv()
 
 var publishVersion = project.mod_version
 publishVersion += "+mc${project.minecraft_version}"
@@ -47,24 +49,31 @@ subprojects {
     }
 
     processResources {
-        var resourcesToReplace = ['build.properties', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', 'pack.mcmeta', 'fabric.mod.json']
+        var resourcesToReplace = ['build_info.properties', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', 'pack.mcmeta', 'fabric.mod.json']
         var replaceTokens = [
-                minecraft_version: minecraft_version,
-                mod_id: mod_id,
-                mod_name: mod_name,
-                mod_full_name: mod_full_name,
-                mod_version: mod_version,
-                fabric_loader_version: fabric_loader_version,
-                fabric_api_version: fabric_api_version,
-                forge_loader_version: forge_loader_version,
-                forge_version: forge_version,
-                neoforge_loader_version: neoforge_loader_version,
-                neoforge_version: neoforge_version,
-                next_minecraft_version: next_minecraft_version,
-                next_forge_loader_version: next_forge_loader_version,
-                next_forge_version: next_forge_version,
-                next_neoforge_loader_version: next_neoforge_loader_version,
-                next_neoforge_version: next_neoforge_version
+                'archives_base_name'              : rootProject.archives_base_name,
+                'mod_id'                          : rootProject.mod_id,
+                'mod_name'                        : rootProject.mod_name,
+                'mod_full_name'                   : rootProject.mod_full_name,
+                'mod_version'                     : rootProject.mod_version,
+                'minecraft_version'               : rootProject.minecraft_version,
+                'parchment_minecraft_version'     : rootProject.parchment_minecraft_version,
+                'parchment_version'               : rootProject.parchment_version,
+                'fabric_loader_version'           : rootProject.fabric_loader_version,
+                'fabric_api_version'              : rootProject.fabric_api_version,
+                'mod_menu_version'                : rootProject.mod_menu_version,
+                'forge_version'                   : rootProject.forge_version,
+                'neoforge_version'                : rootProject.neoforge_version,
+                'forge_loader_version_range'      : rootProject.forge_loader_version_range,
+                'forge_version_range'             : rootProject.forge_version_range,
+                'forge_minecraft_version_range'   : rootProject.forge_minecraft_version_range,
+                'neoforge_loader_version_range'   : rootProject.neoforge_loader_version_range,
+                'neoforge_version_range'          : rootProject.neoforge_version_range,
+                'neoforge_minecraft_version_range': rootProject.neoforge_minecraft_version_range,
+                'fabric_loader_version_range'     : rootProject.fabric_loader_version_range,
+                'fabric_api_version_range'        : rootProject.fabric_api_version_range,
+                'fabric_minecraft_version_range'  : rootProject.fabric_minecraft_version_range,
+                'build_time'                      : OffsetDateTime.now()
         ]
 
         inputs.properties replaceTokens
