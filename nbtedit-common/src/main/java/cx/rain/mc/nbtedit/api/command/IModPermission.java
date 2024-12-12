@@ -1,23 +1,27 @@
 package cx.rain.mc.nbtedit.api.command;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.NotNull;
 
 public interface IModPermission {
-    boolean hasPermission(ServerPlayer player, ModPermissions permission);
+    boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull ModPermissions permission);
 
-    default boolean canOpenEditor(ServerPlayer player) {
+    boolean hasPermission(@NotNull ServerPlayer player, @NotNull ModPermissions permission);
+
+    default boolean canOpenEditor(@NotNull ServerPlayer player) {
         return hasPermission(player, ModPermissions.USE) || hasPermission(player, ModPermissions.READ_ONLY);
     }
 
-    default boolean isReadOnly(ServerPlayer player) {
+    default boolean isReadOnly(@NotNull ServerPlayer player) {
         return !hasPermission(player, ModPermissions.USE) && hasPermission(player, ModPermissions.READ_ONLY);
     }
 
-    default boolean canSave(ServerPlayer player) {
+    default boolean canSave(@NotNull ServerPlayer player) {
         return hasPermission(player, ModPermissions.USE);
     }
 
-    default boolean canEditOnPlayer(ServerPlayer player) {
+    default boolean canEditOnPlayer(@NotNull ServerPlayer player) {
         return hasPermission(player, ModPermissions.EDIT_ON_PLAYER);
     }
 }

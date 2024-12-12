@@ -27,5 +27,8 @@
     "fabric": "${fabric_api_version_range}",
     "fabricloader": ">=${fabric_loader_version_range}",
     "minecraft": "${fabric_minecraft_version_range}"
+  },
+  "suggests": {
+    "fabric-permissions-api-v0": "*"
   }
 }

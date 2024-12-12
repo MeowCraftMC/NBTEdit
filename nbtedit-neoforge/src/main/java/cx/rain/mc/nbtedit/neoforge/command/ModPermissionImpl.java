@@ -4,6 +4,7 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.api.command.IModPermission;
 import cx.rain.mc.nbtedit.api.command.ModPermissions;
 import cx.rain.mc.nbtedit.neoforge.config.ModConfigImpl;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -11,6 +12,7 @@ import net.neoforged.neoforge.server.permission.PermissionAPI;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
 import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 import net.neoforged.neoforge.server.permission.nodes.PermissionTypes;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +36,15 @@ public class ModPermissionImpl implements IModPermission {
     }
 
     @Override
-    public boolean hasPermission(ServerPlayer player, ModPermissions permission) {
+    public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull ModPermissions permission) {
+        if (sourceStack.getPlayer() instanceof ServerPlayer player) {
+            return hasPermission(player, permission);
+        }
+        return sourceStack.hasPermission(permission.getDefaultLevel());
+    }
+
+    @Override
+    public boolean hasPermission(@NotNull ServerPlayer player, @NotNull ModPermissions permission) {
         return PermissionAPI.getPermission(player, NODES.get(permission));
     }
 }
