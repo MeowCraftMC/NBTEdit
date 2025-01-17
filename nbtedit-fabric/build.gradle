@@ -38,7 +38,7 @@ dependencies {
 }
 
 processResources {
-    inputs.property 'version', project.version
+    inputs.property 'build_version', project.version
 
     filesMatching('fabric.mod.json') {
         expand 'version': project.version
@@ -84,7 +84,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = [project.minecraft_version]
+        gameVersions = project.releasing_minecraft_versions.split(',')
         gameLoaders = ['fabric']
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'

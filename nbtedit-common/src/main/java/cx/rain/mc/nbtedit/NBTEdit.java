@@ -20,7 +20,7 @@ public class NBTEdit {
         OffsetDateTime buildTime;
         try {
             properties.load(NBTEdit.class.getResourceAsStream("/build_info.properties"));
-            version = properties.getProperty("mod_version");
+            version = properties.getProperty("build_version");
             buildTime = OffsetDateTime.parse(properties.getProperty("build_time"));
         } catch (IOException ex) {
             version = "Unknown";

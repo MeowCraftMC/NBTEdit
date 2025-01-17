@@ -104,16 +104,10 @@ public class NbtTreeViewNode extends AbstractComponent {
     }
 
     @Override
-    protected boolean clicked(double mouseX, double mouseY) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return this.active
                 && this.visible
-                && isMouseOver(mouseX, mouseY);
-    }
-
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return isMouseInsideText(mouseX, mouseY)
-                || isMouseInsideSpoiler(mouseX, mouseY);
+                && (isMouseInsideText(mouseX, mouseY) || isMouseInsideSpoiler(mouseX, mouseY));
     }
 
     @Override
