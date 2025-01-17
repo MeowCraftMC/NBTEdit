@@ -84,7 +84,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit Fabric ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = List.of(project.releasing_minecraft_versions.split(','))
+        gameVersions = [project.minecraft_version]
         gameLoaders = ['fabric']
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
