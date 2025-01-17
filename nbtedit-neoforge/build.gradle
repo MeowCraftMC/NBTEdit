@@ -15,8 +15,8 @@ loom {
     }
 
     runs {
-        data {
-            data()
+        clientData {
+            clientData()
 
             programArgs '--all', '--mod', 'nbtedit'
             programArgs '--output', file('../nbtedit-common/src/generated/resources').absolutePath
@@ -87,7 +87,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit NeoForge ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = project.releasing_minecraft_versions.split(',')
+        gameVersions = List.of(project.releasing_minecraft_versions.split(','))
         gameLoaders = ['neoforge']
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'

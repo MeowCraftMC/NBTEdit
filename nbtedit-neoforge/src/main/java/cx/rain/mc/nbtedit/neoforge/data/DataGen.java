@@ -11,16 +11,11 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 @EventBusSubscriber(modid = NBTEdit.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGen {
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
+    public static void onGatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         var packOutput = generator.getPackOutput();
 
-        if (event.includeClient()) {
-        }
-
-        if (event.includeServer()) {
-            generator.addProvider(true, new LanguageProviderENUS(packOutput));
-            generator.addProvider(true, new LanguageProviderZHCN(packOutput));
-        }
+        generator.addProvider(true, new LanguageProviderENUS(packOutput));
+        generator.addProvider(true, new LanguageProviderZHCN(packOutput));
     }
 }
