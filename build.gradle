@@ -72,6 +72,7 @@ subprojects {
                 'neoforge_minecraft_version_range': rootProject.neoforge_minecraft_version_range,
                 'fabric_loader_version_range'     : rootProject.fabric_loader_version_range,
                 'fabric_api_version_range'        : rootProject.fabric_api_version_range,
+                'fabric_permission_api_version_range'        : rootProject.fabric_permission_api_version_range,
                 'fabric_minecraft_version_range'  : rootProject.fabric_minecraft_version_range,
                 'build_time'                      : OffsetDateTime.now()
         ]
