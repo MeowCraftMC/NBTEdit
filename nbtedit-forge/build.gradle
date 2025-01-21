@@ -78,7 +78,7 @@ unifiedPublishing {
     project {
         displayName = "NBTEdit Forge ${project.minecraft_version}-${project.mod_version}"
         version = publishVersion
-        gameVersions = [project.minecraft_version]
+        gameVersions = [project.minecraft_version, '1.21.2']
         gameLoaders = ['forge']
         releaseType = 'release'
         changelog = 'See the GitHub repository for more information. \nhttps://github.com/qyl27/NBTEdit'
