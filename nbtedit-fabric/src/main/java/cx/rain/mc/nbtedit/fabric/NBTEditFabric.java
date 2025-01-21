@@ -4,9 +4,13 @@ import cx.rain.mc.nbtedit.NBTEdit;
 import cx.rain.mc.nbtedit.command.NBTEditCommand;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NBTEditFabric implements ModInitializer {
     private static NBTEditFabric INSTANCE;
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     protected NBTEdit nbtedit;
 
@@ -16,6 +20,10 @@ public class NBTEditFabric implements ModInitializer {
 
     public static NBTEditFabric getInstance() {
         return INSTANCE;
+    }
+
+    public Logger getLogger() {
+        return log;
     }
 
     @Override

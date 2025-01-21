@@ -33,8 +33,7 @@ dependencies {
 
     modRuntimeOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
 
-    // Added by Kirid. Using 0.3.1 cause MineCraft methods changes
-    modCompileOnly("me.lucko:fabric-permissions-api:0.3.3")
+    modCompileOnly "me.lucko:fabric-permissions-api:${rootProject.fabric_permission_api_version}"
 
     common(project(path: ':nbtedit-common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':nbtedit-common', configuration: 'transformProductionFabric')
