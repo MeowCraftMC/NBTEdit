@@ -95,11 +95,11 @@ public class NbtTreeViewNode extends AbstractComponent {
         }
 
         if (node.hasChild()) {
-            graphics.blitSprite(RenderType::guiTextured, arrowSprite, getX() - 9, getY(), 9, getHeight());
+            graphics.blitSprite(arrowSprite, getX() - 9, getY(), 9, getHeight());
         }
 
         var tagSprite = EditorButton.ofTag(node.getTag()).getSprite();
-        graphics.blitSprite(RenderType::guiTextured, tagSprite, getX() + 1, getY(), 9, getHeight());
+        graphics.blitSprite(tagSprite, getX() + 1, getY(), 9, getHeight());
         graphics.drawString(getMinecraft().font, getMessage(), getX() + 11, getY() + (getHeight() - 8) / 2, color);
     }
 

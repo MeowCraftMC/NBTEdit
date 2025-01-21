@@ -133,7 +133,7 @@ public class EditingWindow extends AbstractWindow {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.blitSprite(RenderType::guiTextured, TEXTURE, getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(TEXTURE, getX(), getY(), getWidth(), getHeight());
 
         if (!nameEditable) {
             guiGraphics.fill(getX() + 43, getY() + 16, getX() + 170, getY() + 31, 0x80000000);
