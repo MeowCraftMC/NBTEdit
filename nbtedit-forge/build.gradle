@@ -1,6 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'me.shedaniel.unified-publishing' version '0.1.+'
+    id 'com.gradleup.shadow'
+    id 'me.shedaniel.unified-publishing'
 }
 
 architectury {
@@ -56,10 +56,6 @@ sourcesJar {
     def commonSources = project(':nbtedit-common').sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
-}
-
-configurations.all {
-    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
 }
 
 components.java {
