@@ -23,13 +23,13 @@ public class NBTEditPlatformImpl {
             IModPermission impl = null;
             try {
                 if (FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0")) {
-                    impl = new FabricPermissionApiImpl();
+                    impl = new FabricPermissionApiImpl(CONFIG);
                     NBTEdit.getInstance().getLogger().info("Fabric Permissions API detected, using it.");
                 }
             } catch (Throwable ignored) {
             }
             if (impl == null) {
-                impl = new VanillaPermissionImpl(CONFIG.getPermissionsLevel());
+                impl = new VanillaPermissionImpl(CONFIG);
             }
             PERMISSION = impl;
         }
