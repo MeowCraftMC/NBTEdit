@@ -2,6 +2,7 @@ package cx.rain.mc.nbtedit.fabric.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import cx.rain.mc.nbtedit.api.command.ModPermissions;
 import cx.rain.mc.nbtedit.api.config.IModConfig;
 
 import java.io.File;
@@ -32,14 +33,13 @@ public class ModConfigImpl implements IModConfig {
                 config = GSON.fromJson(Files.readString(configFile.toPath()), ConfigBean.class);
             } catch (IOException ex) {
                 ex.printStackTrace();
-                saveNewConfig();
             }
-        } else {
-            saveNewConfig();
         }
+
+        saveConfig();
     }
 
-    private void saveNewConfig() {
+    private void saveConfig() {
         try {
             var json = GSON.toJson(config);
             Files.writeString(configFile.toPath(), json);
@@ -55,5 +55,9 @@ public class ModConfigImpl implements IModConfig {
 
     public Map<String, Integer> getPermissionsLevel() {
         return config.permissionsLevels;
+    }
+
+    public int getPermissionsLevel(ModPermissions permission) {
+        return config.permissionsLevels.getOrDefault(permission.getName(), permission.getDefaultLevel());
     }
 }

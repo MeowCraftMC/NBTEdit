@@ -98,6 +98,11 @@ unifiedPublishing {
                 curseforge = 'fabric-api'
                 modrinth = 'fabric-api'
             }
+
+            optional {
+                curseforge = 'luckperms'
+                modrinth = 'luckperms'
+            }
         }
 
         curseforge {

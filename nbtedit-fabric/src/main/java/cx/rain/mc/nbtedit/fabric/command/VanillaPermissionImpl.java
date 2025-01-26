@@ -1,34 +1,26 @@
 package cx.rain.mc.nbtedit.fabric.command;
 
 import cx.rain.mc.nbtedit.api.command.IModPermission;
+import cx.rain.mc.nbtedit.fabric.config.ModConfigImpl;
 import net.minecraft.commands.CommandSourceStack;
 import cx.rain.mc.nbtedit.api.command.ModPermissions;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class VanillaPermissionImpl implements IModPermission {
-    private final Map<ModPermissions, Integer> permissionLevels = new HashMap<>();
+    private final ModConfigImpl config;
 
-    public VanillaPermissionImpl(Map<String, Integer> permissionToLevel) {
-        for (var p : ModPermissions.values()) {
-            if (permissionToLevel.containsKey(p.getName())) {
-                permissionLevels.put(p, permissionToLevel.get(p.getName()));
-            } else {
-                permissionLevels.put(p, p.getDefaultLevel());
-            }
-        }
+    public VanillaPermissionImpl(ModConfigImpl config) {
+        this.config = config;
     }
 
     @Override
     public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull ModPermissions permission) {
-        return sourceStack.hasPermission(permissionLevels.get(permission));
+        return sourceStack.hasPermission(config.getPermissionsLevel(permission));
     }
 
     @Override
     public boolean hasPermission(@NotNull ServerPlayer player, @NotNull ModPermissions permission) {
-        return player.hasPermissions(permissionLevels.get(permission));
+        return player.hasPermissions(config.getPermissionsLevel(permission));
     }
 }
